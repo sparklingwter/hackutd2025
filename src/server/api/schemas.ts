@@ -227,3 +227,46 @@ export const DealerLeadInputSchema = z.object({
 });
 
 export type DealerLeadInput = z.infer<typeof DealerLeadInputSchema>;
+
+// ============================================================================
+// User Profile & Saved Items
+// ============================================================================
+
+export const CompareSetSchema = z.object({
+  id: z.string().uuid(),
+  vehicleIds: z.array(z.string()).min(2).max(4),
+  name: z.string().optional(),
+  createdAt: z.date(),
+});
+
+export type CompareSet = z.infer<typeof CompareSetSchema>;
+
+export const EstimateSchema = z.object({
+  id: z.string().uuid(),
+  type: z.enum(['cash', 'finance', 'lease']),
+  vehicleId: z.string(),
+  zipCode: z.string().regex(/^\d{5}$/),
+  inputs: z.union([CashInputsSchema, FinanceInputsSchema, LeaseInputsSchema]),
+  outputs: EstimateOutputsSchema,
+  fuelEstimate: FuelEstimateOutputSchema.optional(),
+  createdAt: z.date(),
+  name: z.string().optional(),
+});
+
+export type Estimate = z.infer<typeof EstimateSchema>;
+
+export const UserProfileSchema = z.object({
+  userId: z.string(),
+  email: z.string().email().optional(),
+  displayName: z.string().optional(),
+  preferences: UserNeedsProfileSchema.optional(),
+  favorites: z.array(z.string()).default([]),
+  savedSearches: z.array(UserNeedsProfileSchema).default([]),
+  compareSets: z.array(CompareSetSchema).default([]),
+  estimates: z.array(EstimateSchema).default([]),
+  voiceEnabled: z.boolean().default(true),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export type UserProfile = z.infer<typeof UserProfileSchema>;
