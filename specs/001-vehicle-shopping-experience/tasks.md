@@ -116,23 +116,23 @@
 
 ### Discovery Journey UI (US1)
 
-- [ ] T044 [P] [US1] Update home page in src/app/page.tsx with hero and "Start Discovery" CTA
-- [ ] T045 [US1] Create discovery layout in src/app/discovery/layout.tsx
-- [ ] T039 [US1] Create discovery step 1: Budget input in src/app/discovery/budget/page.tsx
-- [ ] T040 [P] [US1] Create discovery step 2: Body style selection in src/app/discovery/body-style/page.tsx
-- [ ] T041 [P] [US1] Create discovery step 3: Fuel type and seating in src/app/discovery/preferences/page.tsx
-- [ ] T042 [P] [US1] Create discovery step 4: Features and needs in src/app/discovery/features/page.tsx
-- [ ] T043 [US1] Create discovery progress indicator component in src/components/discovery/ProgressBar.tsx
-- [ ] T044 [P] [US1] Create discovery form state management using React Context in src/components/discovery/DiscoveryContext.tsx
+- [X] T044 [P] [US1] Update home page in src/app/page.tsx with hero and "Start Discovery" CTA
+- [X] T045 [US1] Create discovery layout in src/app/discovery/layout.tsx
+- [X] T039 [US1] Create discovery step 1: Budget input in src/app/discovery/budget/page.tsx
+- [X] T040 [P] [US1] Create discovery step 2: Body style selection in src/app/discovery/body-style/page.tsx
+- [X] T041 [P] [US1] Create discovery step 3: Fuel type and seating in src/app/discovery/preferences/page.tsx
+- [X] T042 [P] [US1] Create discovery step 4: Features and needs in src/app/discovery/features/page.tsx
+- [X] T043 [US1] Create discovery progress indicator component in src/components/discovery/ProgressBar.tsx
+- [X] T044 [P] [US1] Create discovery form state management using React Context in src/components/discovery/DiscoveryContext.tsx
 
 ### Recommendations UI (US1)
 
-- [ ] T045 [US1] Create recommendations page in src/app/recommendations/page.tsx
-- [ ] T039 [P] [US1] Create Top Picks section component in src/components/recommendations/TopPicks.tsx
-- [ ] T040 [P] [US1] Create Strong Contenders section in src/components/recommendations/StrongContenders.tsx
-- [ ] T041 [P] [US1] Create Explore Alternatives section in src/components/recommendations/ExploreAlternatives.tsx
-- [ ] T042 [P] [US1] Create recommendation card component in src/components/recommendations/RecommendationCard.tsx with explanation
-- [ ] T043 [US1] Create filter chips component in src/components/recommendations/FilterChips.tsx for preference adjustment
+- [X] T045 [US1] Create recommendations page in src/app/recommendations/page.tsx
+- [X] T039 [P] [US1] Create Top Picks section component in src/components/recommendations/TopPicks.tsx
+- [X] T040 [P] [US1] Create Strong Contenders section in src/components/recommendations/StrongContenders.tsx
+- [X] T041 [P] [US1] Create Explore Alternatives section in src/components/recommendations/ExploreAlternatives.tsx
+- [X] T042 [P] [US1] Create recommendation card component in src/components/recommendations/RecommendationCard.tsx with explanation
+- [X] T043 [US1] Create filter chips component in src/components/recommendations/FilterChips.tsx for preference adjustment
 
 ### Voice Integration (US1)
 
