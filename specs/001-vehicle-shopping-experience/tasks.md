@@ -384,14 +384,7 @@
 - [ ] T188 Create privacy policy placeholder page in apps/web/src/app/privacy/page.tsx
 - [ ] T189 [P] Create terms of service placeholder page in apps/web/src/app/terms/page.tsx
 
-### Accessibility (WCAG 2.1 AA)
 
-- [ ] T190 [P] Add ARIA labels to all interactive elements
-- [ ] T191 [P] Ensure keyboard navigation for all user flows
-- [ ] T192 [P] Add focus indicators with sufficient contrast
-- [ ] T193 Add screen reader announcements for dynamic content updates
-- [ ] T194 [P] Ensure color contrast ratios meet WCAG AA standards
-- [ ] T195 [P] Add skip-to-content links
 
 ### Performance Optimization
 
