@@ -136,11 +136,11 @@
 
 ### Voice Integration (US1)
 
-- [ ] T044 [P] [US1] Create voice controls component in src/components/voice/VoiceControls.tsx with mute button
-- [ ] T045 [P] [US1] Create speech-to-text integration using ElevenLabs STT in src/components/voice/SpeechToText.tsx
-- [ ] T039 [US1] Create text-to-speech audio player in src/components/voice/AudioPlayer.tsx with captions
-- [ ] T040 [US1] Add voice toggle in discovery journey with graceful text-only fallback
-- [ ] T041 [US1] Generate audio summary for Top Picks using ElevenLabs TTS
+- [X] T044 ✅ [P] [US1] Create voice controls component in src/components/voice/VoiceControls.tsx with mute button (Complete)
+- [X] T045 ✅ [P] [US1] Create speech-to-text integration using ElevenLabs STT in src/components/voice/SpeechToText.tsx (Complete)
+- [X] T039 ✅ [US1] Create text-to-speech audio player in src/components/voice/AudioPlayer.tsx with captions (Complete)
+- [X] T040 ✅ [US1] Add voice toggle in discovery journey with graceful text-only fallback (Complete - toggle added to layout)
+- [X] T041 ✅ [US1] Generate audio summary for Top Picks using ElevenLabs TTS (Complete - AudioPlayer added to recommendations page)
 
 **Checkpoint**: User Story 1 complete - Users can discover vehicles and receive AI recommendations
 

@@ -1,9 +1,14 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { DiscoveryProvider } from "~/components/discovery/DiscoveryContext";
 
 export default function DiscoveryLayout({ children }: { children: ReactNode }) {
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
+
   return (
     <DiscoveryProvider>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -21,13 +26,42 @@ export default function DiscoveryLayout({ children }: { children: ReactNode }) {
               <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Vehicle Discovery
               </h1>
-              <div className="w-24" /> {/* Spacer for centering */}
+              {/* Voice Toggle */}
+              <button
+                onClick={() => setVoiceEnabled(!voiceEnabled)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  voiceEnabled
+                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
+                }`}
+                title={voiceEnabled ? "Voice enabled (coming soon)" : "Enable voice (coming soon)"}
+              >
+                {voiceEnabled ? (
+                  <>
+                    <Volume2 className="w-4 h-4" />
+                    <span className="text-xs font-medium hidden sm:inline">Voice On</span>
+                  </>
+                ) : (
+                  <>
+                    <VolumeX className="w-4 h-4" />
+                    <span className="text-xs font-medium hidden sm:inline">Voice Off</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </header>
 
         {/* Main Content */}
         <main className="container mx-auto px-4 py-8">
+          {voiceEnabled && (
+            <div className="max-w-3xl mx-auto mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <p className="text-sm text-blue-800 dark:text-blue-300">
+                <strong>Voice Mode:</strong> Voice input is enabled but not yet fully integrated. 
+                You can still use the text-based form below. Voice features coming soon!
+              </p>
+            </div>
+          )}
           {children}
         </main>
 

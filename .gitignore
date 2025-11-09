@@ -44,3 +44,15 @@ yarn-error.log*
 
 # idea files
 .idea
+
+# firebase
+.firebase/
+*-debug.log
+.runtimeconfig.json
+firebase-debug*.log
+firestore-debug*.log
+ui-debug.log
+
+# firebase emulators
+firestore-emulator-data/
+storage-emulator-data/

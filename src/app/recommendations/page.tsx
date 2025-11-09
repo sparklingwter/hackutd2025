@@ -9,11 +9,11 @@ import { TopPicks } from "~/components/recommendations/TopPicks";
 import { StrongContenders } from "~/components/recommendations/StrongContenders";
 import { ExploreAlternatives } from "~/components/recommendations/ExploreAlternatives";
 import { FilterChips } from "~/components/recommendations/FilterChips";
+import { AudioPlayer } from "~/components/voice/AudioPlayer";
 import { api } from "~/trpc/react";
 
 import type { Recommendation, Vehicle } from "~/server/api/schemas";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type RecommendationWithVehicle = Recommendation & {
   vehicle: Pick<Vehicle, "id" | "model" | "year" | "msrp" | "bodyStyle" | "fuelType" | "mpgCombined" | "seating" | "imageUrls">;
 };
@@ -22,6 +22,7 @@ export default function RecommendationsPage() {
   const router = useRouter();
   const { profile } = useDiscovery();
   const [filterChips, setFilterChips] = useState<Array<{ id: string; label: string; value: string }>>([]);
+  const [audioSummary, setAudioSummary] = useState<string>("");
 
   // Check if profile is complete
   useEffect(() => {
@@ -99,6 +100,18 @@ export default function RecommendationsPage() {
       retry: 2,
     }
   );
+
+  // Generate audio summary when data is available
+  useEffect(() => {
+    if (data && data.topPicks.length > 0) {
+      const summary = `We found ${data.topPicks.length} top pick${data.topPicks.length > 1 ? 's' : ''} for you. ${
+        data.topPicks.map((pick, i) => 
+          `${i === 0 ? 'First' : i === 1 ? 'Second' : 'Third'}, the ${pick.vehicleId.replace(/-/g, ' ')}, ${pick.explanation}`
+        ).join('. ')
+      }`;
+      setAudioSummary(summary);
+    }
+  }, [data]);
 
   const handleRemoveFilter = (filterId: string) => {
     // In a full implementation, this would update the profile and refetch
@@ -212,6 +225,18 @@ export default function RecommendationsPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Audio Summary */}
+        {audioSummary && (
+          <div className="max-w-4xl mx-auto mb-6">
+            <AudioPlayer
+              text={audioSummary}
+              autoPlay={false}
+              showCaptions={true}
+              onError={(error) => console.error("Audio playback error:", error)}
+            />
+          </div>
+        )}
+
         {/* Filter Chips */}
         <FilterChips
           filters={filterChips}
