@@ -230,39 +230,39 @@
 
 ### Profile Router Implementation (US4)
 
-- [ ] T040 [P] [US4] Create profile router in apps/web/src/server/api/routers/profile.ts
-- [ ] T041 [P] [US4] Implement profile.get query with auto-create on first login
-- [ ] T042 [P] [US4] Implement profile.update mutation for display name and preferences
-- [ ] T043 [P] [US4] Implement profile.addFavorite mutation using Firestore arrayUnion
-- [ ] T044 [P] [US4] Implement profile.removeFavorite mutation using Firestore arrayRemove
-- [ ] T045 [P] [US4] Implement profile.getFavorites query fetching full vehicle details
-- [ ] T039 [P] [US4] Implement profile.saveSearch mutation for discovery journey saves
-- [ ] T040 [P] [US4] Implement profile.getSavedSearches query
-- [ ] T041 [P] [US4] Implement profile.deleteSearch mutation
-- [ ] T042 [P] [US4] Implement profile.setPreferences mutation
+- [X] T040 [P] [US4] Create profile router in src/server/api/routers/profile.ts
+- [X] T041 [P] [US4] Implement profile.get query with auto-create on first login
+- [X] T042 [P] [US4] Implement profile.update mutation for display name and preferences
+- [X] T043 [P] [US4] Implement profile.addFavorite mutation using Firestore arrayUnion
+- [X] T044 [P] [US4] Implement profile.removeFavorite mutation using Firestore arrayRemove
+- [X] T045 [P] [US4] Implement profile.getFavorites query fetching full vehicle details
+- [X] T039 [P] [US4] Implement profile.saveSearch mutation for discovery journey saves
+- [X] T040 [P] [US4] Implement profile.getSavedSearches query
+- [X] T041 [P] [US4] Implement profile.deleteSearch mutation
+- [X] T042 [P] [US4] Implement profile.setPreferences mutation
 
 ### Local Storage for Anonymous Users (US4)
 
-- [ ] T043 [P] [US4] Create localStorage wrapper utility in apps/web/src/lib/localStorage.ts
-- [ ] T044 [US4] Implement anonymous favorites persistence in localStorage with migration prompt on sign-in
-- [ ] T045 [P] [US4] Implement anonymous compare sets persistence in localStorage
-- [ ] T039 [P] [US4] Implement anonymous estimates persistence in localStorage
+- [X] T043 [P] [US4] Create localStorage wrapper utility in src/lib/localStorage.ts
+- [X] T044 [US4] Implement anonymous favorites persistence in localStorage with migration prompt on sign-in
+- [X] T045 [P] [US4] Implement anonymous compare sets persistence in localStorage
+- [X] T039 [P] [US4] Implement anonymous estimates persistence in localStorage
 
 ### Profile UI (US4)
 
-- [ ] T040 [US4] Create profile page in apps/web/src/app/profile/page.tsx
-- [ ] T041 [P] [US4] Create favorites section in apps/web/src/components/profile/Favorites.tsx
-- [ ] T042 [P] [US4] Create saved searches section in apps/web/src/components/profile/SavedSearches.tsx
-- [ ] T043 [P] [US4] Create saved compare sets section in apps/web/src/components/profile/SavedCompareSets.tsx
-- [ ] T044 [P] [US4] Create saved estimates section in apps/web/src/components/profile/SavedEstimates.tsx
-- [ ] T045 [P] [US4] Create favorite button component in apps/web/src/components/shared/FavoriteButton.tsx
+- [X] T040 [US4] Create profile page in src/app/profile/page.tsx
+- [X] T041 [P] [US4] Create favorites section in src/components/profile/Favorites.tsx
+- [X] T042 [P] [US4] Create saved searches section in src/components/profile/SavedSearches.tsx
+- [X] T043 [P] [US4] Create saved compare sets section in src/components/profile/SavedCompareSets.tsx
+- [X] T044 [P] [US4] Create saved estimates section in src/components/profile/SavedEstimates.tsx
+- [X] T045 [P] [US4] Create favorite button component in src/components/shared/FavoriteButton.tsx
 
 ### Sharing & Export (US4)
 
-- [ ] T039 [P] [US4] Create export-to-PDF utility in apps/web/src/lib/exportPdf.ts
-- [ ] T040 [P] [US4] Create print-friendly summary template in apps/web/src/components/shared/PrintSummary.tsx
-- [ ] T041 [US4] Create shared compare set view page in apps/web/src/app/compare/shared/page.tsx
-- [ ] T042 [P] [US4] Create shared estimate view page in apps/web/src/app/estimate/shared/page.tsx
+- [X] T039 [P] [US4] Create export-to-PDF utility in src/lib/exportPdf.ts
+- [X] T040 [P] [US4] Create print-friendly summary template in src/components/shared/PrintSummary.tsx
+- [X] T041 [US4] Create shared compare set view page in src/app/compare/shared/page.tsx
+- [X] T042 [P] [US4] Create shared estimate view page in src/app/estimate/shared/page.tsx
 
 **Checkpoint**: User Story 4 complete - Users can save and share selections
 
@@ -276,28 +276,28 @@
 
 ### Dealer Router Implementation (US5)
 
-- [ ] T043 [P] [US5] Create dealer router in apps/web/src/server/api/routers/dealer.ts
-- [ ] T044 [P] [US5] Implement dealer.findNearby query with geocoding and distance calculation
-- [ ] T045 [P] [US5] Implement dealer.submitLead mutation with consent validation (literal true)
-- [ ] T039 [P] [US5] Implement dealer.getMyLeads query fetching user submissions
-- [ ] T040 [P] [US5] Implement dealer.getById query for dealer details
-- [ ] T041 [US5] Add rate limiting for dealer lead submissions (5 per day per user)
+- [X] T043 [P] [US5] Create dealer router in apps/web/src/server/api/routers/dealer.ts
+- [X] T044 [P] [US5] Implement dealer.findNearby query with geocoding and distance calculation
+- [X] T045 [P] [US5] Implement dealer.submitLead mutation with consent validation (literal true)
+- [X] T039 [P] [US5] Implement dealer.getMyLeads query fetching user submissions
+- [X] T040 [P] [US5] Implement dealer.getById query for dealer details
+- [X] T041 [US5] Add rate limiting for dealer lead submissions (5 per day per user)
 
 ### Dealer Data Setup (US5)
 
-- [ ] T042 [P] [US5] Create dealer seed data script in apps/web/scripts/seed-dealers.ts with Texas Toyota dealers
-- [ ] T043 [US5] Implement ZIP-to-lat/long geocoding using Google Maps API in apps/web/src/lib/geocoding.ts
+- [X] T042 [P] [US5] Create dealer seed data script in apps/web/scripts/seed-dealers.ts with Texas Toyota dealers
+- [X] T043 [US5] Implement ZIP-to-lat/long geocoding using Google Maps API in apps/web/src/lib/geocoding.ts
 
 ### Dealer UI (US5)
 
-- [ ] T044 [US5] Create dealer finder page in apps/web/src/app/dealer/page.tsx
-- [ ] T045 [P] [US5] Create ZIP code search form in apps/web/src/components/dealer/ZipSearch.tsx
-- [ ] T039 [P] [US5] Create dealer list component in apps/web/src/components/dealer/DealerList.tsx
-- [ ] T040 [P] [US5] Create dealer card with directions link in apps/web/src/components/dealer/DealerCard.tsx
-- [ ] T041 [US5] Create contact me form in apps/web/src/components/dealer/ContactForm.tsx
-- [ ] T042 [US5] Create explicit consent checkbox in apps/web/src/components/dealer/ConsentCheckbox.tsx with legal text
-- [ ] T043 [P] [US5] Create contact confirmation page in apps/web/src/app/dealer/confirmation/page.tsx
-- [ ] T044 [P] [US5] Create my leads page in apps/web/src/app/profile/leads/page.tsx
+- [X] T044 [US5] Create dealer finder page in apps/web/src/app/dealer/page.tsx
+- [X] T045 [P] [US5] Create ZIP code search form in apps/web/src/components/dealer/ZipSearch.tsx
+- [X] T039 [P] [US5] Create dealer list component in apps/web/src/components/dealer/DealerList.tsx
+- [X] T040 [P] [US5] Create dealer card with directions link in apps/web/src/components/dealer/DealerCard.tsx
+- [X] T041 [US5] Create contact me form in apps/web/src/components/dealer/ContactForm.tsx
+- [X] T042 [US5] Create explicit consent checkbox in apps/web/src/components/dealer/ConsentCheckbox.tsx with legal text
+- [X] T043 [P] [US5] Create contact confirmation page in apps/web/src/app/dealer/confirmation/page.tsx
+- [X] T044 [P] [US5] Create my leads page in apps/web/src/app/profile/leads/page.tsx
 
 **Checkpoint**: User Story 5 complete - Users can connect with dealers
 
