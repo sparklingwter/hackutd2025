@@ -1,104 +1,49 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // ========================================================================
-    // Helper Functions
-    // ========================================================================
-    
-    // Check if user is authenticated
+    // Helper functions
     function isAuthenticated() {
       return request.auth != null;
     }
     
-    // Check if user owns the document (document ID matches user ID)
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
-    // Check if user is trying to create/update only their own data
-    function isOwnerInData() {
-      return isAuthenticated() && request.resource.data.userId == request.auth.uid;
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.role == 'admin';
     }
     
-    // ========================================================================
-    // Vehicles Collection (Public Read, Admin Write Only)
-    // ========================================================================
-    
+    // Public vehicle data (read-only for all, write for admins)
     match /vehicles/{vehicleId} {
-      // Anyone can read vehicle data (public catalog)
       allow read: if true;
-      
-      // Only admins can write (handled via Firebase Admin SDK server-side)
-      allow write: if false;
-      
-      // Trims subcollection
-      match /trims/{trimId} {
-        // Anyone can read trim data
-        allow read: if true;
-        
-        // Only admins can write
-        allow write: if false;
-      }
+      allow write: if isAdmin();
     }
     
-    // ========================================================================
-    // User Profiles Collection (Owner Read/Write)
-    // ========================================================================
+    // Public metadata (read-only for all, write for admins)
+    match /metadata/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
     
+    // User profiles (owner only)
     match /userProfiles/{userId} {
-      // Users can only read their own profile
-      allow read: if isOwner(userId);
-      
-      // Users can only create/update their own profile
-      // Must include required fields: email, favorites, savedSearches, savedCompareSets, savedEstimates
-      allow create: if isOwner(userId)
-        && request.resource.data.keys().hasAll(['email', 'favorites', 'savedSearches', 'savedCompareSets', 'savedEstimates'])
-        && request.resource.data.email is string
-        && request.resource.data.favorites is list
-        && request.resource.data.savedSearches is list
-        && request.resource.data.savedCompareSets is list
-        && request.resource.data.savedEstimates is list;
-      
-      // Users can update their own profile
-      allow update: if isOwner(userId);
-      
-      // Users can delete their own profile
-      allow delete: if isOwner(userId);
+      allow read, write: if isOwner(userId);
     }
     
-    // ========================================================================
-    // Dealer Leads Collection (Owner Create/Read)
-    // ========================================================================
-    
+    // Dealer leads (create by authenticated users, read by admins only)
     match /dealerLeads/{leadId} {
-      // Users can only read their own leads
-      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
-      
-      // Users can create leads with their own userId
-      // Must include: userId, vehicleIds, contactInfo, zipCode, consent
-      // Consent must be literally true
-      allow create: if isOwnerInData()
-        && request.resource.data.keys().hasAll(['userId', 'vehicleIds', 'contactInfo', 'zipCode', 'consent'])
-        && request.resource.data.vehicleIds is list
-        && request.resource.data.vehicleIds.size() > 0
-        && request.resource.data.vehicleIds.size() <= 10
-        && request.resource.data.contactInfo.keys().hasAll(['name', 'email', 'phone', 'preferredContact'])
-        && request.resource.data.zipCode is string
-        && request.resource.data.zipCode.matches('^[0-9]{5}$')
-        && request.resource.data.consent == true;
-      
-      // Users cannot update or delete leads (immutable once created)
-      allow update, delete: if false;
+      allow read: if isAdmin();
+      allow create: if isAuthenticated() 
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.consent == true
+        && request.resource.data.keys().hasAll(['userId', 'vehicleIds', 'contactInfo', 'consent', 'zipCode']);
+      allow update, delete: if false; // Immutable
     }
     
-    // ========================================================================
-    // Default Deny All Other Collections
-    // ========================================================================
-    
-    match /{document=**} {
-      allow read, write: if false;
+    // Anonymous sessions (unauthenticated users only)
+    match /anonymousSessions/{sessionId} {
+      allow read, write: if request.auth == null;
     }
   }
 }
