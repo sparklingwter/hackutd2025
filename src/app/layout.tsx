@@ -5,11 +5,19 @@ import { IBM_Plex_Mono, Libre_Baskerville, Poppins } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
-export const metadata: Metadata = {
-  title: "Toyota Vehicle Shopping Experience",
-  description: "AI-powered vehicle discovery and recommendations",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
-};
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-sans",
+  fallback: ["sans-serif"],
+});
+
+const libreBaskerville = Libre_Baskerville({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-serif",
+  fallback: ["serif"],
+});
 
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600", "700"],
@@ -19,8 +27,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HackUTD 2025",
-  description: "HackUTD 2025 Project",
+  title: "HackUTD 2025 - Toyota Vehicle Shopping Experience",
+  description: "AI-powered vehicle discovery and recommendations",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
