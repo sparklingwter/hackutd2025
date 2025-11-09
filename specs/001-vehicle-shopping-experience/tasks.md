@@ -154,29 +154,29 @@
 
 ### Compare Router Implementation (US2)
 
-- [ ] T042 [P] [US2] Create compare router in src/server/api/routers/compare.ts
-- [ ] T043 [US2] Implement compare.getComparison procedure with category winner calculation
-- [ ] T039 [P] [US2] Implement compare.saveCompareSet mutation for authenticated users
-- [ ] T040 [P] [US2] Implement compare.getCompareSets query fetching user saved sets
-- [ ] T041 [P] [US2] Implement compare.deleteCompareSet mutation
-- [ ] T042 [P] [US2] Implement compare.getSharedCompareSet query for shareable links
-- [ ] T043 [US2] Implement compare.generateShareLink mutation with JWT encryption
+- [X] T042 [P] [US2] Create compare router in src/server/api/routers/compare.ts
+- [X] T043 [US2] Implement compare.getComparison procedure with category winner calculation
+- [X] T039 [P] [US2] Implement compare.saveCompareSet mutation for authenticated users
+- [X] T040 [P] [US2] Implement compare.getCompareSets query fetching user saved sets
+- [X] T041 [P] [US2] Implement compare.deleteCompareSet mutation
+- [X] T042 [P] [US2] Implement compare.getSharedCompareSet query for shareable links
+- [X] T043 [US2] Implement compare.generateShareLink mutation with JWT encryption
 
 ### Compare Tray UI (US2)
 
-- [ ] T044 [P] [US2] Create persistent compare tray component in apps/web/src/components/comparison/CompareTray.tsx
-- [ ] T045 [US2] Create add-to-compare button in apps/web/src/components/shared/AddToCompareButton.tsx
-- [ ] T039 [US2] Implement compare tray state management using React Context in apps/web/src/components/comparison/CompareContext.tsx
-- [ ] T040 [US2] Add compare tray to app layout in apps/web/src/app/layout.tsx for global access
+- [X] T044 [P] [US2] Create persistent compare tray component in apps/web/src/components/comparison/CompareTray.tsx
+- [X] T045 [US2] Create add-to-compare button in apps/web/src/components/shared/AddToCompareButton.tsx
+- [X] T039 [US2] Implement compare tray state management using React Context in apps/web/src/components/comparison/CompareContext.tsx
+- [X] T040 [US2] Add compare tray to app layout in apps/web/src/app/layout.tsx for global access
 
 ### Comparison Table UI (US2)
 
-- [ ] T041 [US2] Create comparison page in apps/web/src/app/compare/page.tsx
-- [ ] T042 [US2] Create comparison table component in apps/web/src/components/comparison/ComparisonTable.tsx
-- [ ] T043 [P] [US2] Create category winner badge component in apps/web/src/components/comparison/WinnerBadge.tsx
-- [ ] T044 [P] [US2] Create difference view toggle in apps/web/src/components/comparison/DifferenceToggle.tsx
-- [ ] T045 [US2] Implement table row highlighting for category winners
-- [ ] T039 [P] [US2] Create share comparison button in apps/web/src/components/comparison/ShareButton.tsx
+- [X] T041 [US2] Create comparison page in apps/web/src/app/compare/page.tsx
+- [X] T042 [US2] Create comparison table component in apps/web/src/components/comparison/ComparisonTable.tsx
+- [X] T043 [P] [US2] Create category winner badge component in apps/web/src/components/comparison/WinnerBadge.tsx
+- [X] T044 [P] [US2] Create difference view toggle in apps/web/src/components/comparison/DifferenceToggle.tsx
+- [X] T045 [US2] Implement table row highlighting for category winners
+- [X] T039 [P] [US2] Create share comparison button in apps/web/src/components/comparison/ShareButton.tsx
 
 **Checkpoint**: User Story 2 complete - Users can compare vehicles side-by-side
 
@@ -190,14 +190,14 @@
 
 ### Estimate Router Implementation (US3)
 
-- [ ] T040 [P] [US3] Create estimate router in apps/web/src/server/api/routers/estimate.ts
-- [ ] T041 [P] [US3] Implement estimate.calculateCash query calling finance-engine library
-- [ ] T042 [P] [US3] Implement estimate.calculateFinance query with amortization
-- [ ] T043 [P] [US3] Implement estimate.calculateLease query with residual calculation
-- [ ] T044 [P] [US3] Implement estimate.calculateFuelCost query for gas and electric
-- [ ] T045 [P] [US3] Implement estimate.saveEstimate mutation for authenticated users
-- [ ] T039 [P] [US3] Implement estimate.getSavedEstimates query
-- [ ] T040 [P] [US3] Implement estimate.deleteEstimate mutation
+- [X] T040 [P] [US3] Create estimate router in apps/web/src/server/api/routers/estimate.ts
+- [X] T041 [P] [US3] Implement estimate.calculateCash query calling finance-engine library
+- [X] T042 [P] [US3] Implement estimate.calculateFinance query with amortization
+- [X] T043 [P] [US3] Implement estimate.calculateLease query with residual calculation
+- [X] T044 [P] [US3] Implement estimate.calculateFuelCost query for gas and electric
+- [X] T045 [P] [US3] Implement estimate.saveEstimate mutation for authenticated users
+- [X] T039 [P] [US3] Implement estimate.getSavedEstimates query
+- [X] T040 [P] [US3] Implement estimate.deleteEstimate mutation
 
 ### Estimate Form UI (US3)
 
