@@ -205,30 +205,6 @@ export const FuelEstimateOutputSchema = z.object({
 export type FuelEstimateOutput = z.infer<typeof FuelEstimateOutputSchema>;
 
 // ============================================================================
-// Dealer Lead
-// ============================================================================
-
-export const ContactInfoSchema = z.object({
-  name: z.string().min(1).max(100),
-  email: z.string().email(),
-  phone: z.string().regex(/^\d{10}$/),
-  preferredContact: z.enum(['email', 'phone', 'either']),
-});
-
-export type ContactInfo = z.infer<typeof ContactInfoSchema>;
-
-export const DealerLeadInputSchema = z.object({
-  vehicleIds: z.array(z.string()).min(1).max(10),
-  estimateId: z.string().uuid().optional(),
-  contactInfo: ContactInfoSchema,
-  consent: z.literal(true),
-  zipCode: z.string().regex(/^\d{5}$/),
-  message: z.string().max(500).optional(),
-});
-
-export type DealerLeadInput = z.infer<typeof DealerLeadInputSchema>;
-
-// ============================================================================
 // User Profile & Saved Items
 // ============================================================================
 

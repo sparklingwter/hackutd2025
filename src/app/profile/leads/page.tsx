@@ -58,7 +58,7 @@ export default function MyLeadsPage() {
           <Card>
             <CardContent className="pt-6 text-center">
               <p className="text-muted-foreground mb-4">
-                You haven't contacted any dealers yet
+                You haven&apos;t contacted any dealers yet
               </p>
               <Button asChild>
                 <Link href="/dealer">Find Dealers</Link>

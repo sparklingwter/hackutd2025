@@ -205,7 +205,7 @@ export function ContactForm({
         <ConsentCheckbox
           checked={formData.consent}
           onCheckedChange={(checked) =>
-            setFormData({ ...formData, consent: checked as boolean })
+            setFormData({ ...formData, consent: Boolean(checked) })
           }
           disabled={submitLead.isPending}
         />

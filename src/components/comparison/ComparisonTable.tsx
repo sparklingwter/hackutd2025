@@ -27,18 +27,7 @@ interface CategoryWinners {
   mostHorsepower: string;
 }
 
-interface ComparisonMatrix {
-  [vehicleId: string]: {
-    price: unknown;
-    mpg: unknown;
-    cargo: unknown;
-    towing: unknown;
-    safety: unknown;
-    seating: unknown;
-    awd: unknown;
-    features: unknown;
-  };
-}
+type ComparisonMatrix = Record<string, Record<string, unknown>>;
 
 interface ComparisonTableProps {
   vehicles: Vehicle[];
@@ -126,14 +115,14 @@ function formatValue(key: string, value: unknown): string {
     case "price":
       return `$${Number(value).toLocaleString()}`;
     case "mpg":
-      return `${String(value)} mpg`;
+      return typeof value === "number" ? `${value} mpg` : "—";
     case "cargo":
-      return `${String(value)} cu ft`;
+      return typeof value === "number" ? `${value} cu ft` : "—";
     case "seating":
-      return `${String(value)} seats`;
+      return typeof value === "number" ? `${value} seats` : "—";
     case "awd":
       return value ? "Yes" : "No";
     default:
-      return String(value);
+      return typeof value === "string" || typeof value === "number" ? String(value) : "—";
   }
 }

@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { CompareProvider } from "~/components/comparison/CompareContext";
+import { DiscoveryProvider } from "~/components/discovery/DiscoveryContext";
 import { CompareTray } from "~/components/comparison/CompareTray";
 
 export const metadata: Metadata = {
@@ -25,10 +26,12 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`}>
       <body>
         <TRPCReactProvider>
-          <CompareProvider>
-            {children}
-            <CompareTray />
-          </CompareProvider>
+          <DiscoveryProvider>
+            <CompareProvider>
+              {children}
+              <CompareTray />
+            </CompareProvider>
+          </DiscoveryProvider>
         </TRPCReactProvider>
       </body>
     </html>

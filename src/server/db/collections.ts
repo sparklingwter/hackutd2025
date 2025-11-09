@@ -6,7 +6,6 @@ import { adminDb } from './firebase';
  * Collections:
  * - vehicles: Vehicle catalog with models and trims
  * - userProfiles: User saved data (favorites, searches, estimates, compare sets)
- * - dealerLeads: Contact requests submitted to dealers
  */
 
 // ============================================================================
@@ -28,16 +27,6 @@ export const trimsCollection = (vehicleId: string) =>
  * User profiles collection - Stores user preferences and saved data
  */
 export const userProfilesCollection = () => adminDb.collection('userProfiles');
-
-/**
- * Dealer leads collection - Contact requests from users to dealers
- */
-export const dealerLeadsCollection = () => adminDb.collection('dealerLeads');
-
-/**
- * Dealers collection - Toyota dealership locations
- */
-export const dealersCollection = () => adminDb.collection('dealers');
 
 // ============================================================================
 // Helper Functions
@@ -146,49 +135,6 @@ export const getTrimById = async (vehicleId: string, trimId: string) => {
     return null;
   }
   return { id: doc.id, ...doc.data() };
-};
-
-/**
- * Create a dealer lead
- */
-export const createDealerLead = async (data: Omit<DealerLeadDoc, 'id' | 'createdAt' | 'status'>) => {
-  const ref = await dealerLeadsCollection().add({
-    ...data,
-    createdAt: new Date(),
-    status: 'new',
-  });
-  const doc = await ref.get();
-  return { id: doc.id, ...doc.data() };
-};
-
-/**
- * Get dealer leads for a user
- */
-export const getUserDealerLeads = async (userId: string) => {
-  const snapshot = await dealerLeadsCollection()
-    .where('userId', '==', userId)
-    .orderBy('createdAt', 'desc')
-    .get();
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-};
-
-/**
- * Get dealer by ID
- */
-export const getDealerById = async (dealerId: string) => {
-  const doc = await dealersCollection().doc(dealerId).get();
-  if (!doc.exists) {
-    return null;
-  }
-  return { id: doc.id, ...doc.data() } as DealerDoc;
-};
-
-/**
- * Get all dealers (for proximity search)
- */
-export const getAllDealers = async () => {
-  const snapshot = await dealersCollection().get();
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as DealerDoc));
 };
 
 // ============================================================================
@@ -332,46 +278,4 @@ export interface SavedEstimate {
   inputs: Record<string, unknown>;
   outputs: Record<string, unknown>;
   createdAt: Date;
-}
-
-export interface DealerLeadDoc {
-  id: string;
-  userId: string;
-  vehicleIds: string[];
-  estimateId?: string;
-  contactInfo: {
-    name: string;
-    email: string;
-    phone: string;
-    preferredContact: string;
-  };
-  zipCode: string;
-  message?: string;
-  consent: true;
-  status: 'new' | 'contacted' | 'closed';
-  createdAt: Date;
-}
-
-export interface DealerDoc {
-  id: string;
-  name: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-  };
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-  phone: string;
-  website?: string;
-  hours?: Record<string, string>;
-  services: string[];
-  reviews?: {
-    rating: number;
-    count: number;
-    source: string;
-  };
 }
