@@ -11,7 +11,7 @@ export default function Home() {
           <div className="flex items-center justify-center gap-2 mb-6">
             <Car className="w-8 h-8 text-red-600" />
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
-              Toyota Vehicle Shopping
+              FindMyYota
             </h1>
           </div>
 

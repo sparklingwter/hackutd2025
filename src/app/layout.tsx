@@ -9,7 +9,7 @@ import { DiscoveryProvider } from "~/components/discovery/DiscoveryContext";
 import { CompareTray } from "~/components/comparison/CompareTray";
 
 export const metadata: Metadata = {
-  title: "Toyota Vehicle Shopping Experience",
+  title: "FindMyYota",
   description: "AI-powered vehicle discovery and recommendations",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
