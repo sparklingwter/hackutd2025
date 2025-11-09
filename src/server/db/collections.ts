@@ -80,6 +80,7 @@ export function transformVehicleDoc(raw: VehicleDocRaw): VehicleDoc {
     safetyRating: null, // Not in current schema
     trims: [raw.trim],
     // Use local images from public/CarImages based on make/model/year/trim
+    // Return all available images so frontend can choose
     imageUrls: getVehicleImages(raw.make, raw.model, raw.year, raw.trim),
     description: raw.description ?? '',
     createdAt,

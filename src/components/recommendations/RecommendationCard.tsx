@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Fuel, Users, Package, ArrowRight, Scale, Calculator } from "lucide-react";
+import { Star, Fuel, Users, Package, ArrowRight, Scale, Calculator, Car } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { useCompare } from "~/components/comparison/CompareContext";
+import { useMemo } from "react";
 import type { Recommendation, Vehicle } from "~/server/api/schemas";
 
 interface RecommendationCardProps {
@@ -39,6 +40,23 @@ export function RecommendationCard({ recommendation, tier }: RecommendationCardP
   
   const isComparing = isInCompareTray(vehicle.id);
   
+  // Select a random image from available images for variety
+  // Use vehicle ID as seed for consistent selection across renders
+  const selectedImage = useMemo(() => {
+    if (!vehicle.imageUrls || vehicle.imageUrls.length === 0) return null;
+    
+    // Use vehicle ID as seed for deterministic random selection
+    let hash = 0;
+    for (let i = 0; i < vehicle.id.length; i++) {
+      hash = ((hash << 5) - hash) + vehicle.id.charCodeAt(i);
+      hash = hash & hash;
+    }
+    const index = Math.abs(hash) % vehicle.imageUrls.length;
+    return vehicle.imageUrls[index];
+  }, [vehicle.id, vehicle.imageUrls]);
+  
+  const hasImage = selectedImage !== null;
+  
   const handleCompareToggle = () => {
     if (isComparing) {
       removeVehicle(vehicle.id);
@@ -67,24 +85,31 @@ export function RecommendationCard({ recommendation, tier }: RecommendationCardP
         </div>
       </div>
 
-      {/* Vehicle Image */}
-      <div className="relative h-48 bg-gray-100 dark:bg-gray-700">
-        {vehicle.imageUrls[0] ? (
+      {/* Vehicle Image or Compact Header */}
+      {hasImage && selectedImage ? (
+        <div className="relative h-48 bg-gray-100 dark:bg-gray-700">
           <Image
-            src={vehicle.imageUrls[0]}
+            src={selectedImage}
             alt={`${vehicle.year} ${vehicle.model}`}
             fill
             className="object-cover"
+            onError={(e) => {
+              // Fallback if image fails to load
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+            }}
           />
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <Package className="w-16 h-16 text-gray-400" />
+        </div>
+      ) : (
+        <div className="bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 p-6">
+          <div className="flex items-center justify-center">
+            <Car className="w-12 h-12 text-gray-400 dark:text-gray-500" />
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Vehicle Info */}
-      <div className="p-4">
+      <div className={cn("p-4", !hasImage && "py-3")}>
         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
           {vehicle.year} {vehicle.model}
         </h3>

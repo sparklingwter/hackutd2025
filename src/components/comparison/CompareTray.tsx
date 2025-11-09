@@ -1,19 +1,30 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCompare } from "~/components/comparison/CompareContext";
 import { Button } from "~/components/ui/button";
 import { X, ArrowRight, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export function CompareTray() {
+  const pathname = usePathname();
   const { vehicleIds, removeVehicle, clearAll, errorMessage, clearError } = useCompare();
   const [isVisible, setIsVisible] = useState(false);
 
-  // Only show tray if there are vehicles
+  // Only show tray on recommendations page and if there are vehicles
+  const isRecommendationsPage = pathname === '/recommendations';
+  
   useEffect(() => {
-    setIsVisible(vehicleIds.length > 0);
-  }, [vehicleIds.length]);
+    setIsVisible(isRecommendationsPage && vehicleIds.length > 0);
+  }, [isRecommendationsPage, vehicleIds.length]);
+  
+  // Auto-clear compare tray when leaving recommendations page
+  useEffect(() => {
+    if (!isRecommendationsPage && vehicleIds.length > 0) {
+      clearAll();
+    }
+  }, [isRecommendationsPage, vehicleIds.length, clearAll]);
 
   if (!isVisible) return null;
 

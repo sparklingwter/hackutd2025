@@ -9,7 +9,7 @@ export default function DiscoveryLayout({ children }: { children: ReactNode }) {
   const [voiceEnabled, setVoiceEnabled] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 py-4">
@@ -51,7 +51,7 @@ export default function DiscoveryLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8">
         {voiceEnabled && (
           <div className="max-w-3xl mx-auto mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
             <p className="text-sm text-blue-800 dark:text-blue-300">
@@ -64,7 +64,7 @@ export default function DiscoveryLayout({ children }: { children: ReactNode }) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-12">
+      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
         <div className="container mx-auto px-4 py-6">
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
             Your preferences are saved locally in your browser. No account required.

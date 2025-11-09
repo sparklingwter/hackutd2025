@@ -87,7 +87,7 @@ export const searchRouter = createTRPCRouter({
         const snapshot = await ctx.db.collection("vehicles").limit(100).get();
         
         // Transform to format expected by ranking engine
-        const vehicles = snapshot.docs.map((doc) => {
+        const allVehicles = snapshot.docs.map((doc) => {
           const data = doc.data();
           return {
             id: doc.id,
@@ -110,6 +110,16 @@ export const searchRouter = createTRPCRouter({
             safetyRating: null,
           };
         });
+
+        // Deduplicate vehicles by model - keep the latest year for each model
+        const vehiclesByModel = new Map<string, typeof allVehicles[0]>();
+        for (const vehicle of allVehicles) {
+          const existing = vehiclesByModel.get(vehicle.model);
+          if (!existing || vehicle.year > existing.year) {
+            vehiclesByModel.set(vehicle.model, vehicle);
+          }
+        }
+        const vehicles = Array.from(vehiclesByModel.values());
 
         // If no vehicles found in database, return mock data for demo
         if (vehicles.length === 0) {

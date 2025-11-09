@@ -177,6 +177,44 @@ export function getVehiclePrimaryImage(
 }
 
 /**
+ * Get a random image for a vehicle to provide color variety
+ * @param make - Vehicle make
+ * @param model - Vehicle model
+ * @param year - Vehicle year
+ * @param trim - Optional trim level
+ * @param seed - Optional seed for deterministic random selection (use vehicle ID)
+ * @returns Single random image URL or empty string if none found
+ */
+export function getVehicleRandomImage(
+  make: string,
+  model: string,
+  year: number,
+  trim?: string,
+  seed?: string
+): string {
+  const images = getVehicleImages(make, model, year, trim);
+  if (images.length === 0) return "";
+  if (images.length === 1) return images[0]!;
+  
+  // Use seed for deterministic selection (same vehicle always gets same color)
+  // or random if no seed provided
+  if (seed) {
+    // Simple hash function for deterministic selection
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+      hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    const index = Math.abs(hash) % images.length;
+    return images[index]!;
+  }
+  
+  // Random selection
+  const randomIndex = Math.floor(Math.random() * images.length);
+  return images[randomIndex]!;
+}
+
+/**
  * Check if images exist for a given model
  * @param model - Vehicle model name
  * @returns true if images are available
