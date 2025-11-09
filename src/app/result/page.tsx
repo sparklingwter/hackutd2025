@@ -104,11 +104,11 @@ function extractKeywords(text: string): string[] {
   const found = new Set<string>();
   for (const canonical of FLAT_KEYWORDS) {
     const aliases = KEYWORD_ALIASES[canonical];
-    if (aliases.some(a => q.includes(a))) {
+    if (aliases && aliases.some(a => q.includes(a))) {
       found.add(canonical);
     }
   }
-  // If user mentions “toyota” or “yota”, no need to add—inventory is Toyota-only
+  // If user mentions "toyota" or "yota", no need to add—inventory is Toyota-only
   return Array.from(found);
 }
 
@@ -299,7 +299,7 @@ export default function ResultPage() {
 
                       <div className="mt-3 flex items-center gap-2">
                         <Link
-                          href="#"
+                          href={`/price?id=${car.id}`}
                           className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-95"
                         >
                           Buy

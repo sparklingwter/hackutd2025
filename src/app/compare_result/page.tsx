@@ -91,7 +91,7 @@ export default function CompareResultPage() {
                       <td key={`cta-${car.id}`} className="p-4">
                         <div className="flex flex-wrap items-center gap-2">
                           <Link
-                            href="#"
+                            href={`/price?id=${car.id}`}
                             className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90"
                           >
                             Buy
