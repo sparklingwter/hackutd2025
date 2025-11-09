@@ -8,6 +8,15 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
+    // Firebase Admin SDK (server-side only)
+    FIREBASE_ADMIN_PROJECT_ID: z.string().optional(),
+    FIREBASE_ADMIN_CLIENT_EMAIL: z.string().optional(),
+    FIREBASE_ADMIN_PRIVATE_KEY: z.string().optional(),
+    // AI API Keys (server-side only)
+    GEMINI_API_KEY: z.string().optional(),
+    OPENROUTER_API_KEY: z.string().optional(),
+    // Voice API Keys (server-side only)
+    ELEVENLABS_API_KEY: z.string().optional(),
   },
 
   /**

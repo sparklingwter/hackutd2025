@@ -1,29 +1,103 @@
-# Create T3 App
+# Toyota Vehicle Shopping Experience
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Overview
 
-## What's next? How do I make an app with this?
+An AI-guided vehicle shopping experience enabling users to discover, compare, and estimate Toyota vehicles through voice and text interactions.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Features
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- 🎯 **Guided Discovery Journey**: AI-powered recommendations based on user needs
+- 🔍 **Smart Search & Filters**: Find vehicles by budget, body style, fuel type, and more
+- ⚖️ **Side-by-Side Comparison**: Compare up to 4 vehicles with category winners highlighted
+- 💰 **Cost Estimation**: Calculate cash, finance, and lease options with tax/fee breakdowns
+- 🗣️ **Voice Interface**: Optional voice interaction powered by ElevenLabs
+- 💾 **Save & Share**: Authenticated users can save favorites and share selections
+- 🏪 **Dealer Connection**: Find nearby dealers and request contact
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Tech Stack
 
-## Learn More
+- **Framework**: Next.js 15.2 (App Router) with React 19
+- **Language**: TypeScript 5.8
+- **API Layer**: tRPC 11 for type-safe APIs
+- **Database**: Firebase Firestore
+- **Authentication**: Auth0
+- **AI**: Google Gemini API (with OpenRouter fallback)
+- **Voice**: ElevenLabs (TTS & STT)
+- **Styling**: Tailwind CSS 4.0 + shadcn/ui
+- **Validation**: Zod
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Quick Start
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+See [specs/001-vehicle-shopping-experience/quickstart.md](./specs/001-vehicle-shopping-experience/quickstart.md) for detailed setup instructions.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+```bash
+# Install dependencies
+npm install
 
-## How do I deploy this?
+# Set up environment variables
+cp .env.local.example .env.local
+# Edit .env.local with your API keys
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+# Start Firebase emulators (in separate terminal)
+firebase emulators:start
+
+# Start development server
+npm run dev
+```
+
+Visit http://localhost:3000
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+├── components/             # React components
+│   └── ui/                 # shadcn/ui components
+├── lib/                    # Client utilities & libraries
+│   ├── finance-engine/     # Finance calculations
+│   └── ranking-engine/     # AI recommendations
+├── server/                 # Server-side code
+│   ├── api/                # tRPC routers
+│   ├── db/                 # Firestore helpers
+│   └── ai/                 # AI service wrappers
+└── styles/                 # Global styles
+```
+
+## Documentation
+
+- **Feature Specification**: [specs/001-vehicle-shopping-experience/spec.md](./specs/001-vehicle-shopping-experience/spec.md)
+- **Implementation Plan**: [specs/001-vehicle-shopping-experience/plan.md](./specs/001-vehicle-shopping-experience/plan.md)
+- **Data Model**: [specs/001-vehicle-shopping-experience/data-model.md](./specs/001-vehicle-shopping-experience/data-model.md)
+- **API Contracts**: [specs/001-vehicle-shopping-experience/contracts/](./specs/001-vehicle-shopping-experience/contracts/)
+- **Tasks**: [specs/001-vehicle-shopping-experience/tasks.md](./specs/001-vehicle-shopping-experience/tasks.md)
+
+## Development
+
+```bash
+# Development server with Turbo
+npm run dev
+
+# Build for production
+npm run build
+
+# Lint code
+npm run lint
+
+# Fix lint issues
+npm run lint:fix
+
+# Format code
+npm run format:write
+
+# Type check
+npm run typecheck
+```
+
+## License
+
+MIT
+
+---
+
+Built with [T3 Stack](https://create.t3.gg/)
