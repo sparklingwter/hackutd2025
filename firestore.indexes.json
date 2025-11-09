@@ -4,77 +4,77 @@
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "bodyStyle", "order": "ASCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "specs.body", "order": "ASCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "bodyStyle", "order": "ASCENDING" },
-        { "fieldPath": "fuelType", "order": "ASCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "specs.body", "order": "ASCENDING" },
+        { "fieldPath": "specs.powertrain", "order": "ASCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "bodyStyle", "order": "ASCENDING" },
-        { "fieldPath": "seating", "order": "ASCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "specs.body", "order": "ASCENDING" },
+        { "fieldPath": "dimensions.seating", "order": "ASCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "fuelType", "order": "ASCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "specs.powertrain", "order": "ASCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "bodyStyle", "order": "ASCENDING" },
-        { "fieldPath": "fuelType", "order": "ASCENDING" },
-        { "fieldPath": "seating", "order": "ASCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "specs.body", "order": "ASCENDING" },
+        { "fieldPath": "specs.powertrain", "order": "ASCENDING" },
+        { "fieldPath": "dimensions.seating", "order": "ASCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "bodyStyle", "order": "ASCENDING" },
-        { "fieldPath": "awd", "order": "ASCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "specs.body", "order": "ASCENDING" },
+        { "fieldPath": "specs.drivetrain", "order": "ASCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "seating", "order": "ASCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "dimensions.seating", "order": "ASCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "mpgCombined", "order": "DESCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "performance.mpgCombined", "order": "DESCENDING" },
+        { "fieldPath": "pricing.msrp", "order": "ASCENDING" }
       ]
     },
     {
       "collectionGroup": "vehicles",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "towingCapacity", "order": "DESCENDING" },
-        { "fieldPath": "msrp", "order": "ASCENDING" }
+        { "fieldPath": "specs.body", "order": "ASCENDING" },
+        { "fieldPath": "__name__", "order": "ASCENDING" }
       ]
     },
     {

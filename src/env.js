@@ -12,6 +12,11 @@ export const env = createEnv({
     FIREBASE_ADMIN_PROJECT_ID: z.string().optional(),
     FIREBASE_ADMIN_CLIENT_EMAIL: z.string().optional(),
     FIREBASE_ADMIN_PRIVATE_KEY: z.string().optional(),
+    // AI API Keys (server-side only)
+    GEMINI_API_KEY: z.string().optional(),
+    OPENROUTER_API_KEY: z.string().optional(),
+    // Voice API Keys (server-side only)
+    ELEVENLABS_API_KEY: z.string().optional(),
   },
 
   /**
@@ -48,6 +53,11 @@ export const env = createEnv({
     FIREBASE_ADMIN_PROJECT_ID: process.env.FIREBASE_ADMIN_PROJECT_ID,
     FIREBASE_ADMIN_CLIENT_EMAIL: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
     FIREBASE_ADMIN_PRIVATE_KEY: process.env.FIREBASE_ADMIN_PRIVATE_KEY,
+    // AI APIs
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+    // Voice API
+    ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

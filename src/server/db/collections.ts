@@ -39,6 +39,59 @@ export const dealerLeadsCollection = () => adminDb.collection('dealerLeads');
 // ============================================================================
 
 /**
+ * Transform raw Firestore vehicle document to normalized format
+ */
+export function transformVehicleDoc(raw: VehicleDocRaw): VehicleDoc {
+  // Extract all features into flat array
+  const allFeatures = [
+    ...(raw.features?.standard ?? []),
+    ...(raw.features?.safety ?? []),
+    ...(raw.features?.technology ?? []),
+    ...(raw.features?.comfort ?? []),
+    ...(raw.features?.exterior ?? []),
+  ];
+
+  // Determine AWD/4WD from drivetrain
+  const drivetrain = raw.specs?.drivetrain?.toLowerCase() ?? '';
+  const awd = drivetrain === 'awd';
+  const fourWheelDrive = drivetrain === '4wd';
+
+  // Convert Firestore timestamps
+  const createdAt = raw.createdAt
+    ? new Date(raw.createdAt._seconds * 1000)
+    : new Date();
+  const updatedAt = raw.updatedAt
+    ? new Date(raw.updatedAt._seconds * 1000)
+    : new Date();
+
+  return {
+    id: raw.id,
+    make: raw.make,
+    model: raw.model,
+    year: raw.year,
+    bodyStyle: raw.specs?.body ?? 'sedan',
+    fuelType: raw.specs?.powertrain ?? 'gas',
+    seating: raw.dimensions?.seating ?? 5,
+    mpgCity: raw.performance?.mpgCity ?? null,
+    mpgHighway: raw.performance?.mpgHighway ?? null,
+    mpgCombined: raw.performance?.mpgCombined ?? null,
+    range: raw.specs?.range ?? null,
+    cargoVolume: raw.dimensions?.cargo ?? 0,
+    towingCapacity: 0, // Not in current schema
+    awd,
+    fourWheelDrive,
+    msrp: raw.pricing?.msrp ?? 0,
+    features: allFeatures,
+    safetyRating: null, // Not in current schema
+    trims: [raw.trim],
+    imageUrls: raw.img ? [raw.img] : [],
+    description: raw.description ?? '',
+    createdAt,
+    updatedAt,
+  };
+}
+
+/**
  * Get a single vehicle by ID
  */
 export const getVehicleById = async (vehicleId: string) => {
@@ -46,7 +99,8 @@ export const getVehicleById = async (vehicleId: string) => {
   if (!doc.exists) {
     return null;
   }
-  return { id: doc.id, ...doc.data() };
+  const raw = { id: doc.id, ...doc.data() } as VehicleDocRaw;
+  return transformVehicleDoc(raw);
 };
 
 /**
@@ -117,6 +171,68 @@ export const getUserDealerLeads = async (userId: string) => {
 // Collection Interfaces (for type safety)
 // ============================================================================
 
+// Actual Firestore schema (as stored in database)
+export interface VehicleDocRaw {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  name: string;
+  trim: string;
+  img: string;
+  description: string;
+  tags: string[];
+  price: string;
+  specs: {
+    body: string; // suv, sedan, truck, etc.
+    powertrain: string; // gas, hybrid, electric, etc.
+    drivetrain: string; // rwd, fwd, awd, 4wd
+    mpg: string;
+    range: number | null;
+  };
+  pricing: {
+    msrp: number | null;
+    invoice: number | null;
+    destinationCharge: number;
+  };
+  performance: {
+    mpgCity: number | null;
+    mpgHighway: number | null;
+    mpgCombined: number | null;
+    engineDisplacement: number | null;
+    cylinders: number | null;
+    horsepower: number | null;
+    torque: number | null;
+  };
+  dimensions: {
+    seating: number | null;
+    cargo: number | null;
+    length: number | null;
+    width: number | null;
+    height: number | null;
+    wheelbase: number | null;
+  };
+  features: {
+    standard: string[];
+    safety: string[];
+    technology: string[];
+    comfort: string[];
+    exterior: string[];
+  };
+  availability: {
+    available: boolean;
+    inventory: number;
+    estimatedDelivery: string;
+  };
+  epa: Record<string, unknown>;
+  vpic: Record<string, unknown>;
+  carquery: Record<string, unknown>;
+  sources: string[];
+  createdAt: { _seconds: number; _nanoseconds: number };
+  updatedAt: { _seconds: number; _nanoseconds: number };
+}
+
+// Normalized interface for application use
 export interface VehicleDoc {
   id: string;
   make: string;

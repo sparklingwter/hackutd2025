@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+
+# Testing
+coverage/
+
+# Environment files
+.env*
+
+# Misc
+.DS_Store
+*.pem
+
+# Logs
+*.log
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# Firebase
+.firebase/
+
+# IDE
+.idea/
+.vscode/
