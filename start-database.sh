@@ -14,6 +14,13 @@
 set -a
 source .env
 
+DB_PROVIDER=${DATABASE_PROVIDER:-mysql}
+
+if [ "$DB_PROVIDER" != "mysql" ]; then
+  echo "DATABASE_PROVIDER is set to '$DB_PROVIDER'. No MySQL container required."
+  exit 0
+fi
+
 DB_PASSWORD=$(echo "$DATABASE_URL" | awk -F':' '{print $3}' | awk -F'@' '{print $1}')
 DB_PORT=$(echo "$DATABASE_URL" | awk -F':' '{print $4}' | awk -F'\/' '{print $1}')
 DB_NAME=$(echo "$DATABASE_URL" | awk -F'/' '{print $4}')
