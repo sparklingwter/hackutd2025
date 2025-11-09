@@ -24,7 +24,7 @@
 - [x] T002 ✅ Setup Tailwind CSS 4.0 configuration in tailwind.config.ts (Complete - using Tailwind v4 CSS-based config)
 - [x] T003 ✅ Install and configure shadcn/ui components in src/components/ui (Complete - components.json created)
 - [x] T004 ✅ Create directory structure: src/lib/finance-engine and src/lib/ranking-engine (Complete)
-- [x] T005 ✅ Create .env.local.example with Auth0, Firebase, Gemini, ElevenLabs, OpenRouter keys (Complete)
+- [x] T005 ✅ Create .env.local.example with Firebase, Gemini, ElevenLabs, OpenRouter keys (Complete)
 - [x] T006 ✅ Setup Firebase project and initialize firebase.json with Firestore, Storage, Hosting, Emulators (Complete)
 - [x] T007 ✅ [P] Create .firebaserc with project ID and environment aliases (Complete)
 - [x] T008 ✅ [P] Install Firebase Admin SDK and configure service account in src/server/db/firebase.ts (Complete)
@@ -46,54 +46,44 @@
 - [x] T013 ✅ [P] Implement Firestore Security Rules in firestore.rules enforcing auth and ownership per research.md (Complete)
 - [x] T014 ✅ [P] Create Firestore composite indexes in firestore.indexes.json for vehicle filtering (bodyStyle, fuelType, msrp, seating) (Complete)
 
-### Authentication
-
-- [x] T015 ✅ Install @auth0/nextjs-auth0@latest SDK (Complete)
-- [x] T016 ✅ Create Auth0 client configuration in lib/auth0.ts using Auth0Client per research.md (Complete)
-- [x] T017 ✅ Create middleware.ts at repository root with Auth0 middleware integration (v4 requirement) (Complete)
-- [x] T018 ✅ Wrap app with Auth0Provider in src/app/layout.tsx (Complete)
-- [x] T019 ✅ Create LoginButton component in src/components/auth/LoginButton.tsx using <a href="/auth/login"> (Complete)
-- [x] T020 ✅ [P] Create LogoutButton component in src/components/auth/LogoutButton.tsx (Complete)
-- [x] T021 ✅ [P] Create Profile component in src/components/auth/Profile.tsx using useUser hook (Complete)
-
 ### tRPC API Setup
 
-- [ ] T022 Create tRPC context in src/server/api/trpc.ts with Auth0 session and Firestore client
-- [ ] T023 Create tRPC root router in src/server/api/root.ts merging all domain routers
-- [ ] T024 Setup tRPC API route handler in src/app/api/trpc/[trpc]/route.ts
-- [ ] T025 [P] Configure tRPC client in src/trpc/react.tsx with React Query integration
-- [ ] T026 Create publicProcedure and protectedProcedure helpers in src/server/api/trpc.ts
+- [ ] T015 Create tRPC context in src/server/api/trpc.ts with Firestore client
+- [ ] T016 Create tRPC root router in src/server/api/root.ts merging all domain routers
+- [ ] T017 Setup tRPC API route handler in src/app/api/trpc/[trpc]/route.ts
+- [ ] T018 [P] Configure tRPC client in src/trpc/react.tsx with React Query integration
+- [ ] T019 Create publicProcedure helpers in src/server/api/trpc.ts
 
 ### Finance Engine Library
 
-- [ ] T027 [P] Implement cash calculation in src/lib/finance-engine/cash.ts with out-the-door total
-- [ ] T028 [P] Implement finance calculation in src/lib/finance-engine/finance.ts with amortization
-- [ ] T029 [P] Implement lease calculation in src/lib/finance-engine/lease.ts with residual and money factor
-- [ ] T030 [P] Implement tax/fee calculation by ZIP in src/lib/finance-engine/taxes.ts with state fallback
-- [ ] T031 [P] Implement fuel cost estimation in src/lib/finance-engine/fuel.ts for gas and electric
-- [ ] T032 Create library exports in src/lib/finance-engine/index.ts
+- [ ] T020 [P] Implement cash calculation in src/lib/finance-engine/cash.ts with out-the-door total
+- [ ] T021 [P] Implement finance calculation in src/lib/finance-engine/finance.ts with amortization
+- [ ] T022 [P] Implement lease calculation in src/lib/finance-engine/lease.ts with residual and money factor
+- [ ] T023 [P] Implement tax/fee calculation by ZIP in src/lib/finance-engine/taxes.ts with state fallback
+- [ ] T024 [P] Implement fuel cost estimation in src/lib/finance-engine/fuel.ts for gas and electric
+- [ ] T025 Create library exports in src/lib/finance-engine/index.ts
 
 ### Ranking Engine Library
 
-- [ ] T033 [P] Implement Gemini API integration in src/lib/ranking-engine/gemini.ts with structured output
-- [ ] T034 [P] Implement OpenRouter fallback in src/lib/ranking-engine/openrouter.ts
-- [ ] T035 Implement deterministic ranking logic in src/lib/ranking-engine/ranking.ts with score calculation
-- [ ] T036 [P] Implement safety filters and guardrails in src/lib/ranking-engine/safety.ts
-- [ ] T037 [P] Create Zod schemas for recommendations in src/lib/ranking-engine/schemas.ts
-- [ ] T038 Create library exports in src/lib/ranking-engine/index.ts
+- [ ] T026 [P] Implement Gemini API integration in src/lib/ranking-engine/gemini.ts with structured output
+- [ ] T027 [P] Implement OpenRouter fallback in src/lib/ranking-engine/openrouter.ts
+- [ ] T028 Implement deterministic ranking logic in src/lib/ranking-engine/ranking.ts with score calculation
+- [ ] T029 [P] Implement safety filters and guardrails in src/lib/ranking-engine/safety.ts
+- [ ] T030 [P] Create Zod schemas for recommendations in src/lib/ranking-engine/schemas.ts
+- [ ] T031 Create library exports in src/lib/ranking-engine/index.ts
 
 ### Data Seeding
 
-- [ ] T039 Create vehicle seed data script in scripts/seed-vehicles.ts for ~50 Toyota models
-- [ ] T040 Create trim seed data for popular models (Camry, RAV4, Tacoma, Highlander) in seed script
-- [ ] T041 Seed featured vehicles list for homepage showcase in Firestore
+- [ ] T032 Create vehicle seed data script in scripts/seed-vehicles.ts for ~50 Toyota models
+- [ ] T033 Create trim seed data for popular models (Camry, RAV4, Tacoma, Highlander) in seed script
+- [ ] T034 Seed featured vehicles list for homepage showcase in Firestore
 
 ### Voice Integration Setup
 
-- [ ] T042 [P] Install ElevenLabs SDK
-- [ ] T043 Create ElevenLabs TTS wrapper in src/server/ai/elevenlabs.ts with Rachel voice
-- [ ] T044 [P] Create audio cache service in src/server/ai/audio-cache.ts using Firebase Storage
-- [ ] T045 Pre-generate common discovery journey audio prompts at build time in scripts/generate-audio.ts
+- [ ] T035 [P] Install ElevenLabs SDK
+- [ ] T036 Create ElevenLabs TTS wrapper in src/server/ai/elevenlabs.ts with Rachel voice
+- [ ] T037 [P] Create audio cache service in src/server/ai/audio-cache.ts using Firebase Storage
+- [ ] T038 Pre-generate common discovery journey audio prompts at build time in scripts/generate-audio.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -107,39 +97,39 @@
 
 ### Search Router Implementation (US1)
 
-- [ ] T046 [P] [US1] Create search router in src/server/api/routers/search.ts
-- [ ] T047 [US1] Implement search.recommend procedure calling ranking-engine library from src/lib/ranking-engine
-- [ ] T048 [P] [US1] Implement search.filter procedure for deterministic filtering with Firestore queries
-- [ ] T049 [P] [US1] Implement search.semanticSearch procedure using Gemini for natural language queries
-- [ ] T050 [US1] Add rate limiting middleware for recommendation endpoint (10 req/min/IP)
+- [ ] T039 [P] [US1] Create search router in src/server/api/routers/search.ts
+- [ ] T040 [US1] Implement search.recommend procedure calling ranking-engine library from src/lib/ranking-engine
+- [ ] T041 [P] [US1] Implement search.filter procedure for deterministic filtering with Firestore queries
+- [ ] T042 [P] [US1] Implement search.semanticSearch procedure using Gemini for natural language queries
+- [ ] T043 [US1] Add rate limiting middleware for recommendation endpoint (10 req/min/IP)
 
 ### Discovery Journey UI (US1)
 
-- [ ] T051 [P] [US1] Update home page in src/app/page.tsx with hero and "Start Discovery" CTA
-- [ ] T052 [US1] Create discovery layout in src/app/discovery/layout.tsx
-- [ ] T053 [US1] Create discovery step 1: Budget input in src/app/discovery/budget/page.tsx
-- [ ] T054 [P] [US1] Create discovery step 2: Body style selection in src/app/discovery/body-style/page.tsx
-- [ ] T055 [P] [US1] Create discovery step 3: Fuel type and seating in src/app/discovery/preferences/page.tsx
-- [ ] T056 [P] [US1] Create discovery step 4: Features and needs in src/app/discovery/features/page.tsx
-- [ ] T057 [US1] Create discovery progress indicator component in src/components/discovery/ProgressBar.tsx
-- [ ] T058 [P] [US1] Create discovery form state management using React Context in src/components/discovery/DiscoveryContext.tsx
+- [ ] T044 [P] [US1] Update home page in src/app/page.tsx with hero and "Start Discovery" CTA
+- [ ] T045 [US1] Create discovery layout in src/app/discovery/layout.tsx
+- [ ] T039 [US1] Create discovery step 1: Budget input in src/app/discovery/budget/page.tsx
+- [ ] T040 [P] [US1] Create discovery step 2: Body style selection in src/app/discovery/body-style/page.tsx
+- [ ] T041 [P] [US1] Create discovery step 3: Fuel type and seating in src/app/discovery/preferences/page.tsx
+- [ ] T042 [P] [US1] Create discovery step 4: Features and needs in src/app/discovery/features/page.tsx
+- [ ] T043 [US1] Create discovery progress indicator component in src/components/discovery/ProgressBar.tsx
+- [ ] T044 [P] [US1] Create discovery form state management using React Context in src/components/discovery/DiscoveryContext.tsx
 
 ### Recommendations UI (US1)
 
-- [ ] T059 [US1] Create recommendations page in src/app/recommendations/page.tsx
-- [ ] T060 [P] [US1] Create Top Picks section component in src/components/recommendations/TopPicks.tsx
-- [ ] T061 [P] [US1] Create Strong Contenders section in src/components/recommendations/StrongContenders.tsx
-- [ ] T062 [P] [US1] Create Explore Alternatives section in src/components/recommendations/ExploreAlternatives.tsx
-- [ ] T063 [P] [US1] Create recommendation card component in src/components/recommendations/RecommendationCard.tsx with explanation
-- [ ] T064 [US1] Create filter chips component in src/components/recommendations/FilterChips.tsx for preference adjustment
+- [ ] T045 [US1] Create recommendations page in src/app/recommendations/page.tsx
+- [ ] T039 [P] [US1] Create Top Picks section component in src/components/recommendations/TopPicks.tsx
+- [ ] T040 [P] [US1] Create Strong Contenders section in src/components/recommendations/StrongContenders.tsx
+- [ ] T041 [P] [US1] Create Explore Alternatives section in src/components/recommendations/ExploreAlternatives.tsx
+- [ ] T042 [P] [US1] Create recommendation card component in src/components/recommendations/RecommendationCard.tsx with explanation
+- [ ] T043 [US1] Create filter chips component in src/components/recommendations/FilterChips.tsx for preference adjustment
 
 ### Voice Integration (US1)
 
-- [ ] T065 [P] [US1] Create voice controls component in src/components/voice/VoiceControls.tsx with mute button
-- [ ] T066 [P] [US1] Create speech-to-text integration using ElevenLabs STT in src/components/voice/SpeechToText.tsx
-- [ ] T067 [US1] Create text-to-speech audio player in src/components/voice/AudioPlayer.tsx with captions
-- [ ] T068 [US1] Add voice toggle in discovery journey with graceful text-only fallback
-- [ ] T069 [US1] Generate audio summary for Top Picks using ElevenLabs TTS
+- [ ] T044 [P] [US1] Create voice controls component in src/components/voice/VoiceControls.tsx with mute button
+- [ ] T045 [P] [US1] Create speech-to-text integration using ElevenLabs STT in src/components/voice/SpeechToText.tsx
+- [ ] T039 [US1] Create text-to-speech audio player in src/components/voice/AudioPlayer.tsx with captions
+- [ ] T040 [US1] Add voice toggle in discovery journey with graceful text-only fallback
+- [ ] T041 [US1] Generate audio summary for Top Picks using ElevenLabs TTS
 
 **Checkpoint**: User Story 1 complete - Users can discover vehicles and receive AI recommendations
 
@@ -153,29 +143,29 @@
 
 ### Compare Router Implementation (US2)
 
-- [ ] T070 [P] [US2] Create compare router in src/server/api/routers/compare.ts
-- [ ] T071 [US2] Implement compare.getComparison procedure with category winner calculation
-- [ ] T081 [P] [US2] Implement compare.saveCompareSet mutation for authenticated users
-- [ ] T082 [P] [US2] Implement compare.getCompareSets query fetching user saved sets
-- [ ] T083 [P] [US2] Implement compare.deleteCompareSet mutation
-- [ ] T084 [P] [US2] Implement compare.getSharedCompareSet query for shareable links
-- [ ] T085 [US2] Implement compare.generateShareLink mutation with JWT encryption
+- [ ] T042 [P] [US2] Create compare router in src/server/api/routers/compare.ts
+- [ ] T043 [US2] Implement compare.getComparison procedure with category winner calculation
+- [ ] T039 [P] [US2] Implement compare.saveCompareSet mutation for authenticated users
+- [ ] T040 [P] [US2] Implement compare.getCompareSets query fetching user saved sets
+- [ ] T041 [P] [US2] Implement compare.deleteCompareSet mutation
+- [ ] T042 [P] [US2] Implement compare.getSharedCompareSet query for shareable links
+- [ ] T043 [US2] Implement compare.generateShareLink mutation with JWT encryption
 
 ### Compare Tray UI (US2)
 
-- [ ] T086 [P] [US2] Create persistent compare tray component in apps/web/src/components/comparison/CompareTray.tsx
-- [ ] T087 [US2] Create add-to-compare button in apps/web/src/components/shared/AddToCompareButton.tsx
-- [ ] T088 [US2] Implement compare tray state management using React Context in apps/web/src/components/comparison/CompareContext.tsx
-- [ ] T089 [US2] Add compare tray to app layout in apps/web/src/app/layout.tsx for global access
+- [ ] T044 [P] [US2] Create persistent compare tray component in apps/web/src/components/comparison/CompareTray.tsx
+- [ ] T045 [US2] Create add-to-compare button in apps/web/src/components/shared/AddToCompareButton.tsx
+- [ ] T039 [US2] Implement compare tray state management using React Context in apps/web/src/components/comparison/CompareContext.tsx
+- [ ] T040 [US2] Add compare tray to app layout in apps/web/src/app/layout.tsx for global access
 
 ### Comparison Table UI (US2)
 
-- [ ] T090 [US2] Create comparison page in apps/web/src/app/compare/page.tsx
-- [ ] T091 [US2] Create comparison table component in apps/web/src/components/comparison/ComparisonTable.tsx
-- [ ] T092 [P] [US2] Create category winner badge component in apps/web/src/components/comparison/WinnerBadge.tsx
-- [ ] T093 [P] [US2] Create difference view toggle in apps/web/src/components/comparison/DifferenceToggle.tsx
-- [ ] T094 [US2] Implement table row highlighting for category winners
-- [ ] T095 [P] [US2] Create share comparison button in apps/web/src/components/comparison/ShareButton.tsx
+- [ ] T041 [US2] Create comparison page in apps/web/src/app/compare/page.tsx
+- [ ] T042 [US2] Create comparison table component in apps/web/src/components/comparison/ComparisonTable.tsx
+- [ ] T043 [P] [US2] Create category winner badge component in apps/web/src/components/comparison/WinnerBadge.tsx
+- [ ] T044 [P] [US2] Create difference view toggle in apps/web/src/components/comparison/DifferenceToggle.tsx
+- [ ] T045 [US2] Implement table row highlighting for category winners
+- [ ] T039 [P] [US2] Create share comparison button in apps/web/src/components/comparison/ShareButton.tsx
 
 **Checkpoint**: User Story 2 complete - Users can compare vehicles side-by-side
 
@@ -189,33 +179,33 @@
 
 ### Estimate Router Implementation (US3)
 
-- [ ] T096 [P] [US3] Create estimate router in apps/web/src/server/api/routers/estimate.ts
-- [ ] T097 [P] [US3] Implement estimate.calculateCash query calling finance-engine library
-- [ ] T098 [P] [US3] Implement estimate.calculateFinance query with amortization
-- [ ] T099 [P] [US3] Implement estimate.calculateLease query with residual calculation
-- [ ] T100 [P] [US3] Implement estimate.calculateFuelCost query for gas and electric
-- [ ] T101 [P] [US3] Implement estimate.saveEstimate mutation for authenticated users
-- [ ] T102 [P] [US3] Implement estimate.getSavedEstimates query
-- [ ] T103 [P] [US3] Implement estimate.deleteEstimate mutation
+- [ ] T040 [P] [US3] Create estimate router in apps/web/src/server/api/routers/estimate.ts
+- [ ] T041 [P] [US3] Implement estimate.calculateCash query calling finance-engine library
+- [ ] T042 [P] [US3] Implement estimate.calculateFinance query with amortization
+- [ ] T043 [P] [US3] Implement estimate.calculateLease query with residual calculation
+- [ ] T044 [P] [US3] Implement estimate.calculateFuelCost query for gas and electric
+- [ ] T045 [P] [US3] Implement estimate.saveEstimate mutation for authenticated users
+- [ ] T039 [P] [US3] Implement estimate.getSavedEstimates query
+- [ ] T040 [P] [US3] Implement estimate.deleteEstimate mutation
 
 ### Estimate Form UI (US3)
 
-- [ ] T104 [US3] Create estimate page with tab navigation in apps/web/src/app/estimate/page.tsx
-- [ ] T105 [P] [US3] Create Cash tab form in apps/web/src/components/estimate/CashTab.tsx
-- [ ] T106 [P] [US3] Create Finance tab form in apps/web/src/components/estimate/FinanceTab.tsx
-- [ ] T107 [P] [US3] Create Lease tab form in apps/web/src/components/estimate/LeaseTab.tsx
-- [ ] T108 [P] [US3] Create ZIP code input with tax/fee lookup in apps/web/src/components/estimate/ZipCodeInput.tsx
-- [ ] T109 [P] [US3] Create fuel cost estimator section in apps/web/src/components/estimate/FuelEstimator.tsx
+- [ ] T041 [US3] Create estimate page with tab navigation in apps/web/src/app/estimate/page.tsx
+- [ ] T042 [P] [US3] Create Cash tab form in apps/web/src/components/estimate/CashTab.tsx
+- [ ] T043 [P] [US3] Create Finance tab form in apps/web/src/components/estimate/FinanceTab.tsx
+- [ ] T044 [P] [US3] Create Lease tab form in apps/web/src/components/estimate/LeaseTab.tsx
+- [ ] T045 [P] [US3] Create ZIP code input with tax/fee lookup in apps/web/src/components/estimate/ZipCodeInput.tsx
+- [ ] T039 [P] [US3] Create fuel cost estimator section in apps/web/src/components/estimate/FuelEstimator.tsx
 
 ### Estimate Results UI (US3)
 
-- [ ] T110 [US3] Create estimate results summary in apps/web/src/components/estimate/ResultsSummary.tsx
-- [ ] T111 [P] [US3] Create monthly payment display in apps/web/src/components/estimate/MonthlyPayment.tsx
-- [ ] T112 [P] [US3] Create due-at-signing breakdown in apps/web/src/components/estimate/DueAtSigning.tsx
-- [ ] T113 [P] [US3] Create total-cost-over-time visualization in apps/web/src/components/estimate/TotalCostChart.tsx
-- [ ] T114 [P] [US3] Create tax and fee breakdown in apps/web/src/components/estimate/TaxBreakdown.tsx
-- [ ] T115 [US3] Create disclaimer text component in apps/web/src/components/estimate/Disclaimer.tsx
-- [ ] T116 [P] [US3] Create save estimate button in apps/web/src/components/estimate/SaveButton.tsx
+- [ ] T040 [US3] Create estimate results summary in apps/web/src/components/estimate/ResultsSummary.tsx
+- [ ] T041 [P] [US3] Create monthly payment display in apps/web/src/components/estimate/MonthlyPayment.tsx
+- [ ] T042 [P] [US3] Create due-at-signing breakdown in apps/web/src/components/estimate/DueAtSigning.tsx
+- [ ] T043 [P] [US3] Create total-cost-over-time visualization in apps/web/src/components/estimate/TotalCostChart.tsx
+- [ ] T044 [P] [US3] Create tax and fee breakdown in apps/web/src/components/estimate/TaxBreakdown.tsx
+- [ ] T045 [US3] Create disclaimer text component in apps/web/src/components/estimate/Disclaimer.tsx
+- [ ] T039 [P] [US3] Create save estimate button in apps/web/src/components/estimate/SaveButton.tsx
 
 **Checkpoint**: User Story 3 complete - Users can estimate costs with detailed breakdowns
 
@@ -229,39 +219,39 @@
 
 ### Profile Router Implementation (US4)
 
-- [ ] T117 [P] [US4] Create profile router in apps/web/src/server/api/routers/profile.ts
-- [ ] T118 [P] [US4] Implement profile.get query with auto-create on first login
-- [ ] T119 [P] [US4] Implement profile.update mutation for display name and preferences
-- [ ] T120 [P] [US4] Implement profile.addFavorite mutation using Firestore arrayUnion
-- [ ] T121 [P] [US4] Implement profile.removeFavorite mutation using Firestore arrayRemove
-- [ ] T122 [P] [US4] Implement profile.getFavorites query fetching full vehicle details
-- [ ] T123 [P] [US4] Implement profile.saveSearch mutation for discovery journey saves
-- [ ] T124 [P] [US4] Implement profile.getSavedSearches query
-- [ ] T125 [P] [US4] Implement profile.deleteSearch mutation
-- [ ] T126 [P] [US4] Implement profile.setPreferences mutation
+- [ ] T040 [P] [US4] Create profile router in apps/web/src/server/api/routers/profile.ts
+- [ ] T041 [P] [US4] Implement profile.get query with auto-create on first login
+- [ ] T042 [P] [US4] Implement profile.update mutation for display name and preferences
+- [ ] T043 [P] [US4] Implement profile.addFavorite mutation using Firestore arrayUnion
+- [ ] T044 [P] [US4] Implement profile.removeFavorite mutation using Firestore arrayRemove
+- [ ] T045 [P] [US4] Implement profile.getFavorites query fetching full vehicle details
+- [ ] T039 [P] [US4] Implement profile.saveSearch mutation for discovery journey saves
+- [ ] T040 [P] [US4] Implement profile.getSavedSearches query
+- [ ] T041 [P] [US4] Implement profile.deleteSearch mutation
+- [ ] T042 [P] [US4] Implement profile.setPreferences mutation
 
 ### Local Storage for Anonymous Users (US4)
 
-- [ ] T127 [P] [US4] Create localStorage wrapper utility in apps/web/src/lib/localStorage.ts
-- [ ] T128 [US4] Implement anonymous favorites persistence in localStorage with migration prompt on sign-in
-- [ ] T129 [P] [US4] Implement anonymous compare sets persistence in localStorage
-- [ ] T130 [P] [US4] Implement anonymous estimates persistence in localStorage
+- [ ] T043 [P] [US4] Create localStorage wrapper utility in apps/web/src/lib/localStorage.ts
+- [ ] T044 [US4] Implement anonymous favorites persistence in localStorage with migration prompt on sign-in
+- [ ] T045 [P] [US4] Implement anonymous compare sets persistence in localStorage
+- [ ] T039 [P] [US4] Implement anonymous estimates persistence in localStorage
 
 ### Profile UI (US4)
 
-- [ ] T131 [US4] Create profile page in apps/web/src/app/profile/page.tsx
-- [ ] T132 [P] [US4] Create favorites section in apps/web/src/components/profile/Favorites.tsx
-- [ ] T133 [P] [US4] Create saved searches section in apps/web/src/components/profile/SavedSearches.tsx
-- [ ] T134 [P] [US4] Create saved compare sets section in apps/web/src/components/profile/SavedCompareSets.tsx
-- [ ] T135 [P] [US4] Create saved estimates section in apps/web/src/components/profile/SavedEstimates.tsx
-- [ ] T136 [P] [US4] Create favorite button component in apps/web/src/components/shared/FavoriteButton.tsx
+- [ ] T040 [US4] Create profile page in apps/web/src/app/profile/page.tsx
+- [ ] T041 [P] [US4] Create favorites section in apps/web/src/components/profile/Favorites.tsx
+- [ ] T042 [P] [US4] Create saved searches section in apps/web/src/components/profile/SavedSearches.tsx
+- [ ] T043 [P] [US4] Create saved compare sets section in apps/web/src/components/profile/SavedCompareSets.tsx
+- [ ] T044 [P] [US4] Create saved estimates section in apps/web/src/components/profile/SavedEstimates.tsx
+- [ ] T045 [P] [US4] Create favorite button component in apps/web/src/components/shared/FavoriteButton.tsx
 
 ### Sharing & Export (US4)
 
-- [ ] T137 [P] [US4] Create export-to-PDF utility in apps/web/src/lib/exportPdf.ts
-- [ ] T138 [P] [US4] Create print-friendly summary template in apps/web/src/components/shared/PrintSummary.tsx
-- [ ] T139 [US4] Create shared compare set view page in apps/web/src/app/compare/shared/page.tsx
-- [ ] T140 [P] [US4] Create shared estimate view page in apps/web/src/app/estimate/shared/page.tsx
+- [ ] T039 [P] [US4] Create export-to-PDF utility in apps/web/src/lib/exportPdf.ts
+- [ ] T040 [P] [US4] Create print-friendly summary template in apps/web/src/components/shared/PrintSummary.tsx
+- [ ] T041 [US4] Create shared compare set view page in apps/web/src/app/compare/shared/page.tsx
+- [ ] T042 [P] [US4] Create shared estimate view page in apps/web/src/app/estimate/shared/page.tsx
 
 **Checkpoint**: User Story 4 complete - Users can save and share selections
 
@@ -275,28 +265,28 @@
 
 ### Dealer Router Implementation (US5)
 
-- [ ] T141 [P] [US5] Create dealer router in apps/web/src/server/api/routers/dealer.ts
-- [ ] T142 [P] [US5] Implement dealer.findNearby query with geocoding and distance calculation
-- [ ] T143 [P] [US5] Implement dealer.submitLead mutation with consent validation (literal true)
-- [ ] T144 [P] [US5] Implement dealer.getMyLeads query fetching user submissions
-- [ ] T145 [P] [US5] Implement dealer.getById query for dealer details
-- [ ] T146 [US5] Add rate limiting for dealer lead submissions (5 per day per user)
+- [ ] T043 [P] [US5] Create dealer router in apps/web/src/server/api/routers/dealer.ts
+- [ ] T044 [P] [US5] Implement dealer.findNearby query with geocoding and distance calculation
+- [ ] T045 [P] [US5] Implement dealer.submitLead mutation with consent validation (literal true)
+- [ ] T039 [P] [US5] Implement dealer.getMyLeads query fetching user submissions
+- [ ] T040 [P] [US5] Implement dealer.getById query for dealer details
+- [ ] T041 [US5] Add rate limiting for dealer lead submissions (5 per day per user)
 
 ### Dealer Data Setup (US5)
 
-- [ ] T147 [P] [US5] Create dealer seed data script in apps/web/scripts/seed-dealers.ts with Texas Toyota dealers
-- [ ] T148 [US5] Implement ZIP-to-lat/long geocoding using Google Maps API in apps/web/src/lib/geocoding.ts
+- [ ] T042 [P] [US5] Create dealer seed data script in apps/web/scripts/seed-dealers.ts with Texas Toyota dealers
+- [ ] T043 [US5] Implement ZIP-to-lat/long geocoding using Google Maps API in apps/web/src/lib/geocoding.ts
 
 ### Dealer UI (US5)
 
-- [ ] T149 [US5] Create dealer finder page in apps/web/src/app/dealer/page.tsx
-- [ ] T150 [P] [US5] Create ZIP code search form in apps/web/src/components/dealer/ZipSearch.tsx
-- [ ] T151 [P] [US5] Create dealer list component in apps/web/src/components/dealer/DealerList.tsx
-- [ ] T152 [P] [US5] Create dealer card with directions link in apps/web/src/components/dealer/DealerCard.tsx
-- [ ] T153 [US5] Create contact me form in apps/web/src/components/dealer/ContactForm.tsx
-- [ ] T154 [US5] Create explicit consent checkbox in apps/web/src/components/dealer/ConsentCheckbox.tsx with legal text
-- [ ] T155 [P] [US5] Create contact confirmation page in apps/web/src/app/dealer/confirmation/page.tsx
-- [ ] T156 [P] [US5] Create my leads page in apps/web/src/app/profile/leads/page.tsx
+- [ ] T044 [US5] Create dealer finder page in apps/web/src/app/dealer/page.tsx
+- [ ] T045 [P] [US5] Create ZIP code search form in apps/web/src/components/dealer/ZipSearch.tsx
+- [ ] T039 [P] [US5] Create dealer list component in apps/web/src/components/dealer/DealerList.tsx
+- [ ] T040 [P] [US5] Create dealer card with directions link in apps/web/src/components/dealer/DealerCard.tsx
+- [ ] T041 [US5] Create contact me form in apps/web/src/components/dealer/ContactForm.tsx
+- [ ] T042 [US5] Create explicit consent checkbox in apps/web/src/components/dealer/ConsentCheckbox.tsx with legal text
+- [ ] T043 [P] [US5] Create contact confirmation page in apps/web/src/app/dealer/confirmation/page.tsx
+- [ ] T044 [P] [US5] Create my leads page in apps/web/src/app/profile/leads/page.tsx
 
 **Checkpoint**: User Story 5 complete - Users can connect with dealers
 
@@ -310,13 +300,13 @@
 
 ### Filter UI (US6)
 
-- [ ] T157 [P] [US6] Create filter panel component in apps/web/src/components/recommendations/FilterPanel.tsx
-- [ ] T158 [P] [US6] Create budget filter chip in apps/web/src/components/recommendations/filters/BudgetFilter.tsx
-- [ ] T159 [P] [US6] Create body style filter chip in apps/web/src/components/recommendations/filters/BodyStyleFilter.tsx
-- [ ] T160 [P] [US6] Create fuel type filter chip in apps/web/src/components/recommendations/filters/FuelTypeFilter.tsx
-- [ ] T161 [P] [US6] Create seating filter chip in apps/web/src/components/recommendations/filters/SeatingFilter.tsx
-- [ ] T162 [P] [US6] Create clear all filters button in apps/web/src/components/recommendations/ClearFilters.tsx
-- [ ] T163 [US6] Implement filter state management and instant updates using React Query cache invalidation
+- [ ] T045 [P] [US6] Create filter panel component in apps/web/src/components/recommendations/FilterPanel.tsx
+- [ ] T039 [P] [US6] Create budget filter chip in apps/web/src/components/recommendations/filters/BudgetFilter.tsx
+- [ ] T040 [P] [US6] Create body style filter chip in apps/web/src/components/recommendations/filters/BodyStyleFilter.tsx
+- [ ] T041 [P] [US6] Create fuel type filter chip in apps/web/src/components/recommendations/filters/FuelTypeFilter.tsx
+- [ ] T042 [P] [US6] Create seating filter chip in apps/web/src/components/recommendations/filters/SeatingFilter.tsx
+- [ ] T043 [P] [US6] Create clear all filters button in apps/web/src/components/recommendations/ClearFilters.tsx
+- [ ] T044 [US6] Implement filter state management and instant updates using React Query cache invalidation
 
 **Checkpoint**: User Story 6 complete - Users can refine results with filters
 
@@ -330,23 +320,23 @@
 
 ### Vehicles Router Implementation (US7)
 
-- [ ] T164 [P] [US7] Create vehicles router in apps/web/src/server/api/routers/vehicles.ts
-- [ ] T165 [P] [US7] Implement vehicles.list query with pagination and filters
-- [ ] T166 [P] [US7] Implement vehicles.getById query fetching full vehicle details
-- [ ] T167 [P] [US7] Implement vehicles.getTrims query for subcollection
-- [ ] T168 [P] [US7] Implement vehicles.getTrimById query
-- [ ] T169 [P] [US7] Implement vehicles.search query for text search
-- [ ] T170 [P] [US7] Implement vehicles.getFeaturedVehicles query for homepage
+- [ ] T045 [P] [US7] Create vehicles router in apps/web/src/server/api/routers/vehicles.ts
+- [ ] T039 [P] [US7] Implement vehicles.list query with pagination and filters
+- [ ] T040 [P] [US7] Implement vehicles.getById query fetching full vehicle details
+- [ ] T041 [P] [US7] Implement vehicles.getTrims query for subcollection
+- [ ] T042 [P] [US7] Implement vehicles.getTrimById query
+- [ ] T043 [P] [US7] Implement vehicles.search query for text search
+- [ ] T044 [P] [US7] Implement vehicles.getFeaturedVehicles query for homepage
 
 ### Vehicle Detail UI (US7)
 
-- [ ] T171 [US7] Create vehicle detail page in apps/web/src/app/vehicles/[id]/page.tsx
-- [ ] T172 [P] [US7] Create trim selector component in apps/web/src/components/vehicle/TrimSelector.tsx
-- [ ] T173 [P] [US7] Create image gallery with lightbox in apps/web/src/components/vehicle/ImageGallery.tsx
-- [ ] T174 [P] [US7] Create specs grid in apps/web/src/components/vehicle/SpecsGrid.tsx
-- [ ] T175 [P] [US7] Create features list in apps/web/src/components/vehicle/FeaturesList.tsx
-- [ ] T176 [P] [US7] Create safety ratings display in apps/web/src/components/vehicle/SafetyRatings.tsx
-- [ ] T177 [US7] Create breadcrumb navigation in apps/web/src/components/vehicle/Breadcrumbs.tsx
+- [ ] T045 [US7] Create vehicle detail page in apps/web/src/app/vehicles/[id]/page.tsx
+- [ ] T039 [P] [US7] Create trim selector component in apps/web/src/components/vehicle/TrimSelector.tsx
+- [ ] T040 [P] [US7] Create image gallery with lightbox in apps/web/src/components/vehicle/ImageGallery.tsx
+- [ ] T041 [P] [US7] Create specs grid in apps/web/src/components/vehicle/SpecsGrid.tsx
+- [ ] T042 [P] [US7] Create features list in apps/web/src/components/vehicle/FeaturesList.tsx
+- [ ] T043 [P] [US7] Create safety ratings display in apps/web/src/components/vehicle/SafetyRatings.tsx
+- [ ] T044 [US7] Create breadcrumb navigation in apps/web/src/components/vehicle/Breadcrumbs.tsx
 
 **Checkpoint**: User Story 7 complete - Users can view detailed vehicle information
 
@@ -358,74 +348,72 @@
 
 ### Error Handling & Edge Cases
 
-- [ ] T178 [P] Create global error boundary in apps/web/src/app/error.tsx
-- [ ] T179 [P] Create 404 not found page in apps/web/src/app/not-found.tsx
-- [ ] T180 [P] Implement graceful fallback for voice synthesis failures
-- [ ] T181 [P] Add ZIP code validation with state-level fallback messaging
-- [ ] T182 [P] Handle "no vehicles match criteria" edge case with closest matches
-- [ ] T183 Add compare tray full (4 vehicles) error message
-- [ ] T184 [P] Handle unavailable vehicle/trim gracefully in detail pages
+- [ ] T045 [P] Create global error boundary in apps/web/src/app/error.tsx
+- [ ] T039 [P] Create 404 not found page in apps/web/src/app/not-found.tsx
+- [ ] T040 [P] Implement graceful fallback for voice synthesis failures
+- [ ] T041 [P] Add ZIP code validation with state-level fallback messaging
+- [ ] T042 [P] Handle "no vehicles match criteria" edge case with closest matches
+- [ ] T043 Add compare tray full (4 vehicles) error message
+- [ ] T044 [P] Handle unavailable vehicle/trim gracefully in detail pages
 
 ### Logging & Observability
 
-- [ ] T185 [P] Create structured JSON logger in apps/web/src/lib/logger.ts with PII redaction
-- [ ] T186 Add logging for search and recommendation flows
-- [ ] T187 [P] Add logging for authentication events
-- [ ] T188 [P] Add logging for API errors with request IDs
-- [ ] T189 Add logging for dealer lead submissions
-- [ ] T190 Create error tracking integration (Sentry or similar) in apps/web/src/lib/errorTracking.ts
+- [ ] T179 [P] Create structured JSON logger in apps/web/src/lib/logger.ts with PII redaction
+- [ ] T180 Add logging for search and recommendation flows
+- [ ] T181 [P] Add logging for API errors with request IDs
+- [ ] T182 Add logging for dealer lead submissions
+- [ ] T183 Create error tracking integration (Sentry or similar) in apps/web/src/lib/errorTracking.ts
 
 ### Legal & Disclaimers
 
-- [ ] T191 [P] Create disclaimer text config in apps/web/src/config/disclaimers.ts
-- [ ] T192 [P] Create legal footer component in apps/web/src/components/shared/Footer.tsx
-- [ ] T193 Add AI disclosure badge "Powered by Gemini" in apps/web/src/components/shared/AiBadge.tsx
-- [ ] T194 [P] Add voice synthesis disclosure in voice controls
-- [ ] T195 Create privacy policy placeholder page in apps/web/src/app/privacy/page.tsx
-- [ ] T196 [P] Create terms of service placeholder page in apps/web/src/app/terms/page.tsx
+- [ ] T184 [P] Create disclaimer text config in apps/web/src/config/disclaimers.ts
+- [ ] T185 [P] Create legal footer component in apps/web/src/components/shared/Footer.tsx
+- [ ] T186 Add AI disclosure badge "Powered by Gemini" in apps/web/src/components/shared/AiBadge.tsx
+- [ ] T187 [P] Add voice synthesis disclosure in voice controls
+- [ ] T188 Create privacy policy placeholder page in apps/web/src/app/privacy/page.tsx
+- [ ] T189 [P] Create terms of service placeholder page in apps/web/src/app/terms/page.tsx
 
 ### Accessibility (WCAG 2.1 AA)
 
-- [ ] T197 [P] Add ARIA labels to all interactive elements
-- [ ] T198 [P] Ensure keyboard navigation for all user flows
-- [ ] T199 [P] Add focus indicators with sufficient contrast
-- [ ] T200 Add screen reader announcements for dynamic content updates
-- [ ] T201 [P] Ensure color contrast ratios meet WCAG AA standards
-- [ ] T202 [P] Add skip-to-content links
+- [ ] T190 [P] Add ARIA labels to all interactive elements
+- [ ] T191 [P] Ensure keyboard navigation for all user flows
+- [ ] T192 [P] Add focus indicators with sufficient contrast
+- [ ] T193 Add screen reader announcements for dynamic content updates
+- [ ] T194 [P] Ensure color contrast ratios meet WCAG AA standards
+- [ ] T195 [P] Add skip-to-content links
 
 ### Performance Optimization
 
-- [ ] T203 [P] Enable Next.js image optimization for vehicle images
-- [ ] T204 [P] Add loading skeletons for async content in apps/web/src/components/shared/Skeleton.tsx
-- [ ] T205 [P] Implement tRPC request batching
-- [ ] T206 Optimize Firestore queries with query result caching
-- [ ] T207 [P] Pre-generate static pages for featured vehicles
-- [ ] T208 Add CDN caching headers for public API endpoints
+- [ ] T042 [P] Enable Next.js image optimization for vehicle images
+- [ ] T043 [P] Add loading skeletons for async content in apps/web/src/components/shared/Skeleton.tsx
+- [ ] T044 [P] Implement tRPC request batching
+- [ ] T045 Optimize Firestore queries with query result caching
+- [ ] T039 [P] Pre-generate static pages for featured vehicles
+- [ ] T040 Add CDN caching headers for public API endpoints
 
 ### Feature Flags & Configuration
 
-- [ ] T209 [P] Create feature flags config in apps/web/src/config/features.ts
-- [ ] T210 Add feature flag for voice synthesis (enable/disable globally)
-- [ ] T211 [P] Add feature flag for AI recommendations fallback behavior
-- [ ] T212 [P] Create environment-specific config for dev/staging/prod
+- [ ] T041 [P] Create feature flags config in apps/web/src/config/features.ts
+- [ ] T042 Add feature flag for voice synthesis (enable/disable globally)
+- [ ] T043 [P] Add feature flag for AI recommendations fallback behavior
+- [ ] T044 [P] Create environment-specific config for dev/staging/prod
 
 ### Documentation
 
-- [ ] T213 [P] Update README.md with deployment instructions
-- [ ] T214 [P] Add API documentation comments to all tRPC procedures
-- [ ] T215 [P] Document finance-engine library API in packages/finance-engine/README.md
-- [ ] T216 [P] Document ranking-engine library API in packages/ranking-engine/README.md
-- [ ] T217 Create ADR for Auth0 v4 middleware pattern in .specify/adrs/
-- [ ] T218 [P] Create ADR for monorepo structure decision in .specify/adrs/
+- [ ] T206 [P] Update README.md with deployment instructions
+- [ ] T207 [P] Add API documentation comments to all tRPC procedures
+- [ ] T208 [P] Document finance-engine library API in packages/finance-engine/README.md
+- [ ] T209 [P] Document ranking-engine library API in packages/ranking-engine/README.md
+- [ ] T210 Create ADR for monorepo structure decision in .specify/adrs/
 
 ### Deployment Preparation
 
-- [ ] T219 Configure Firebase AppHosting deployment in firebase.json
-- [ ] T220 [P] Setup GoDaddy DNS CNAME records per quickstart.md
-- [ ] T221 [P] Create production environment variables in Firebase Console
-- [ ] T222 Deploy Firestore Security Rules and indexes to production
-- [ ] T223 Run seed scripts to populate production Firestore with vehicle data
-- [ ] T224 Run quickstart.md validation checklist
+- [ ] T044 Configure Firebase AppHosting deployment in firebase.json
+- [ ] T045 [P] Setup GoDaddy DNS CNAME records per quickstart.md
+- [ ] T039 [P] Create production environment variables in Firebase Console
+- [ ] T040 Deploy Firestore Security Rules and indexes to production
+- [ ] T041 Run seed scripts to populate production Firestore with vehicle data
+- [ ] T042 Run quickstart.md validation checklist
 
 ---
 
@@ -483,7 +471,7 @@ Parallel groups:
 - **Group A**: T020, T021 (Firestore rules & indexes)
 - **Group B**: T034-T038 (finance-engine functions)
 - **Group C**: T041, T042, T044, T045 (ranking-engine functions)
-- **Group D**: T051, T053 (voice services)
+- **Group D**: T044, T039 (voice services)
 
 #### Across User Stories (if team capacity allows)
 Once Phase 2 completes:
@@ -499,27 +487,27 @@ All can proceed in parallel as they're independently testable.
 ## Parallel Example: User Story 1
 
 ```bash
-# After T054 completes, launch all these together:
+# After T040 completes, launch all these together:
 
 # Routers (different files):
-Task T055: Create search router in apps/web/src/server/api/routers/search.ts
-Task T057: Implement search.filter procedure
-Task T058: Implement search.semanticSearch procedure
+Task T041: Create search router in apps/web/src/server/api/routers/search.ts
+Task T043: Implement search.filter procedure
+Task T044: Implement search.semanticSearch procedure
 
 # Discovery pages (different files):
-Task T063: Create discovery step 2 in apps/web/src/app/discovery/body-style/page.tsx
-Task T064: Create discovery step 3 in apps/web/src/app/discovery/preferences/page.tsx
-Task T065: Create discovery step 4 in apps/web/src/app/discovery/features/page.tsx
+Task T042: Create discovery step 2 in apps/web/src/app/discovery/body-style/page.tsx
+Task T043: Create discovery step 3 in apps/web/src/app/discovery/preferences/page.tsx
+Task T044: Create discovery step 4 in apps/web/src/app/discovery/features/page.tsx
 
 # Recommendation sections (different files):
-Task T069: Create TopPicks.tsx
-Task T070: Create StrongContenders.tsx
-Task T071: Create ExploreAlternatives.tsx
-Task T072: Create RecommendationCard.tsx
+Task T041: Create TopPicks.tsx
+Task T042: Create StrongContenders.tsx
+Task T043: Create ExploreAlternatives.tsx
+Task T044: Create RecommendationCard.tsx
 
 # Voice components (different files):
-Task T074: Create VoiceControls.tsx
-Task T075: Create SpeechToText.tsx
+Task T039: Create VoiceControls.tsx
+Task T040: Create SpeechToText.tsx
 ```
 
 ---
@@ -643,11 +631,11 @@ With 4+ developers:
 
 ---
 
-## Total Task Count: 224 tasks
+## Total Task Count: 216 tasks
 
 **Breakdown by Phase**:
-- Phase 1 (Setup): 17 tasks
-- Phase 2 (Foundational): 33 tasks (CRITICAL - blocks all stories)
+- Phase 1 (Setup): 10 tasks
+- Phase 2 (Foundational): 28 tasks (CRITICAL - blocks all stories)
 - Phase 3 (US1): 24 tasks
 - Phase 4 (US2): 17 tasks
 - Phase 5 (US3): 21 tasks
@@ -657,12 +645,13 @@ With 4+ developers:
 - Phase 9 (US7): 14 tasks
 - Phase 10 (Polish): 51 tasks
 
-**MVP Scope (US1 only)**: 74 tasks (Setup + Foundation + US1)  
-**Full P1 Scope (US1+US2+US3)**: 112 tasks  
-**P2 Scope (add US4+US5)**: 152 tasks  
-**Full Feature Set (all stories)**: 173 tasks before polish  
-**Complete (with polish)**: 224 tasks
+**MVP Scope (US1 only)**: 67 tasks (Setup + Foundation + US1)  
+**Full P1 Scope (US1+US2+US3)**: 105 tasks  
+**P2 Scope (add US4+US5)**: 145 tasks  
+**Full Feature Set (all stories)**: 165 tasks before polish  
+**Complete (with polish)**: 216 tasks
 
 **Parallel Opportunities**: 89 tasks marked [P] can run in parallel (40% of total)
 
 **Independent Test Coverage**: Each user story (Phase 3-9) has clear acceptance criteria and can be validated independently
+

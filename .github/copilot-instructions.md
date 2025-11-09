@@ -4,7 +4,7 @@ Auto-generated from all feature plans. Last updated: 2025-11-08
 
 ## Active Technologies
 
-- TypeScript 5.8, React 19, Next.js 15.2 (App Router with Server Components) + tRPC 11, Zod (validation), Firebase SDK (Firestore, Storage, AppHosting), Auth0 SDK, Gemini API SDK, ElevenLabs API SDK, OpenRouter SDK (fallback), Tailwind CSS 4.0, shadcn/ui, tweakcn, Lucide icons (001-vehicle-shopping-experience)
+- TypeScript 5.8, React 19, Next.js 15.2 (App Router with Server Components) + tRPC 11, Zod (validation), Firebase SDK (Firestore, Storage, AppHosting), Gemini API SDK, ElevenLabs API SDK, OpenRouter SDK (fallback), Tailwind CSS 4.0, shadcn/ui, tweakcn, Lucide icons (001-vehicle-shopping-experience)
 
 ## Project Structure
 
@@ -24,7 +24,8 @@ TypeScript 5.8, React 19, Next.js 15.2 (App Router with Server Components): Foll
 
 ## Recent Changes
 
-- 001-vehicle-shopping-experience: Added TypeScript 5.8, React 19, Next.js 15.2 (App Router with Server Components) + tRPC 11, Zod (validation), Firebase SDK (Firestore, Storage, AppHosting), Auth0 SDK, Gemini API SDK, ElevenLabs API SDK, OpenRouter SDK (fallback), Tailwind CSS 4.0, shadcn/ui, tweakcn, Lucide icons
+- 001-vehicle-shopping-experience: Added TypeScript 5.8, React 19, Next.js 15.2 (App Router with Server Components) + tRPC 11, Zod (validation), Firebase SDK (Firestore, Storage, AppHosting), Gemini API SDK, ElevenLabs API SDK, OpenRouter SDK (fallback), Tailwind CSS 4.0, shadcn/ui, tweakcn, Lucide icons
+- 001-vehicle-shopping-experience: Removed Auth0 SDK and authentication implementation - using local browser storage only
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->

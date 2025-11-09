@@ -9,7 +9,6 @@
 - **npm**: v8+ (comes with Node.js)
 - **Git**: v2.30+
 - **Firebase CLI**: v13+ (`npm install -g firebase-tools`)
-- **Auth0 Account**: Free tier sufficient for development
 - **Gemini API Key**: Google AI Studio (free tier: 15 RPM)
 - **ElevenLabs API Key**: Starter tier ($5/month, 30k chars)
 
@@ -31,13 +30,6 @@ npm install
 Create `.env.local` in the root directory:
 
 ```bash
-# Auth0
-AUTH0_SECRET='<generate-with: openssl rand -hex 32>'
-AUTH0_BASE_URL='http://localhost:3000'
-AUTH0_ISSUER_BASE_URL='https://your-tenant.auth0.com'
-AUTH0_CLIENT_ID='<from-auth0-dashboard>'
-AUTH0_CLIENT_SECRET='<from-auth0-dashboard>'
-
 # Firebase
 NEXT_PUBLIC_FIREBASE_API_KEY='<from-firebase-console>'
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN='your-project.firebaseapp.com'
@@ -74,30 +66,7 @@ firebase init emulators
 firebase emulators:start
 ```
 
-### 4. Configure Auth0
-
-**Create Application** (Auth0 Dashboard):
-
-1. Go to Applications → Create Application
-2. Choose "Regular Web Application"
-3. Set Name: "Toyota Vehicle Shopping (Dev)"
-4. Configure:
-   - **Allowed Callback URLs**: `http://localhost:3000/api/auth/callback`
-   - **Allowed Logout URLs**: `http://localhost:3000`
-   - **Allowed Web Origins**: `http://localhost:3000`
-
-**Add Custom Claims** (Auth0 Action):
-
-```javascript
-// Auth0 Dashboard → Actions → Flows → Login
-exports.onExecutePostLogin = async (event, api) => {
-  const namespace = 'https://toyota-app.com';
-  api.idToken.setCustomClaim(`${namespace}/role`, event.user.app_metadata.role || 'user');
-  api.accessToken.setCustomClaim(`${namespace}/role`, event.user.app_metadata.role || 'user');
-};
-```
-
-### 5. Seed Vehicle Data
+### 4. Seed Vehicle Data
 
 ```bash
 # Run seed script (creates ~50 Toyota vehicles)
@@ -382,10 +351,6 @@ export function VehicleList() {
 
 **Solution**: Ensure emulators are running (`firebase emulators:start`). Check `.env.local` has correct `FIREBASE_ADMIN_PROJECT_ID`.
 
-### Issue: Auth0 callback fails
-
-**Solution**: Verify `AUTH0_BASE_URL` matches localhost URL. Check Auth0 dashboard has correct callback URL configured.
-
 ### Issue: Gemini API rate limit
 
 **Solution**: Free tier limited to 15 RPM. Upgrade to pay-as-you-go or reduce request frequency during development.
@@ -411,7 +376,6 @@ export function VehicleList() {
 - **Next.js Docs**: https://nextjs.org/docs
 - **tRPC Docs**: https://trpc.io/docs
 - **Firebase Docs**: https://firebase.google.com/docs
-- **Auth0 Docs**: https://auth0.com/docs
 - **Gemini API Docs**: https://ai.google.dev/docs
 - **ElevenLabs Docs**: https://docs.elevenlabs.io
 - **Tailwind CSS Docs**: https://tailwindcss.com/docs

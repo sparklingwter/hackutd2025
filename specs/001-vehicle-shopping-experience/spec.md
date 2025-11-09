@@ -10,7 +10,6 @@
 ### Session 2025-11-08
 
 - Q: For the AI-guided voice-and-text journey, which AI service architecture should power the recommendation engine and voice interaction? → A: Hybrid approach: Gemini/Gemma for recommendation reasoning + ElevenLabs for high-quality TTS
-- Q: For user sign-in to enable cross-device saving of favorites, searches, compare sets, and estimates, which authentication provider should be used? → A: Auth0 (as mentioned in project tech stack) for comprehensive authentication with social logins
 - Q: For storing vehicle data, user profiles, saved favorites, compare sets, estimates, and dealer leads, which database solution should be used? → A: Firestore (as mentioned in project tech stack) with indexed collections for flexible document storage
 - Q: What are the target performance requirements for generating vehicle recommendations and applying filter updates? → A: 3 seconds for initial AI recommendations, 1 second for filter updates (optimal UX)
 - Q: For deploying the Next.js application with server-side rendering and API routes (tRPC), which hosting platform should be used? → A: Firebase App Hosting (as mentioned in project tech stack) for integrated Next.js deployment with Firebase services
@@ -71,19 +70,18 @@ After comparing vehicles, a user wants to estimate the cost of ownership. They p
 
 ### User Story 4 - Saving and Sharing Selections (Priority: P2)
 
-A user wants to save their favorite vehicles, saved searches, compare sets, and estimates for later review. Signed-in users can save items across devices; unsigned users can save items locally in their browser. Users can also share a read-only link or export/print a summary of their selections.
+A user wants to save their favorite vehicles, saved searches, compare sets, and estimates for later review. Users can save items locally in their browser. Users can also share a read-only link or export/print a summary of their selections.
 
-**Why this priority**: Saving and sharing enables users to take time with their decision, return later, and involve family/friends. This increases engagement and conversion by reducing decision fatigue.
+**Why this priority**: Saving and sharing enables users to take time with their decision, return later within the same browser, and involve family/friends. This increases engagement and conversion by reducing decision fatigue.
 
-**Independent Test**: Can be fully tested by favoriting vehicles, saving a compare set or estimate, and sharing a read-only link. Delivers value by preserving user work and enabling collaboration.
+**Independent Test**: Can be fully tested by favoriting vehicles in browser storage, saving a compare set or estimate, and sharing a read-only link. Delivers value by preserving user work and enabling collaboration.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user favorites a vehicle, **When** they return to the site later (same browser session or signed in), **Then** the vehicle remains in their favorites
-2. **Given** a user is signed in, **When** they save a compare set or estimate, **Then** they can access it from any device using their account
-3. **Given** a user is not signed in, **When** they save items, **Then** the items persist in browser local storage and are available in that browser only
-4. **Given** a user wants to share, **When** they click share on a compare set or estimate, **Then** they receive a read-only link they can send to others
-5. **Given** a user wants to export, **When** they click export/print, **Then** they receive a formatted summary document suitable for printing or saving as PDF
+1. **Given** a user favorites a vehicle, **When** they return to the site later in the same browser, **Then** the vehicle remains in their favorites
+2. **Given** a user saves items, **When** they return later in the same browser, **Then** the items persist in browser local storage
+3. **Given** a user wants to share, **When** they click share on a compare set or estimate, **Then** they receive a read-only link they can send to others
+4. **Given** a user wants to export, **When** they click export/print, **Then** they receive a formatted summary document suitable for printing or saving as PDF
 
 ---
 
@@ -192,52 +190,51 @@ A user wants to learn more about a specific recommended vehicle. They click on t
 
 #### Saving and Persistence
 
-- **FR-028**: Users MUST be able to favorite vehicles, and favorites MUST persist across sessions
-- **FR-029**: Users MUST be able to save searches, compare sets, and estimates
-- **FR-030**: For signed-in users, saved items MUST be available across devices
-- **FR-031**: For unsigned users, saved items MUST persist in browser local storage and be available only in that browser
-- **FR-032**: System MUST provide a way for users to sign in or create an account using Auth0 authentication to enable cross-device saving with support for social logins
+- **FR-028**: Users MUST be able to favorite vehicles, and favorites MUST persist in browser local storage
+- **FR-029**: Users MUST be able to save searches, compare sets, and estimates in browser local storage
+- **FR-030**: Saved items MUST be available only in the browser where they were saved
 
 #### Sharing and Export
 
-- **FR-033**: Users MUST be able to generate a read-only shareable link for any compare set or estimate
-- **FR-034**: Users MUST be able to export or print a formatted summary of their selections, comparisons, and estimates
-- **FR-035**: Shared links MUST display the compare set or estimate exactly as the user configured it, without requiring sign-in
+- **FR-031**: Users MUST be able to generate a read-only shareable link for any compare set or estimate
+- **FR-032**: Users MUST be able to export or print a formatted summary of their selections, comparisons, and estimates
+- **FR-033**: Shared links MUST display the compare set or estimate exactly as the user configured it, without requiring sign-in
 
 #### Dealer Connection
 
-- **FR-036**: System MUST provide a "Find a Dealer" feature that accepts ZIP code input and displays nearby Toyota dealers with contact information
-- **FR-037**: System MUST provide a "Contact Me" feature that allows users to request dealer contact tied to their saved vehicle selections
-- **FR-038**: Before submitting any contact request, system MUST present an explicit consent step requiring user confirmation to share personal information
-- **FR-039**: System MUST attach selected vehicles and estimates to any dealer lead or contact request
+- **FR-034**: System MUST provide a "Find a Dealer" feature that accepts ZIP code input and displays nearby Toyota dealers with contact information
+- **FR-035**: System MUST provide a "Contact Me" feature that allows users to request dealer contact tied to their saved vehicle selections
+- **FR-036**: Before submitting any contact request, system MUST present an explicit consent step requiring user confirmation to share personal information
+- **FR-037**: System MUST attach selected vehicles and estimates to any dealer lead or contact request
 
 #### Localization
 
-- **FR-040**: When voice is used, system MUST provide captions and transcripts for all spoken content
-- **FR-041**: System MUST be mobile-friendly and responsive across device sizes (mobile, tablet, desktop)
-- **FR-042**: System MUST use USD currency and serve the United States market at launch
-- **FR-043**: System MUST be designed for future localization with English as the initial language and copy structured to support translation
+- **FR-038**: When voice is used, system MUST provide captions and transcripts for all spoken content
+- **FR-039**: System MUST be mobile-friendly and responsive across device sizes (mobile, tablet, desktop)
+- **FR-040**: System MUST use USD currency and serve the United States market at launch
+- **FR-041**: System MUST be designed for future localization with English as the initial language and copy structured to support translation
 
 #### Data Sources and Disclaimers
 
-- **FR-044**: System MUST use official Toyota model and trim information as the source for vehicle data
-- **FR-045**: System MUST use published EPA fuel economy and range data for efficiency information
-- **FR-046**: System MUST use publicly advertised MSRP as the base pricing data
-- **FR-047**: System MUST label all incentives, rebates, and finance/lease figures as example estimates for exploration purposes, clearly marked as informational and subject to change
-- **FR-048**: System MUST display disclaimers indicating that actual dealer pricing, incentives, and terms may vary and must be confirmed with a dealer
-- **FR-049**: System MUST use Firestore for storing vehicle data, user profiles, saved favorites, searches, compare sets, estimates, and dealer leads with indexed collections for efficient querying
-- **FR-050**: System MUST use Firebase Storage for storing vehicle image galleries and media assets
+- **FR-042**: System MUST use official Toyota model and trim information as the source for vehicle data
+- **FR-043**: System MUST use published EPA fuel economy and range data for efficiency information
+- **FR-044**: System MUST use publicly advertised MSRP as the base pricing data
+- **FR-045**: System MUST label all incentives, rebates, and finance/lease figures as example estimates for exploration purposes, clearly marked as informational and subject to change
+- **FR-046**: System MUST display disclaimers indicating that actual dealer pricing, incentives, and terms may vary and must be confirmed with a dealer
+- **FR-047**: System MUST use Firestore for storing vehicle data, user profiles, saved favorites, searches, compare sets, estimates, and dealer leads with indexed collections for efficient querying
+- **FR-048**: System MUST use Firebase Storage for storing vehicle image galleries and media assets
 
 #### Deployment and Infrastructure
 
-- **FR-051**: System MUST be deployed using Firebase App Hosting for integrated Next.js deployment with server-side rendering, tRPC API routes, and seamless Firebase service integration
-- **FR-052**: System MUST support automatic scaling to handle variable traffic loads without manual intervention
-- **FR-053**: System MUST provide CDN distribution for static assets and optimized content delivery
+- **FR-049**: System MUST be deployed using Firebase App Hosting for integrated Next.js deployment with server-side rendering, tRPC API routes, and seamless Firebase service integration
+- **FR-050**: System MUST support automatic scaling to handle variable traffic loads without manual intervention
+- **FR-051**: System MUST provide CDN distribution for static assets and optimized content delivery
 
 #### Out of Scope
 
-- **FR-054**: Dealer inventory checking is explicitly out of scope; users cannot see real-time vehicle availability
-- **FR-055**: Online purchasing or reservation is out of scope; the experience ends with dealer connection
+- **FR-052**: Dealer inventory checking is explicitly out of scope; users cannot see real-time vehicle availability
+- **FR-053**: Online purchasing or reservation is out of scope; the experience ends with dealer connection
+- **FR-054**: User authentication and cross-device synchronization is out of scope; all data is stored locally in the browser
 
 ### Key Entities
 

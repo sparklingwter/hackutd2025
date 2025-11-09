@@ -7,12 +7,12 @@
 
 ## Summary
 
-Build an AI-guided vehicle shopping experience enabling users to discover, compare, and estimate Toyota vehicles through voice and text. Core capabilities include guided discovery with personalized recommendations (Top Picks, Strong Contenders, Alternatives), side-by-side comparison (up to 4 vehicles), cost estimation (cash/finance/lease with tax/fee calculation), and dealer connection. Technical approach uses Next.js (App Router) with tRPC for type-safe APIs, Firestore for persistence, Gemini API for AI recommendations, ElevenLabs for voice, and Auth0 for authentication. Emphasizes simplicity, accessibility (WCAG 2.1 AA), transparency (AI/TTS disclosure, non-binding disclaimers), and modular design (finance-engine and ranking-engine libraries).
+Build an AI-guided vehicle shopping experience enabling users to discover, compare, and estimate Toyota vehicles through voice and text. Core capabilities include guided discovery with personalized recommendations (Top Picks, Strong Contenders, Alternatives), side-by-side comparison (up to 4 vehicles), cost estimation (cash/finance/lease with tax/fee calculation), and dealer connection. Technical approach uses Next.js (App Router) with tRPC for type-safe APIs, Firestore for persistence, Gemini API for AI recommendations, ElevenLabs for voice. Emphasizes simplicity, accessibility (WCAG 2.1 AA), transparency (AI/TTS disclosure, non-binding disclaimers), and modular design (finance-engine and ranking-engine libraries). All user data stored locally in browser storage.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.8, React 19, Next.js 15.2 (App Router with Server Components)  
-**Primary Dependencies**: tRPC 11, Zod (validation), Firebase SDK (Firestore, Storage, AppHosting), Auth0 SDK, Gemini API SDK, ElevenLabs API SDK, OpenRouter SDK (fallback), Tailwind CSS 4.0, shadcn/ui, tweakcn, Lucide icons  
+**Primary Dependencies**: tRPC 11, Zod (validation), Firebase SDK (Firestore, Storage, AppHosting), Gemini API SDK, ElevenLabs API SDK, OpenRouter SDK (fallback), Tailwind CSS 4.0, shadcn/ui, tweakcn, Lucide icons  
 **Storage**: Firebase Firestore (vehicles, trims, pricing/incentives, user preferences, comparison sets, estimates, dealer leads), Firebase Storage (vehicle images, audio assets)  
 **Target Platform**: Web (desktop-first responsive design, mobile/tablet adaptive), deployed to Firebase AppHosting with GoDaddy DNS  
 **Project Type**: Single Next.js application with integrated libraries: 1) Next.js app (root), 2) src/lib/finance-engine (finance calculations), 3) src/lib/ranking-engine (AI recommendations)  
@@ -29,7 +29,7 @@ Build an AI-guided vehicle shopping experience enabling users to discover, compa
 | **II. Framework-First Integration** | ✅ COMPLIANT | Using Next.js, Tailwind CSS, shadcn/ui, tweakcn, Lucide, tRPC directly without wrappers. No unnecessary abstractions. |
 | **III. Code Quality & Documentation** | ✅ COMPLIANT | ESLint + Prettier enforced. ADRs required for major decisions. Conventional commits. PR-only merges to main. |
 | **IV. User Experience (UX)** | ✅ COMPLIANT | Voice (ElevenLabs TTS) + text input. Desktop-first responsive. Tailwind + tweakcn for design system. Clear, jargon-free copy. |
-| **V. Security & Privacy** | ✅ COMPLIANT | Auth0 for auth. Firebase Security Rules for Firestore/Storage. Secrets in env vars. No PII in logs. |
+| **V. Security & Privacy** | ✅ COMPLIANT | Firebase Security Rules for Firestore/Storage. Secrets in env vars. No PII in logs. Local browser storage only. |
 | **VI. AI & Audio Transparency** | ✅ COMPLIANT | AI recommendations clearly labeled (Gemini-powered). Voice synthesis disclosed (ElevenLabs). Mute/opt-out controls. Non-binding disclaimers on estimates. |
 | **VII. Data Governance** | ✅ COMPLIANT | Data sources documented (curated Toyota dataset, EPA MPG, MSRP). Assumptions in ADRs. Estimates labeled as informational. Last-updated timestamps planned. |
 | **VIII. Observability** | ✅ COMPLIANT | Structured JSON logging. Key flows instrumented (search, recommendation, auth, API). Request counts, error rates, latency tracked. PII redacted. |
@@ -46,10 +46,10 @@ Build an AI-guided vehicle shopping experience enabling users to discover, compa
 | Principle | Compliance Status | Phase 1 Changes |
 |-----------|------------------|-----------------|
 | **I. Library-First Architecture** | ✅ COMPLIANT | Data model confirms `finance-engine` (cash/finance/lease/taxes/fuel) and `ranking-engine` (Gemini/OpenRouter/ranking/safety) as standalone libraries with CLI. No framework coupling introduced. |
-| **II. Framework-First Integration** | ✅ COMPLIANT | API contracts confirm direct usage of Next.js, tRPC, Firestore, Auth0 SDKs without abstraction layers. |
+| **II. Framework-First Integration** | ✅ COMPLIANT | API contracts confirm direct usage of Next.js, tRPC, Firestore SDKs without abstraction layers. |
 | **III. Code Quality & Documentation** | ✅ COMPLIANT | Quickstart guide includes linting, formatting. ADRs referenced for architectural decisions. |
 | **IV. User Experience (UX)** | ✅ COMPLIANT | Data model includes `voiceEnabled` preference in UserProfile. API contracts include `voiceEnabled` parameter for audio summaries. Text fallback always available. |
-| **V. Security & Privacy** | ✅ COMPLIANT | API contracts enforce authentication (public/protected procedures). Dealer leads require explicit `consent: true` (literal). PII in DealerLead is write-only for users. |
+| **V. Security & Privacy** | ✅ COMPLIANT | API contracts note local browser storage for user data. Dealer leads require explicit `consent: true` (literal). No authentication required. |
 | **VI. AI & Audio Transparency** | ✅ COMPLIANT | API contracts return `explanation` and `matchedCriteria` for recommendations. Estimates include `disclaimer` text. Voice synthesis optional (`voiceEnabled` flag). |
 | **VII. Data Governance** | ✅ COMPLIANT | Data model documents entity validation rules, indexes, relationships. Estimates include `calculatedAt` timestamp. Tax/fee breakdowns provided. |
 | **VIII. Observability** | ✅ COMPLIANT | API contracts note structured logging for key flows (search, recommendation, estimate). Rate limits tracked. Error codes standardized. |
@@ -97,8 +97,7 @@ apps/
 │   │   │   └── shared/
 │   │   ├── lib/                  # Client utilities
 │   │   │   ├── trpc.ts
-│   │   │   ├── firebase.ts
-│   │   │   └── auth0.ts
+│   │   │   └── firebase.ts
 │   │   ├── server/               # Server-side code
 │   │   │   ├── api/
 │   │   │   │   ├── routers/      # tRPC routers

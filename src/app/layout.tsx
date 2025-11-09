@@ -2,7 +2,6 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
-import { Auth0Provider } from '@auth0/nextjs-auth0/client';
 
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -23,9 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>
-        <Auth0Provider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-        </Auth0Provider>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
   );

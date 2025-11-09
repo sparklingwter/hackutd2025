@@ -158,7 +158,7 @@ export interface TrimDoc {
 }
 
 export interface UserProfileDoc {
-  id: string; // Auth0 sub
+  id: string; // User identifier (generated locally)
   email: string;
   displayName?: string;
   favorites: string[]; // Vehicle IDs
