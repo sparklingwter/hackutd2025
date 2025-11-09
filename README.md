@@ -1,29 +1,117 @@
-# Create T3 App
+# HackUTD 2025 - Gemini Chat Agent
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A conversational AI agent built with Gemini API, featuring a Python FastAPI backend and a Next.js TypeScript frontend.
 
-## What's next? How do I make an app with this?
+## Project Structure
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+```
+hackutd2025/
+├── server/          # Python FastAPI backend
+│   ├── main.py       # FastAPI application with Gemini integration
+│   ├── requirements.txt
+│   └── README.md
+├── src/              # Next.js frontend
+│   ├── app/
+│   │   ├── _components/
+│   │   │   └── chat.tsx  # Chat interface component
+│   │   └── page.tsx      # Main page
+│   └── ...
+└── ...
+```
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Setup Instructions
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### 1. Backend Setup (Python)
 
-## Learn More
+1. Navigate to the server directory:
+   ```bash
+   cd server
+   ```
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+2. Create a virtual environment (recommended):
+   ```bash
+   python -m venv venv
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+4. Create a `.env` file in the `server` directory:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+   
+   Get your Gemini API key from: https://makersuite.google.com/app/apikey
 
-## How do I deploy this?
+5. Run the backend server:
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+   The API will be available at `http://localhost:8000`
+
+### 2. Frontend Setup (Next.js)
+
+1. Install dependencies (from project root):
+   ```bash
+   npm install
+   ```
+
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+   The frontend will be available at `http://localhost:3000`
+
+## Usage
+
+1. Start the Python backend server (port 8000)
+2. Start the Next.js frontend (port 3000)
+3. Open `http://localhost:3000` in your browser
+4. Start chatting with the Gemini agent!
+
+## API Endpoints
+
+### `POST /api/chat`
+
+Send a chat message to the Gemini agent.
+
+**Request:**
+```json
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello, how are you?"
+    }
+  ],
+  "temperature": 0.7
+}
+```
+
+**Response:**
+```json
+{
+  "message": "I'm doing well, thank you! How can I help you today?",
+  "role": "assistant"
+}
+```
+
+## Future Enhancements
+
+- Fine-tune the agent on car-related data
+- Add voice input/output with ElevenLabs
+- Implement conversation history persistence
+- Add car preference tracking
+
+## Technologies
+
+- **Backend**: Python, FastAPI, Google Gemini API
+- **Frontend**: Next.js, TypeScript, React, Tailwind CSS
