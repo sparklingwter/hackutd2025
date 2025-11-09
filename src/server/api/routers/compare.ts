@@ -2,6 +2,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { sign, verify } from "jsonwebtoken";
+import { getVehicleImages } from "~/lib/imageMapper";
 
 // JWT secret for share tokens (use environment variable in production)
 const SHARE_TOKEN_SECRET = process.env.SHARE_TOKEN_SECRET ?? "development-secret-change-in-production";
@@ -167,7 +168,12 @@ export const compareRouter = createTRPCRouter({
           ],
           safetyRating: null,
           trims: (data.trims as string[]) ?? [],
-          imageUrls: (data.imageUrls as string[]) ?? [],
+          imageUrls: getVehicleImages(
+            (data.make as string) ?? "Toyota",
+            (data.model as string) ?? "Unknown",
+            (data.year as number) ?? 2024,
+            (data.trim as string | undefined)
+          ),
           description: (data.description as string) ?? "",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -269,7 +275,12 @@ export const compareRouter = createTRPCRouter({
             ],
             safetyRating: null,
             trims: (data.trims as string[]) ?? [],
-            imageUrls: (data.imageUrls as string[]) ?? [],
+            imageUrls: getVehicleImages(
+              (data.make as string) ?? "Toyota",
+              (data.model as string) ?? "",
+              (data.year as number) ?? 2024,
+              (data.trim as string | undefined)
+            ),
             description: (data.description as string) ?? "",
             createdAt: new Date(),
             updatedAt: new Date(),

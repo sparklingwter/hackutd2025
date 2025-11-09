@@ -6,6 +6,7 @@ import {
 } from "~/server/api/trpc";
 import { generateRecommendations } from "~/lib/ranking-engine";
 import { UserNeedsProfileSchema } from "~/server/api/schemas";
+import { getVehicleImages } from "~/lib/imageMapper";
 
 // Rate limiting map (in-memory for now, use Redis in production)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -181,7 +182,7 @@ export const searchRouter = createTRPCRouter({
                 fuelType: v.fuelType,
                 mpgCombined: v.mpgCombined,
                 seating: v.seating,
-                imageUrls: [`/images/${v.id}.jpg`],
+                imageUrls: getVehicleImages("Toyota", v.model, v.year),
               },
             })),
             strongContenders: mockVehicles.slice(2).map((v) => ({
@@ -200,7 +201,7 @@ export const searchRouter = createTRPCRouter({
                 fuelType: v.fuelType,
                 mpgCombined: v.mpgCombined,
                 seating: v.seating,
-                imageUrls: [`/images/${v.id}.jpg`],
+                imageUrls: getVehicleImages("Toyota", v.model, v.year),
               },
             })),
             exploreAlternatives: [],
@@ -257,18 +258,22 @@ export const searchRouter = createTRPCRouter({
               return null;
             }
             const vData = vehicleDoc.data()!;
+            const make = (vData.make as string) ?? "Toyota";
+            const model = (vData.model as string) ?? "Unknown";
+            const year = (vData.year as number) ?? 2024;
+            const trim = (vData.trim as string | undefined);
             return {
               ...rec,
               vehicle: {
                 id: vehicleDoc.id,
-                model: (vData.model as string) ?? "Unknown",
-                year: (vData.year as number) ?? 2024,
+                model,
+                year,
                 msrp: ((vData.pricing as Record<string, unknown>)?.msrp as number) ?? 35000,
                 bodyStyle: ((vData.specs as Record<string, unknown>)?.body as string) ?? "sedan",
                 fuelType: ((vData.specs as Record<string, unknown>)?.powertrain as string) ?? "gas",
                 mpgCombined: ((vData.performance as Record<string, unknown>)?.mpgCombined as number | null) ?? null,
                 seating: ((vData.dimensions as Record<string, unknown>)?.seating as number) ?? 5,
-                imageUrls: (vData.img as string) ? [(vData.img as string)] : [],
+                imageUrls: getVehicleImages(make, model, year, trim),
               },
             };
           } catch (error) {

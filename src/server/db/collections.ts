@@ -1,4 +1,5 @@
 import { adminDb } from './firebase';
+import { getVehicleImages } from '~/lib/imageMapper';
 
 /**
  * Firestore collections structure for the Toyota Vehicle Shopping Experience
@@ -78,7 +79,8 @@ export function transformVehicleDoc(raw: VehicleDocRaw): VehicleDoc {
     features: allFeatures,
     safetyRating: null, // Not in current schema
     trims: [raw.trim],
-    imageUrls: raw.img ? [raw.img] : [],
+    // Use local images from public/CarImages based on make/model/year/trim
+    imageUrls: getVehicleImages(raw.make, raw.model, raw.year, raw.trim),
     description: raw.description ?? '',
     createdAt,
     updatedAt,

@@ -13,6 +13,7 @@ import {
   VehicleFiltersSchema,
   PaginationInputSchema,
 } from "~/server/api/schemas";
+import { getVehicleImages } from "~/lib/imageMapper";
 
 /**
  * Vehicles Router - Vehicle catalog, details, and trim information
@@ -160,7 +161,12 @@ export const vehiclesRouter = createTRPCRouter({
             ],
             safetyRating: ((data.safety as Record<string, unknown>)?.nhtsaRating as number | null) ?? null,
             trims: ((data.trims as string[]) ?? []),
-            imageUrls: ((data.images as string[]) ?? []),
+            imageUrls: getVehicleImages(
+              (data.make as string) ?? "Toyota",
+              (data.model as string) ?? "Unknown",
+              (data.year as number) ?? 2024,
+              (data.trim as string | undefined)
+            ),
             description: (data.description as string) ?? "",
             createdAt: data.createdAt?.toDate() ?? new Date(),
             updatedAt: data.updatedAt?.toDate() ?? new Date(),
@@ -267,7 +273,12 @@ export const vehiclesRouter = createTRPCRouter({
           ],
           safetyRating: ((data.safety as Record<string, unknown>)?.nhtsaRating as number | null) ?? null,
           trims: ((data.trims as string[]) ?? []),
-          imageUrls: ((data.images as string[]) ?? []),
+          imageUrls: getVehicleImages(
+            (data.make as string) ?? "Toyota",
+            (data.model as string) ?? "Unknown",
+            (data.year as number) ?? 2024,
+            (data.trim as string | undefined)
+          ),
           description: (data.description as string) ?? "",
           createdAt: data.createdAt?.toDate() ?? new Date(),
           updatedAt: data.updatedAt?.toDate() ?? new Date(),
