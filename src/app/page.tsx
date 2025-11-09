@@ -1,10 +1,16 @@
 import Link from "next/link";
+import { auth0 } from "~/lib/auth0";
+import LoginButton from "~/components/auth/LoginButton";
+import LogoutButton from "~/components/auth/LogoutButton";
+import Profile from "~/components/auth/Profile";
 
 import { LatestPost } from "~/app/_components/post";
 import { api, HydrateClient } from "~/trpc/server";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
+  const session = await auth0.getSession();
+  const user = session?.user;
 
   void api.post.getLatest.prefetch();
 
@@ -12,6 +18,23 @@ export default async function Home() {
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+          {/* Auth0 Section */}
+          <div className="w-full max-w-md rounded-xl bg-white/10 p-6 backdrop-blur-sm">
+            <h2 className="mb-4 text-2xl font-bold text-center">Authentication</h2>
+            {user ? (
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-green-400">✅ Logged in as:</p>
+                <Profile />
+                <LogoutButton />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-gray-300">Please log in to continue</p>
+                <LoginButton />
+              </div>
+            )}
+          </div>
+
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
             Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
           </h1>

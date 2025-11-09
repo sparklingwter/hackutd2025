@@ -25,10 +25,10 @@
 - [x] T003 ✅ Install and configure shadcn/ui components in src/components/ui (Complete - components.json created)
 - [x] T004 ✅ Create directory structure: src/lib/finance-engine and src/lib/ranking-engine (Complete)
 - [x] T005 ✅ Create .env.local.example with Auth0, Firebase, Gemini, ElevenLabs, OpenRouter keys (Complete)
-- [ ] T006 Setup Firebase project and initialize firebase.json with Firestore, Storage, Hosting, Emulators
-- [ ] T007 [P] Create .firebaserc with project ID and environment aliases
-- [ ] T008 [P] Install Firebase Admin SDK and configure service account in src/server/db/firebase.ts
-- [ ] T009 [P] Configure Firebase Emulators (Firestore, Storage) with ports in firebase.json
+- [x] T006 ✅ Setup Firebase project and initialize firebase.json with Firestore, Storage, Hosting, Emulators (Complete)
+- [x] T007 ✅ [P] Create .firebaserc with project ID and environment aliases (Complete)
+- [x] T008 ✅ [P] Install Firebase Admin SDK and configure service account in src/server/db/firebase.ts (Complete)
+- [x] T009 ✅ [P] Configure Firebase Emulators (Firestore, Storage) with ports in firebase.json (Complete)
 - [x] T010 ✅ Create README.md in repository root with project overview and quickstart links (Complete)
 
 ---
@@ -41,20 +41,20 @@
 
 ### Database & Schema
 
-- [ ] T011 Define shared Zod schemas in src/server/api/schemas.ts from contracts/schemas.md
-- [ ] T012 Create Firestore collections structure: vehicles, userProfiles, dealerLeads in src/server/db/collections.ts
-- [ ] T013 [P] Implement Firestore Security Rules in firestore.rules enforcing auth and ownership per research.md
-- [ ] T014 [P] Create Firestore composite indexes in firestore.indexes.json for vehicle filtering (bodyStyle, fuelType, msrp, seating)
+- [x] T011 ✅ Define shared Zod schemas in src/server/api/schemas.ts from contracts/schemas.md (Complete)
+- [x] T012 ✅ Create Firestore collections structure: vehicles, userProfiles, dealerLeads in src/server/db/collections.ts (Complete)
+- [x] T013 ✅ [P] Implement Firestore Security Rules in firestore.rules enforcing auth and ownership per research.md (Complete)
+- [x] T014 ✅ [P] Create Firestore composite indexes in firestore.indexes.json for vehicle filtering (bodyStyle, fuelType, msrp, seating) (Complete)
 
 ### Authentication
 
-- [ ] T015 Install @auth0/nextjs-auth0@latest SDK
-- [ ] T016 Create Auth0 client configuration in lib/auth0.ts using Auth0Client per research.md
-- [ ] T017 Create middleware.ts at repository root with Auth0 middleware integration (v4 requirement)
-- [ ] T018 Wrap app with Auth0Provider in src/app/layout.tsx
-- [ ] T019 Create LoginButton component in src/components/auth/LoginButton.tsx using <a href="/auth/login">
-- [ ] T020 [P] Create LogoutButton component in src/components/auth/LogoutButton.tsx
-- [ ] T021 [P] Create Profile component in src/components/auth/Profile.tsx using useUser hook
+- [x] T015 ✅ Install @auth0/nextjs-auth0@latest SDK (Complete)
+- [x] T016 ✅ Create Auth0 client configuration in lib/auth0.ts using Auth0Client per research.md (Complete)
+- [x] T017 ✅ Create middleware.ts at repository root with Auth0 middleware integration (v4 requirement) (Complete)
+- [x] T018 ✅ Wrap app with Auth0Provider in src/app/layout.tsx (Complete)
+- [x] T019 ✅ Create LoginButton component in src/components/auth/LoginButton.tsx using <a href="/auth/login"> (Complete)
+- [x] T020 ✅ [P] Create LogoutButton component in src/components/auth/LogoutButton.tsx (Complete)
+- [x] T021 ✅ [P] Create Profile component in src/components/auth/Profile.tsx using useUser hook (Complete)
 
 ### tRPC API Setup
 
