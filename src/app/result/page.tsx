@@ -4,13 +4,10 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import StickyHeader from "~/components/ui/sticky-header";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupTextarea,
-} from "~/components/ui/input-group";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Search, ArrowRight, ArrowUp, Plus, CheckCircle2, AlertTriangle } from "lucide-react";
 
 // --- Mock inventory (tags are lowercase keywords) ---
@@ -103,11 +100,11 @@ function extractKeywords(text: string): string[] {
   const found = new Set<string>();
   for (const canonical of FLAT_KEYWORDS) {
     const aliases = KEYWORD_ALIASES[canonical];
-    if (aliases.some(a => q.includes(a))) {
+    if (aliases && aliases.some(a => q.includes(a))) {
       found.add(canonical);
     }
   }
-  // If user mentions “toyota” or “yota”, no need to add—inventory is Toyota-only
+  // If user mentions "toyota" or "yota", no need to add—inventory is Toyota-only
   return Array.from(found);
 }
 
@@ -157,52 +154,57 @@ export default function ResultPage() {
     <>
       <StickyHeader />
 
-      <main className="relative mx-auto w-full max-w-7xl px-4 py-8 text-foreground">
+      <main className="relative mx-auto w-full max-w-7xl px-4 py-8 text-foreground min-h-screen bg-white dark:bg-gradient-to-b dark:from-background dark:via-background dark:to-muted/20">
         {/* Top row: Filters (left) + Chatbox (center) */}
         <div className="grid grid-cols-12 gap-6">
           {/* Filter card (left of chatbox) */}
           <aside className="col-span-12 md:col-span-4 lg:col-span-3">
-            <div className="rounded-2xl border bg-card p-5 shadow">
-              <h2 className="mb-3 text-lg font-semibold">Filters</h2>
+            <Card className="rounded-2xl shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Filters</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Detected from prompt */}
+                <div>
+                  <div className="mb-2 text-sm text-muted-foreground">Detected from your prompt</div>
+                  <div className="flex flex-wrap gap-2">
+                    {detected.length === 0 ? (
+                      <span className="text-sm text-muted-foreground">No keywords yet</span>
+                    ) : (
+                      detected.map(k => (
+                        <span
+                          key={`det-${k}`}
+                          className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm"
+                        >
+                          {k}
+                        </span>
+                      ))
+                    )}
+                  </div>
+                </div>
 
-              {/* Detected from prompt */}
-              <div className="mb-2 text-sm text-muted-foreground">Detected from your prompt</div>
-              <div className="mb-4 flex flex-wrap gap-2">
-                {detected.length === 0 ? (
-                  <span className="text-sm text-muted-foreground">No keywords yet</span>
-                ) : (
-                  detected.map(k => (
-                    <span
-                      key={`det-${k}`}
-                      className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm"
-                    >
-                      {k}
-                    </span>
-                  ))
-                )}
-              </div>
-
-              {/* Manual toggles */}
-              <div className="mb-2 text-sm text-muted-foreground">Quick add/remove</div>
-              <div className="flex flex-wrap gap-2">
-                {FLAT_KEYWORDS.map(k => {
-                  const active = activeFilters.includes(k);
-                  return (
-                    <button
-                      key={k}
-                      onClick={() => toggleManual(k)}
-                      className={`rounded-full border px-3 py-1 text-sm transition ${
-                        active
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-muted hover:bg-muted/70"
-                      }`}
-                    >
-                      {active ? "✓ " : ""}{k}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                {/* Manual toggles */}
+                <div>
+                  <div className="mb-2 text-sm text-muted-foreground">Quick add/remove</div>
+                  <div className="flex flex-wrap gap-2">
+                    {FLAT_KEYWORDS.map(k => {
+                      const active = activeFilters.includes(k);
+                      return (
+                        <Button
+                          key={k}
+                          onClick={() => toggleManual(k)}
+                          variant={active ? "default" : "outline"}
+                          size="sm"
+                          className={`rounded-full ${active ? "" : "bg-muted hover:bg-muted/70"}`}
+                        >
+                          {active ? "✓ " : ""}{k}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </aside>
 
           {/* Chatbox centered at the top (spans remaining columns) */}
@@ -210,31 +212,33 @@ export default function ResultPage() {
             <div className="mx-auto max-w-3xl">
               {/* Search bar (optional) */}
               <div className="mb-4">
-                <InputGroup className="rounded-full shadow overflow-hidden">
-                  <InputGroupAddon>
-                    <Search className="ml-3 h-6 w-6 text-muted-foreground" />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    placeholder="Quick search…"
-                    className="h-14 border-0 px-5 text-base focus:ring-2 focus:ring-primary rounded-full"
-                  />
-                </InputGroup>
+                <Card className="rounded-full shadow overflow-hidden">
+                  <div className="flex items-center h-14 px-4">
+                    <Search className="h-6 w-6 text-muted-foreground shrink-0" />
+                    <Input
+                      placeholder="Quick search…"
+                      className="h-full border-0 px-5 text-base focus:ring-2 focus-visible:ring-2 focus-visible:ring-primary shadow-none bg-transparent"
+                    />
+                  </div>
+                </Card>
               </div>
 
               {/* Chatbox */}
-              <InputGroup className="rounded-2xl shadow overflow-hidden">
-                <InputGroupTextarea
-                  placeholder="Describe what you want… e.g. ‘hybrid SUV with AWD for family trips’"
-                  className="min-h-[12rem] border-0 p-5 text-base leading-relaxed focus:ring-2 focus:ring-primary rounded-2xl"
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                />
-                <InputGroupAddon align="inline-end" className="flex items-center gap-2 pr-4 py-2">
-                  <InputGroupButton className="rounded-full px-4 py-2" variant="default">
-                    Apply <ArrowRight className="ml-2 h-4 w-4" />
-                  </InputGroupButton>
-                </InputGroupAddon>
-              </InputGroup>
+              <Card className="rounded-2xl shadow overflow-hidden">
+                <div className="relative">
+                  <Textarea
+                    placeholder="Describe what you want… e.g. 'hybrid SUV with AWD for family trips'"
+                    className="min-h-[12rem] border-0 p-5 text-base leading-relaxed focus:ring-2 focus-visible:ring-2 focus-visible:ring-primary shadow-none resize-none"
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                  />
+                  <div className="flex items-center gap-2 pr-4 pb-4 justify-end">
+                    <Button className="rounded-full px-4 py-2" variant="default">
+                      Apply <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
 
               {/* Active filters summary under chatbox */}
               {activeFilters.length > 0 && (
@@ -255,16 +259,18 @@ export default function ResultPage() {
         <section className="mt-8">
           <h2 className="mb-4 text-xl font-semibold">Results</h2>
           {filteredCars.length === 0 ? (
-            <div className="flex items-center gap-2 rounded-xl border bg-card p-4 text-sm">
-              <AlertTriangle className="h-5 w-5 text-muted-foreground" />
-              No cars match the current filters. Try removing a few keywords.
-            </div>
+            <Card className="rounded-xl">
+              <CardContent className="flex items-center gap-2 p-4 text-sm">
+                <AlertTriangle className="h-5 w-5 text-muted-foreground" />
+                No cars match the current filters. Try removing a few keywords.
+              </CardContent>
+            </Card>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredCars.map((car) => {
                 const inCompare = compareIds.includes(car.id);
                 return (
-                  <div key={car.id} className="flex flex-col overflow-hidden rounded-2xl border bg-card shadow">
+                  <Card key={car.id} className="flex flex-col overflow-hidden rounded-2xl shadow">
                     <div className="relative h-44 w-full">
                       <Image
                         src={car.img}
@@ -274,7 +280,7 @@ export default function ResultPage() {
                       />
                     </div>
 
-                    <div className="flex flex-1 flex-col gap-2 p-4">
+                    <CardContent className="flex flex-1 flex-col gap-2 p-4">
                       <div className="flex items-start justify-between gap-3">
                         <h3 className="text-lg font-semibold">{car.name}</h3>
                         <span className="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-sm">
@@ -296,26 +302,23 @@ export default function ResultPage() {
                       )}
 
                       <div className="mt-3 flex items-center gap-2">
-                        <Link
-                          href="#"
-                          className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-95"
-                        >
-                          Buy
-                        </Link>
-                        <button
+                        <Button asChild className="rounded-full" size="sm">
+                          <Link href="#">
+                            Buy
+                          </Link>
+                        </Button>
+                        <Button
                           onClick={() => (inCompare ? removeCompare(car.id) : addCompare(car.id))}
-                          className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm transition ${
-                            inCompare
-                              ? "bg-green-600 text-white"
-                              : "bg-secondary text-secondary-foreground hover:opacity-90"
-                          }`}
+                          variant={inCompare ? "default" : "secondary"}
+                          size="sm"
+                          className={`rounded-full ${inCompare ? "bg-green-600 hover:bg-green-700" : ""}`}
                         >
                           {inCompare ? <CheckCircle2 className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
                           {inCompare ? "Added" : "Compare"}
-                        </button>
+                        </Button>
                       </div>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
@@ -324,54 +327,59 @@ export default function ResultPage() {
 
         {/* Compare popup (bottom-right) */}
         <div className="fixed bottom-6 right-6 z-50">
-          <div className="flex w-72 flex-col gap-3 rounded-2xl border bg-card p-4 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <div className="text-base font-semibold">Compare</div>
-              <span className="text-sm text-muted-foreground">{compareIds.length} / 3</span>
-            </div>
-
-            {error && (
-              <div className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                {error}
+          <Card className="w-72 shadow-2xl">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Compare</CardTitle>
+                <span className="text-sm text-muted-foreground">{compareIds.length} / 3</span>
               </div>
-            )}
+            </CardHeader>
 
-            {compareIds.length === 0 ? (
-              <div className="text-sm text-muted-foreground">
-                Add up to 3 cars to compare.
-              </div>
-            ) : (
-              <ul className="flex flex-wrap gap-2">
-                {compareIds.map(id => {
-                  const car = CARS.find(c => c.id === id)!;
-                  return (
-                    <li key={id} className="flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs">
-                      {car.name}
-                      <button
-                        onClick={() => removeCompare(id)}
-                        className="ml-1 rounded-full px-2 py-0.5 hover:bg-muted-foreground/10"
-                        aria-label={`Remove ${car.name}`}
-                        title="Remove"
-                      >
-                        ×
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
+            <CardContent className="space-y-3">
+              {error && (
+                <div className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
 
-            <Link
-              href={compareIds.length > 0 ? `/compare_result?ids=${encodeURIComponent(compareIds.join(","))}` : "#"}
-              className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm ${
-                compareIds.length > 0
-                  ? "bg-primary text-primary-foreground hover:opacity-95"
-                  : "pointer-events-none bg-muted text-muted-foreground"
-              }`}
-            >
-              Open Compare <ArrowUp className="h-4 w-4" />
-            </Link>
-          </div>
+              {compareIds.length === 0 ? (
+                <div className="text-sm text-muted-foreground">
+                  Add up to 3 cars to compare.
+                </div>
+              ) : (
+                <ul className="flex flex-wrap gap-2">
+                  {compareIds.map(id => {
+                    const car = CARS.find(c => c.id === id)!;
+                    return (
+                      <li key={id} className="flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs">
+                        {car.name}
+                        <Button
+                          onClick={() => removeCompare(id)}
+                          variant="ghost"
+                          size="icon"
+                          className="ml-1 h-5 w-5 rounded-full hover:bg-muted-foreground/10"
+                          aria-label={`Remove ${car.name}`}
+                          title="Remove"
+                        >
+                          ×
+                        </Button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              <Button
+                asChild
+                disabled={compareIds.length === 0}
+                className="w-full rounded-full"
+              >
+                <Link href={compareIds.length > 0 ? `/compare_result?ids=${encodeURIComponent(compareIds.join(","))}` : "#"}>
+                  Open Compare <ArrowUp className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </>

@@ -4,14 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { IconPlus } from "@tabler/icons-react";
 import { ArrowUpIcon, Search, Mic, MicOff } from "lucide-react";
 import StickyHeader from "~/components/ui/sticky-header";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupTextarea,
-} from "~/components/ui/input-group";
-import { TooltipProvider } from "~/components/ui/tooltip";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import { Card } from "~/components/ui/card";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "~/components/ui/tooltip";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -81,63 +78,74 @@ export default function Home() {
 
           {/* Search Bar - Apple-style glassmorphism */}
           <div className="w-full max-w-3xl animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            <InputGroup className="rounded-full shadow-2xl backdrop-blur-xl bg-card/80 border border-border/50 hover:shadow-xl transition-all duration-300 ease-out overflow-hidden">
-              <InputGroupAddon>
-                <Search className="h-5 w-5 ml-4 text-muted-foreground/70" />
-              </InputGroupAddon>
-              <InputGroupInput
-                placeholder="Search..."
-                className="h-16 text-lg px-4 border-0 bg-transparent focus:ring-0 focus:outline-none placeholder:text-muted-foreground/50 font-light"
-              />
-            </InputGroup>
+            <Card className="rounded-full shadow-2xl backdrop-blur-xl bg-card/80 border border-border/50 hover:shadow-xl transition-all duration-300 ease-out overflow-hidden">
+              <div className="flex items-center h-16 px-4">
+                <Search className="h-5 w-5 text-muted-foreground/70 shrink-0" />
+                <Input
+                  placeholder="Search..."
+                  className="h-full text-lg px-4 border-0 bg-transparent focus:ring-0 focus-visible:ring-0 shadow-none placeholder:text-muted-foreground/50 font-light"
+                />
+              </div>
+            </Card>
           </div>
 
           {/* Chatbox - Apple-style with smooth animations */}
           <div className="w-full max-w-4xl animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <InputGroup className="rounded-3xl shadow-2xl backdrop-blur-xl bg-card/80 border border-border/50 hover:shadow-xl transition-all duration-300 ease-out overflow-hidden">
-              <InputGroupTextarea
-                placeholder="Ask, search, or chat..."
-                className="min-h-[26rem] text-base leading-relaxed p-8 border-0 bg-transparent focus:ring-0 focus:outline-none placeholder:text-muted-foreground/50 font-light resize-none"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-              />
+            <Card className="rounded-3xl shadow-2xl backdrop-blur-xl bg-card/80 border border-border/50 hover:shadow-xl transition-all duration-300 ease-out overflow-hidden">
+              <div className="relative">
+                <Textarea
+                  placeholder="Ask, search, or chat..."
+                  className="min-h-[26rem] text-base leading-relaxed p-8 border-0 bg-transparent focus:ring-0 focus-visible:ring-0 shadow-none placeholder:text-muted-foreground/50 font-light resize-none"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                />
 
-              {/* End controls - Apple-style buttons with smooth hover effects */}
-              <InputGroupAddon align="inline-end" className="flex items-center gap-3 pr-6 pb-6">
-                {/* Voice (ElevenLabs) */}
-                <InputGroupButton
-                  variant={recording ? "default" : "outline"}
-                  className={`rounded-full p-3.5 transition-all duration-300 hover:scale-110 active:scale-95 shadow-md hover:shadow-lg border-0 ${
-                    recording 
-                      ? "animate-pulse bg-primary text-primary-foreground" 
-                      : "bg-muted/50 backdrop-blur-sm hover:bg-muted"
-                  }`}
-                  onClick={recording ? stopRecording : startRecording}
-                  aria-pressed={recording}
-                  aria-label={recording ? "Stop recording" : "Start recording"}
-                  title={recording ? "Recording…" : "Voice (ElevenLabs Scribe)"}
-                >
-                  {recording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                </InputGroupButton>
+                {/* End controls - Apple-style buttons with smooth hover effects */}
+                <div className="flex items-center gap-3 pr-6 pb-6 justify-end">
+                  {/* Voice (ElevenLabs) */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant={recording ? "default" : "outline"}
+                        size="icon"
+                        className={`rounded-full transition-all duration-300 hover:scale-110 active:scale-95 shadow-md hover:shadow-lg border-0 ${
+                          recording 
+                            ? "animate-pulse bg-primary text-primary-foreground" 
+                            : "bg-muted/50 backdrop-blur-sm hover:bg-muted"
+                        }`}
+                        onClick={recording ? stopRecording : startRecording}
+                        aria-pressed={recording}
+                        aria-label={recording ? "Stop recording" : "Start recording"}
+                      >
+                        {recording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{recording ? "Recording…" : "Voice (ElevenLabs Scribe)"}</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-                <InputGroupButton 
-                  variant="outline" 
-                  className="rounded-full p-3.5 transition-all duration-300 hover:scale-110 active:scale-95 shadow-md hover:shadow-lg border-0 bg-muted/50 backdrop-blur-sm hover:bg-muted"
-                >
-                  <IconPlus className="h-5 w-5" />
-                </InputGroupButton>
-
-                <Link href="/result">
-                  <InputGroupButton 
-                    variant="default" 
-                    className="rounded-full p-3.5 transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl border-0 bg-primary text-primary-foreground"
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    className="rounded-full transition-all duration-300 hover:scale-110 active:scale-95 shadow-md hover:shadow-lg border-0 bg-muted/50 backdrop-blur-sm hover:bg-muted"
                   >
-                    <ArrowUpIcon className="h-5 w-5" />
-                    <span className="sr-only">Send</span>
-                  </InputGroupButton>
-                </Link>
-              </InputGroupAddon>
-            </InputGroup>
+                    <IconPlus className="h-5 w-5" />
+                  </Button>
+
+                  <Link href="/result">
+                    <Button 
+                      variant="default" 
+                      size="icon"
+                      className="rounded-full transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl border-0 bg-primary text-primary-foreground"
+                    >
+                      <ArrowUpIcon className="h-5 w-5" />
+                      <span className="sr-only">Send</span>
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
       </main>
