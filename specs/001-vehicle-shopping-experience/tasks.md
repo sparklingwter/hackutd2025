@@ -20,23 +20,16 @@
 
 **Purpose**: Initialize project structure and tooling
 
-- [ ] T001 Create monorepo structure with apps/web, packages/finance-engine, packages/ranking-engine per plan.md
-- [ ] T002 Initialize root package.json with npm workspaces configuration for monorepo
-- [ ] T003 [P] Configure Turbo build orchestration in turbo.json with dev, build, and lint pipelines
-- [ ] T004 [P] Setup TypeScript 5.8 configuration in root tsconfig.json with strict mode
-- [ ] T005 [P] Configure ESLint 9.16 with Next.js rules in eslint.config.js
-- [ ] T006 [P] Configure Prettier 3.4 in prettier.config.js
-- [ ] T007 Initialize Next.js 15.2 App Router project in apps/web with React 19
-- [ ] T008 [P] Setup Tailwind CSS 4.0 configuration in apps/web/tailwind.config.ts
-- [ ] T009 [P] Install and configure shadcn/ui in apps/web/components/ui
-- [ ] T010 [P] Initialize packages/finance-engine with TypeScript library structure
-- [ ] T011 [P] Initialize packages/ranking-engine with TypeScript library structure
-- [ ] T012 [P] Create .env.local template in apps/web with Auth0, Firebase, Gemini, ElevenLabs, OpenRouter keys
-- [ ] T013 Setup Firebase project and initialize firebase.json with Firestore, Storage, Hosting, Emulators
-- [ ] T014 [P] Create .firebaserc with project ID and environment aliases
-- [ ] T015 [P] Install Firebase Admin SDK and configure service account in apps/web/src/server/db/firebase.ts
-- [ ] T016 [P] Configure Firebase Emulators (Firestore, Storage) with ports in firebase.json
-- [ ] T017 Create README.md in repository root with project overview and quickstart links
+- [x] T001 ✅ Verify existing Next.js 15.2 structure with TypeScript 5.8, React 19, App Router (Already complete)
+- [x] T002 ✅ Setup Tailwind CSS 4.0 configuration in tailwind.config.ts (Complete - using Tailwind v4 CSS-based config)
+- [x] T003 ✅ Install and configure shadcn/ui components in src/components/ui (Complete - components.json created)
+- [x] T004 ✅ Create directory structure: src/lib/finance-engine and src/lib/ranking-engine (Complete)
+- [x] T005 ✅ Create .env.local.example with Auth0, Firebase, Gemini, ElevenLabs, OpenRouter keys (Complete)
+- [ ] T006 Setup Firebase project and initialize firebase.json with Firestore, Storage, Hosting, Emulators
+- [ ] T007 [P] Create .firebaserc with project ID and environment aliases
+- [ ] T008 [P] Install Firebase Admin SDK and configure service account in src/server/db/firebase.ts
+- [ ] T009 [P] Configure Firebase Emulators (Firestore, Storage) with ports in firebase.json
+- [x] T010 ✅ Create README.md in repository root with project overview and quickstart links (Complete)
 
 ---
 
@@ -48,61 +41,59 @@
 
 ### Database & Schema
 
-- [ ] T018 Define shared Zod schemas in apps/web/src/server/api/schemas.ts from contracts/schemas.md
-- [ ] T019 Create Firestore collections structure: vehicles, userProfiles, dealerLeads in apps/web/src/server/db/collections.ts
-- [ ] T020 [P] Implement Firestore Security Rules in firebase/firestore.rules enforcing auth and ownership per research.md
-- [ ] T021 [P] Create Firestore composite indexes in firebase/firestore.indexes.json for vehicle filtering (bodyStyle, fuelType, msrp, seating)
+- [ ] T011 Define shared Zod schemas in src/server/api/schemas.ts from contracts/schemas.md
+- [ ] T012 Create Firestore collections structure: vehicles, userProfiles, dealerLeads in src/server/db/collections.ts
+- [ ] T013 [P] Implement Firestore Security Rules in firestore.rules enforcing auth and ownership per research.md
+- [ ] T014 [P] Create Firestore composite indexes in firestore.indexes.json for vehicle filtering (bodyStyle, fuelType, msrp, seating)
 
 ### Authentication
 
-- [ ] T022 Install @auth0/nextjs-auth0@latest SDK in apps/web
-- [ ] T023 Create Auth0 client configuration in apps/web/lib/auth0.ts using Auth0Client per research.md
-- [ ] T024 Create middleware.ts at repository root with Auth0 middleware integration (v4 requirement)
-- [ ] T025 Wrap app with Auth0Provider in apps/web/src/app/layout.tsx
-- [ ] T026 Create LoginButton component in apps/web/src/components/auth/LoginButton.tsx using <a href="/auth/login">
-- [ ] T027 [P] Create LogoutButton component in apps/web/src/components/auth/LogoutButton.tsx
-- [ ] T028 [P] Create Profile component in apps/web/src/components/auth/Profile.tsx using useUser hook
+- [ ] T015 Install @auth0/nextjs-auth0@latest SDK
+- [ ] T016 Create Auth0 client configuration in lib/auth0.ts using Auth0Client per research.md
+- [ ] T017 Create middleware.ts at repository root with Auth0 middleware integration (v4 requirement)
+- [ ] T018 Wrap app with Auth0Provider in src/app/layout.tsx
+- [ ] T019 Create LoginButton component in src/components/auth/LoginButton.tsx using <a href="/auth/login">
+- [ ] T020 [P] Create LogoutButton component in src/components/auth/LogoutButton.tsx
+- [ ] T021 [P] Create Profile component in src/components/auth/Profile.tsx using useUser hook
 
 ### tRPC API Setup
 
-- [ ] T029 Create tRPC context in apps/web/src/server/api/trpc.ts with Auth0 session and Firestore client
-- [ ] T030 Create tRPC root router in apps/web/src/server/api/root.ts merging all domain routers
-- [ ] T031 Setup tRPC API route handler in apps/web/src/app/api/trpc/[trpc]/route.ts
-- [ ] T032 [P] Configure tRPC client in apps/web/src/lib/trpc.ts with React Query integration
-- [ ] T033 Create publicProcedure and protectedProcedure helpers in apps/web/src/server/api/trpc.ts
+- [ ] T022 Create tRPC context in src/server/api/trpc.ts with Auth0 session and Firestore client
+- [ ] T023 Create tRPC root router in src/server/api/root.ts merging all domain routers
+- [ ] T024 Setup tRPC API route handler in src/app/api/trpc/[trpc]/route.ts
+- [ ] T025 [P] Configure tRPC client in src/trpc/react.tsx with React Query integration
+- [ ] T026 Create publicProcedure and protectedProcedure helpers in src/server/api/trpc.ts
 
 ### Finance Engine Library
 
-- [ ] T034 [P] Implement cash calculation in packages/finance-engine/src/lib/cash.ts with out-the-door total
-- [ ] T035 [P] Implement finance calculation in packages/finance-engine/src/lib/finance.ts with amortization
-- [ ] T036 [P] Implement lease calculation in packages/finance-engine/src/lib/lease.ts with residual and money factor
-- [ ] T037 [P] Implement tax/fee calculation by ZIP in packages/finance-engine/src/lib/taxes.ts with state fallback
-- [ ] T038 [P] Implement fuel cost estimation in packages/finance-engine/src/lib/fuel.ts for gas and electric
-- [ ] T039 Create library exports in packages/finance-engine/src/index.ts
-- [ ] T040 [P] Create CLI entry point in packages/finance-engine/src/cli.ts with JSON stdin/stdout
+- [ ] T027 [P] Implement cash calculation in src/lib/finance-engine/cash.ts with out-the-door total
+- [ ] T028 [P] Implement finance calculation in src/lib/finance-engine/finance.ts with amortization
+- [ ] T029 [P] Implement lease calculation in src/lib/finance-engine/lease.ts with residual and money factor
+- [ ] T030 [P] Implement tax/fee calculation by ZIP in src/lib/finance-engine/taxes.ts with state fallback
+- [ ] T031 [P] Implement fuel cost estimation in src/lib/finance-engine/fuel.ts for gas and electric
+- [ ] T032 Create library exports in src/lib/finance-engine/index.ts
 
 ### Ranking Engine Library
 
-- [ ] T041 [P] Implement Gemini API integration in packages/ranking-engine/src/lib/gemini.ts with structured output
-- [ ] T042 [P] Implement OpenRouter fallback in packages/ranking-engine/src/lib/openrouter.ts
-- [ ] T043 Implement deterministic ranking logic in packages/ranking-engine/src/lib/ranking.ts with score calculation
-- [ ] T044 [P] Implement safety filters and guardrails in packages/ranking-engine/src/lib/safety.ts
-- [ ] T045 [P] Create Zod schemas for recommendations in packages/ranking-engine/src/lib/schemas.ts
-- [ ] T046 Create library exports in packages/ranking-engine/src/index.ts
-- [ ] T047 [P] Create CLI entry point in packages/ranking-engine/src/cli.ts with JSON stdin/stdout
+- [ ] T033 [P] Implement Gemini API integration in src/lib/ranking-engine/gemini.ts with structured output
+- [ ] T034 [P] Implement OpenRouter fallback in src/lib/ranking-engine/openrouter.ts
+- [ ] T035 Implement deterministic ranking logic in src/lib/ranking-engine/ranking.ts with score calculation
+- [ ] T036 [P] Implement safety filters and guardrails in src/lib/ranking-engine/safety.ts
+- [ ] T037 [P] Create Zod schemas for recommendations in src/lib/ranking-engine/schemas.ts
+- [ ] T038 Create library exports in src/lib/ranking-engine/index.ts
 
 ### Data Seeding
 
-- [ ] T048 Create vehicle seed data script in apps/web/scripts/seed-vehicles.ts for ~50 Toyota models
-- [ ] T049 Create trim seed data for popular models (Camry, RAV4, Tacoma, Highlander) in seed script
-- [ ] T050 Seed featured vehicles list for homepage showcase in Firestore
+- [ ] T039 Create vehicle seed data script in scripts/seed-vehicles.ts for ~50 Toyota models
+- [ ] T040 Create trim seed data for popular models (Camry, RAV4, Tacoma, Highlander) in seed script
+- [ ] T041 Seed featured vehicles list for homepage showcase in Firestore
 
 ### Voice Integration Setup
 
-- [ ] T051 [P] Install ElevenLabs SDK in apps/web
-- [ ] T052 Create ElevenLabs TTS wrapper in apps/web/src/server/ai/elevenlabs.ts with Rachel voice
-- [ ] T053 [P] Create audio cache service in apps/web/src/server/ai/audio-cache.ts using Firebase Storage
-- [ ] T054 Pre-generate common discovery journey audio prompts at build time in apps/web/scripts/generate-audio.ts
+- [ ] T042 [P] Install ElevenLabs SDK
+- [ ] T043 Create ElevenLabs TTS wrapper in src/server/ai/elevenlabs.ts with Rachel voice
+- [ ] T044 [P] Create audio cache service in src/server/ai/audio-cache.ts using Firebase Storage
+- [ ] T045 Pre-generate common discovery journey audio prompts at build time in scripts/generate-audio.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -116,39 +107,39 @@
 
 ### Search Router Implementation (US1)
 
-- [ ] T055 [P] [US1] Create search router in apps/web/src/server/api/routers/search.ts
-- [ ] T056 [US1] Implement search.recommend procedure calling ranking-engine library
-- [ ] T057 [P] [US1] Implement search.filter procedure for deterministic filtering with Firestore queries
-- [ ] T058 [P] [US1] Implement search.semanticSearch procedure using Gemini for natural language queries
-- [ ] T059 [US1] Add rate limiting middleware for recommendation endpoint (10 req/min/IP)
+- [ ] T046 [P] [US1] Create search router in src/server/api/routers/search.ts
+- [ ] T047 [US1] Implement search.recommend procedure calling ranking-engine library from src/lib/ranking-engine
+- [ ] T048 [P] [US1] Implement search.filter procedure for deterministic filtering with Firestore queries
+- [ ] T049 [P] [US1] Implement search.semanticSearch procedure using Gemini for natural language queries
+- [ ] T050 [US1] Add rate limiting middleware for recommendation endpoint (10 req/min/IP)
 
 ### Discovery Journey UI (US1)
 
-- [ ] T060 [P] [US1] Create home page in apps/web/src/app/page.tsx with hero and "Start Discovery" CTA
-- [ ] T061 [US1] Create discovery layout in apps/web/src/app/discovery/layout.tsx
-- [ ] T062 [US1] Create discovery step 1: Budget input in apps/web/src/app/discovery/budget/page.tsx
-- [ ] T063 [P] [US1] Create discovery step 2: Body style selection in apps/web/src/app/discovery/body-style/page.tsx
-- [ ] T064 [P] [US1] Create discovery step 3: Fuel type and seating in apps/web/src/app/discovery/preferences/page.tsx
-- [ ] T065 [P] [US1] Create discovery step 4: Features and needs in apps/web/src/app/discovery/features/page.tsx
-- [ ] T066 [US1] Create discovery progress indicator component in apps/web/src/components/discovery/ProgressBar.tsx
-- [ ] T067 [P] [US1] Create discovery form state management using React Context in apps/web/src/components/discovery/DiscoveryContext.tsx
+- [ ] T051 [P] [US1] Update home page in src/app/page.tsx with hero and "Start Discovery" CTA
+- [ ] T052 [US1] Create discovery layout in src/app/discovery/layout.tsx
+- [ ] T053 [US1] Create discovery step 1: Budget input in src/app/discovery/budget/page.tsx
+- [ ] T054 [P] [US1] Create discovery step 2: Body style selection in src/app/discovery/body-style/page.tsx
+- [ ] T055 [P] [US1] Create discovery step 3: Fuel type and seating in src/app/discovery/preferences/page.tsx
+- [ ] T056 [P] [US1] Create discovery step 4: Features and needs in src/app/discovery/features/page.tsx
+- [ ] T057 [US1] Create discovery progress indicator component in src/components/discovery/ProgressBar.tsx
+- [ ] T058 [P] [US1] Create discovery form state management using React Context in src/components/discovery/DiscoveryContext.tsx
 
 ### Recommendations UI (US1)
 
-- [ ] T068 [US1] Create recommendations page in apps/web/src/app/recommendations/page.tsx
-- [ ] T069 [P] [US1] Create Top Picks section component in apps/web/src/components/recommendations/TopPicks.tsx
-- [ ] T070 [P] [US1] Create Strong Contenders section in apps/web/src/components/recommendations/StrongContenders.tsx
-- [ ] T071 [P] [US1] Create Explore Alternatives section in apps/web/src/components/recommendations/ExploreAlternatives.tsx
-- [ ] T072 [P] [US1] Create recommendation card component in apps/web/src/components/recommendations/RecommendationCard.tsx with explanation
-- [ ] T073 [US1] Create filter chips component in apps/web/src/components/recommendations/FilterChips.tsx for preference adjustment
+- [ ] T059 [US1] Create recommendations page in src/app/recommendations/page.tsx
+- [ ] T060 [P] [US1] Create Top Picks section component in src/components/recommendations/TopPicks.tsx
+- [ ] T061 [P] [US1] Create Strong Contenders section in src/components/recommendations/StrongContenders.tsx
+- [ ] T062 [P] [US1] Create Explore Alternatives section in src/components/recommendations/ExploreAlternatives.tsx
+- [ ] T063 [P] [US1] Create recommendation card component in src/components/recommendations/RecommendationCard.tsx with explanation
+- [ ] T064 [US1] Create filter chips component in src/components/recommendations/FilterChips.tsx for preference adjustment
 
 ### Voice Integration (US1)
 
-- [ ] T074 [P] [US1] Create voice controls component in apps/web/src/components/voice/VoiceControls.tsx with mute button
-- [ ] T075 [P] [US1] Create speech-to-text integration using ElevenLabs STT in apps/web/src/components/voice/SpeechToText.tsx
-- [ ] T076 [US1] Create text-to-speech audio player in apps/web/src/components/voice/AudioPlayer.tsx with captions
-- [ ] T077 [US1] Add voice toggle in discovery journey with graceful text-only fallback
-- [ ] T078 [US1] Generate audio summary for Top Picks using ElevenLabs TTS
+- [ ] T065 [P] [US1] Create voice controls component in src/components/voice/VoiceControls.tsx with mute button
+- [ ] T066 [P] [US1] Create speech-to-text integration using ElevenLabs STT in src/components/voice/SpeechToText.tsx
+- [ ] T067 [US1] Create text-to-speech audio player in src/components/voice/AudioPlayer.tsx with captions
+- [ ] T068 [US1] Add voice toggle in discovery journey with graceful text-only fallback
+- [ ] T069 [US1] Generate audio summary for Top Picks using ElevenLabs TTS
 
 **Checkpoint**: User Story 1 complete - Users can discover vehicles and receive AI recommendations
 
@@ -162,8 +153,8 @@
 
 ### Compare Router Implementation (US2)
 
-- [ ] T079 [P] [US2] Create compare router in apps/web/src/server/api/routers/compare.ts
-- [ ] T080 [US2] Implement compare.getComparison procedure with category winner calculation
+- [ ] T070 [P] [US2] Create compare router in src/server/api/routers/compare.ts
+- [ ] T071 [US2] Implement compare.getComparison procedure with category winner calculation
 - [ ] T081 [P] [US2] Implement compare.saveCompareSet mutation for authenticated users
 - [ ] T082 [P] [US2] Implement compare.getCompareSets query fetching user saved sets
 - [ ] T083 [P] [US2] Implement compare.deleteCompareSet mutation

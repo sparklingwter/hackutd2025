@@ -28,7 +28,7 @@ npm install
 
 ### 2. Set Up Environment Variables
 
-Create `.env.local` in `apps/web/`:
+Create `.env.local` in the root directory:
 
 ```bash
 # Auth0
@@ -101,7 +101,6 @@ exports.onExecutePostLogin = async (event, api) => {
 
 ```bash
 # Run seed script (creates ~50 Toyota vehicles)
-cd apps/web
 npm run seed:vehicles
 
 # Verify data in Firebase Emulator UI
@@ -117,11 +116,6 @@ npm run seed:vehicles
 firebase emulators:start
 
 # Terminal 2: Next.js Dev Server
-cd apps/web
-npm run dev
-
-# Terminal 3: Watch package builds (if modifying finance-engine or ranking-engine)
-cd packages/finance-engine
 npm run dev
 
 # Visit: http://localhost:3000
@@ -147,22 +141,15 @@ npm run typecheck
 
 ```text
 hackutd2025/
-├── apps/
-│   └── web/                 # Next.js application
-│       ├── src/
-│       │   ├── app/         # App Router pages
-│       │   ├── components/  # React components
-│       │   ├── lib/         # Client utilities
-│       │   └── server/      # Server-side code (tRPC, Firebase)
-│       ├── public/          # Static assets
-│       └── package.json
-├── packages/
-│   ├── finance-engine/      # Finance calculation library
-│   │   ├── src/lib/         # Core logic (cash, finance, lease, taxes, fuel)
-│   │   ├── src/cli.ts       # CLI entry point
-│   └── ranking-engine/      # AI ranking library
-│       ├── src/lib/         # Gemini, OpenRouter, ranking, safety
-│       ├── src/cli.ts       # CLI entry point
+├── src/
+│   ├── app/                 # App Router pages
+│   ├── components/          # React components
+│   ├── lib/                 # Client utilities & libraries
+│   │   ├── finance-engine/  # Finance calculations (cash, finance, lease, taxes, fuel)
+│   │   └── ranking-engine/  # AI ranking (Gemini, OpenRouter, ranking, safety)
+│   └── server/              # Server-side code (tRPC, Firebase)
+├── public/                  # Static assets
+├── scripts/                 # Seed scripts and utilities
 ├── specs/
 │   └── 001-vehicle-shopping-experience/
 │       ├── spec.md          # Feature specification
@@ -171,10 +158,11 @@ hackutd2025/
 │       ├── data-model.md    # Entity definitions
 │       ├── quickstart.md    # This file
 │       └── contracts/       # tRPC API contracts
-└── .specify/
-    ├── memory/
-    │   └── constitution.md  # Project principles
-    └── adrs/                # Architecture Decision Records
+├── .specify/
+│   ├── memory/
+│   │   └── constitution.md  # Project principles
+│   └── adrs/                # Architecture Decision Records
+└── package.json
 ```
 
 ## Key Commands
@@ -191,28 +179,128 @@ hackutd2025/
 
 ## Finance Engine
 
-```bash
-cd packages/finance-engine
+The finance engine is a library in `src/lib/finance-engine/` that provides functions for calculating cash, finance, and lease estimates.
 
-# CLI: Calculate cash estimate
-echo '{"vehiclePrice": 30000, "zipCode": "75080"}' | node dist/cli.js cash
+### Usage in TypeScript/React
 
-# CLI: Calculate finance estimate
-echo '{"vehiclePrice": 30000, "downPayment": 5000, "termMonths": 60, "apr": 5.99, "zipCode": "75080"}' | node dist/cli.js finance
+```typescript
+import { calculateCashEstimate, calculateFinanceEstimate, calculateLeaseEstimate } from '@/lib/finance-engine';
 
-# CLI: Calculate lease estimate
-echo '{"vehiclePrice": 30000, "downPayment": 2000, "termMonths": 36, "residualPercent": 60, "moneyFactor": 0.00125, "mileageCap": 12000, "zipCode": "75080"}' | node dist/cli.js lease
+// Calculate cash out-the-door estimate
+const cashEstimate = calculateCashEstimate({
+  vehiclePrice: 30000,
+  zipCode: '75080',
+  downPayment: 0,
+  tradeInValue: 0,
+  tradeInPayoff: 0
+});
+// Returns: { outTheDoorTotal, salesTax, registrationFee, docFee, totalFees, ... }
 
+// Calculate finance estimate with monthly payments
+const financeEstimate = calculateFinanceEstimate({
+  vehiclePrice: 30000,
+  downPayment: 5000,
+  termMonths: 60,
+  apr: 5.99,
+  zipCode: '75080',
+  tradeInValue: 0,
+  tradeInPayoff: 0
+});
+// Returns: { monthlyPayment, totalAmountFinanced, totalInterestPaid, outTheDoorTotal, ... }
+
+// Calculate lease estimate
+const leaseEstimate = calculateLeaseEstimate({
+  vehiclePrice: 30000,
+  downPayment: 2000,
+  termMonths: 36,
+  residualPercent: 60,
+  moneyFactor: 0.00125,
+  mileageCap: 12000,
+  zipCode: '75080',
+  tradeInValue: 0,
+  tradeInPayoff: 0
+});
+// Returns: { monthlyPayment, totalLeasePayments, dueAtSigning, residualValue, ... }
+
+// Calculate fuel/energy costs
+import { calculateFuelCost } from '@/lib/finance-engine';
+
+const fuelCost = calculateFuelCost({
+  fuelType: 'gas', // or 'electric'
+  mpgCombined: 30, // or mpgeCombined for electric
+  annualMiles: 12000,
+  fuelPricePerUnit: 3.50 // $/gallon for gas, $/kWh for electric
+});
+// Returns: { monthlyCost, annualCost, costPerMile }
+```
+
+### Tax and Fee Calculation
+
+```typescript
+import { calculateTaxesAndFees } from '@/lib/finance-engine';
+
+const taxesAndFees = calculateTaxesAndFees({
+  vehiclePrice: 30000,
+  zipCode: '75080' // Determines state/local tax rates
+});
+// Returns: { salesTax, salesTaxRate, registrationFee, docFee, totalFees }
 ```
 
 ## Ranking Engine
 
-```bash
-cd packages/ranking-engine
+The ranking engine is a library in `src/lib/ranking-engine/` that provides AI-powered vehicle recommendations with transparent scoring.
 
-# CLI: Generate recommendations
-echo '{"budgetType": "monthly", "budgetAmount": 500, "bodyStyle": "suv", "seating": 7, "fuelType": "hybrid", ...}' | node dist/cli.js recommend
+### Usage in TypeScript/React
 
+```typescript
+import { generateRecommendations } from '@/lib/ranking-engine';
+
+// Generate tiered recommendations based on user needs
+const recommendations = await generateRecommendations({
+  budgetType: 'monthly', // or 'cash'
+  budgetAmount: 500,
+  bodyStyle: 'suv',
+  seating: 7,
+  fuelType: 'hybrid',
+  priorityMpg: true,
+  priorityRange: false,
+  cargoNeeds: 'moderate',
+  towingNeeds: 'light',
+  requireAwd: true,
+  safetyPriority: 'high',
+  driverAssistNeeds: ['adaptive-cruise', 'lane-keep', 'blind-spot'],
+  mustHaveFeatures: ['apple-carplay', 'heated-seats'],
+  drivingPattern: 'mixed',
+  commuteLength: 'medium'
+});
+
+// Returns tiered structure:
+// {
+//   topPicks: [{ vehicleId, tier: 'top-pick', score: 95, explanation, matchedCriteria, tradeoffs? }],
+//   strongContenders: [{ vehicleId, tier: 'strong-contender', score: 82, ... }],
+//   exploreAlternatives: [{ vehicleId, tier: 'explore-alternative', score: 68, ... }]
+// }
+```
+
+### AI Provider Configuration
+
+```typescript
+import { rankVehicles } from '@/lib/ranking-engine';
+
+// Uses Gemini API by default, falls back to OpenRouter if unavailable
+const ranked = await rankVehicles({
+  vehicles: vehicleList,
+  userNeeds: userProfile,
+  provider: 'gemini' // or 'openrouter' to force fallback
+});
+
+// Apply safety filters
+import { applySafetyFilters } from '@/lib/ranking-engine';
+
+const safeVehicles = applySafetyFilters(vehicles, {
+  minSafetyRating: 4,
+  requiredFeatures: ['abs', 'stability-control', 'airbags']
+});
 ```
 
 ## Debugging
@@ -241,14 +329,51 @@ DEBUG=* npm run dev
 
 ### tRPC API Testing
 
-```typescript
-// Use tRPC playground (development only)
-// http://localhost:3000/api/trpc-playground
+```bash
+# Test via curl (PowerShell)
+curl http://localhost:3000/api/trpc/vehicles.list `
+  -H "Content-Type: application/json" `
+  -d '{"filters": {"bodyStyle": "suv"}}'
 
-// Or test via curl
+# Test via curl (bash/Linux/macOS)
 curl http://localhost:3000/api/trpc/vehicles.list \
   -H "Content-Type: application/json" \
   -d '{"filters": {"bodyStyle": "suv"}}'
+
+# Or use Invoke-RestMethod (PowerShell native)
+$body = @{ filters = @{ bodyStyle = "suv" } } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:3000/api/trpc/vehicles.list" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body $body
+
+# Or use the tRPC client directly in React components
+# See src/trpc/react.tsx for usage
+```
+
+### Using tRPC in Components
+
+```typescript
+'use client';
+
+import { api } from '@/trpc/react';
+
+export function VehicleList() {
+  // Query vehicles with filters
+  const { data: vehicles, isLoading } = api.vehicles.list.useQuery({
+    filters: { bodyStyle: 'suv', fuelType: 'hybrid' },
+    limit: 20
+  });
+
+  // Mutation example
+  const addToFavorites = api.profile.addFavorite.useMutation();
+
+  const handleFavorite = (vehicleId: string) => {
+    addToFavorites.mutate({ vehicleId });
+  };
+
+  // ...
+}
 ```
 
 ## Common Issues
@@ -275,11 +400,11 @@ curl http://localhost:3000/api/trpc/vehicles.list \
 
 ## Next Steps
 
-1. **Explore Codebase**: Start with `apps/web/src/app/page.tsx` (homepage)
-2. **Review tRPC Routers**: `apps/web/src/server/api/routers/` (API contracts)
-3. **Read Constitution**: `.specify/memory/constitution.md` (project principles)
-4. **Check ADRs**: `.specify/adrs/` (architectural decisions)
-5. **Contribute**: See `CONTRIBUTING.md` (coding standards, PR process)
+1. **Explore Codebase**: Start with `src/app/page.tsx` (homepage)
+2. **Review tRPC Routers**: `src/server/api/routers/` (API contracts)
+3. **Check Libraries**: `src/lib/finance-engine/` and `src/lib/ranking-engine/`
+4. **Read Constitution**: `.specify/memory/constitution.md` (project principles)
+5. **Check ADRs**: `.specify/adrs/` (architectural decisions)
 
 ## Resources
 

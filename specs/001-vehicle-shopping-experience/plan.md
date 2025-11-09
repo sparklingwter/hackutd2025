@@ -15,7 +15,7 @@ Build an AI-guided vehicle shopping experience enabling users to discover, compa
 **Primary Dependencies**: tRPC 11, Zod (validation), Firebase SDK (Firestore, Storage, AppHosting), Auth0 SDK, Gemini API SDK, ElevenLabs API SDK, OpenRouter SDK (fallback), Tailwind CSS 4.0, shadcn/ui, tweakcn, Lucide icons  
 **Storage**: Firebase Firestore (vehicles, trims, pricing/incentives, user preferences, comparison sets, estimates, dealer leads), Firebase Storage (vehicle images, audio assets)  
 **Target Platform**: Web (desktop-first responsive design, mobile/tablet adaptive), deployed to Firebase AppHosting with GoDaddy DNS  
-**Project Type**: Monorepo with 3 projects: 1) apps/web (Next.js app), 2) packages/finance-engine (library + CLI), 3) packages/ranking-engine (library + CLI)  
+**Project Type**: Single Next.js application with integrated libraries: 1) Next.js app (root), 2) src/lib/finance-engine (finance calculations), 3) src/lib/ranking-engine (AI recommendations)  
 **Performance Goals**: <2s initial page load (Lighthouse), <500ms tRPC API response p95, <1s AI recommendation generation p95, <3s voice synthesis for typical prompts
 **Scale/Scope**: ~50 Toyota models/trims at launch, curated dataset seeded during hackathon, 10-20 UI screens (home, discovery journey, recommendations, filters, compare, detail, estimate, profile, dealer), ~5-7 tRPC routers (search, vehicles, compare, estimate, profile, dealer), support for thousands of concurrent users (Firebase auto-scaling)
 
@@ -125,33 +125,6 @@ apps/
 │   ├── tsconfig.json
 │   └── package.json
 
-packages/
-├── finance-engine/               # Standalone finance calculation library
-│   ├── src/
-│   │   ├── lib/
-│   │   │   ├── cash.ts           # Cash out-the-door calculations
-│   │   │   ├── finance.ts        # Finance payment calculations
-│   │   │   ├── lease.ts          # Lease payment calculations
-│   │   │   ├── taxes.ts          # Tax/fee calculations by ZIP/state
-│   │   │   └── fuel.ts           # Fuel/energy cost estimates
-│   │   ├── cli.ts                # CLI entry point (stdin/stdout JSON)
-│   │   └── index.ts              # Library exports
-│   ├── tsconfig.json
-│   └── package.json
-│
-└── ranking-engine/               # Standalone AI ranking/recommendation library
-    ├── src/
-    │   ├── lib/
-    │   │   ├── gemini.ts         # Gemini API integration
-    │   │   ├── openrouter.ts     # OpenRouter fallback
-    │   │   ├── ranking.ts        # Deterministic reranking
-    │   │   ├── safety.ts         # Safety filters
-    │   │   └── schemas.ts        # Zod schemas for recommendations
-    │   ├── cli.ts                # CLI entry point (stdin/stdout JSON)
-    │   └── index.ts              # Library exports
-    ├── tsconfig.json
-    └── package.json
-
 .specify/
 ├── memory/
 │   └── constitution.md
@@ -160,11 +133,12 @@ packages/
 └── adrs/                         # Architecture Decision Records
 ```
 
-**Structure Decision**: Monorepo with 3 projects (apps/web, packages/finance-engine, packages/ranking-engine). Chosen because:
+**Structure Decision**: Single Next.js application with integrated libraries in src/lib/. Chosen because:
 
-- **apps/web**: Next.js app with App Router, tRPC API, Firebase integration, UI components
-- **packages/finance-engine**: Reusable library for all finance calculations (cash/finance/lease/taxes/fuel) with CLI for debugging
-- **packages/ranking-engine**: Reusable library wrapping AI providers (Gemini/OpenRouter) with deterministic reranking and safety filters, CLI for testing prompts
+- **Simpler structure**: No monorepo complexity, all code in one project
+- **src/lib/finance-engine**: Library for all finance calculations (cash/finance/lease/taxes/fuel)
+- **src/lib/ranking-engine**: Library wrapping AI providers (Gemini/OpenRouter) with deterministic reranking and safety filters
+- **Co-location**: Libraries live alongside the code that uses them, easier to develop and test
 
 This structure complies with Constitution Principle I (Library-First) and II (Framework-First) by separating domain logic into libraries while keeping Next.js/tRPC/Firebase integration in the app.
 
