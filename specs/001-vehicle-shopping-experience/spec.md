@@ -3,7 +3,7 @@
 **Feature Branch**: `001-vehicle-shopping-experience`  
 **Created**: November 8, 2025  
 **Status**: Draft  
-**Input**: User description: "Build a Toyota vehicle-shopping web experience that helps people discover, compare, and estimate the cost of owning or leasing vehicles through an AI-guided voice-and-text journey that collects key needs (target monthly budget or cash budget, body style, seating, fuel type gas/hybrid/EV, range/MPG priorities, cargo/towing needs, AWD/4x4, safety/driver-assist needs, must-have features, and driving patterns urban/highway/commute length) and then presents a clear, tiered list of recommended vehicles with transparent 'why this was recommended' explanations."
+**Input**: User description: "Build a Toyota vehicle-shopping web experience with four pages: (1) Landing/Discovery page with voice and text input, (2) Search/Results page with filtering and vehicle cards, (3) Compare page for side-by-side vehicle comparison (up to 3 vehicles), and (4) Finance page for cost estimation with cash/finance/lease options. The experience uses AI-powered filtering based on user input and provides transparent vehicle recommendations."
 
 ## Clarifications
 
@@ -16,235 +16,233 @@
 
 ## User Scenarios *(mandatory)*
 
-### User Story 1 - Guided Vehicle Discovery and Recommendations (Priority: P1)
+### User Story 1 - Landing Page with Voice and Text Input (Priority: P1)
 
-A prospective Toyota buyer visits the site to find the right vehicle. They engage with an AI-guided journey (via voice or text) that asks about their budget, body style preferences, seating needs, fuel type, driving patterns, and must-have features. After providing their needs, they see a tiered list of recommended vehicles organized into Top Picks (up to 3), Strong Contenders, and Explore Alternatives, with clear explanations of why each vehicle was recommended.
+A prospective Toyota buyer visits the landing page featuring the FindMyYota branding with a large search bar and chatbox. They can describe their vehicle needs in natural language using text or voice (ElevenLabs voice recording). The page has a sticky Toyota logo header and theme toggle. The input supports multi-line descriptions and voice-to-text transcription.
 
-**Why this priority**: This is the core value proposition - helping users discover the right vehicle based on their needs. Without this, the entire experience fails to deliver its primary purpose.
+**Why this priority**: This is the entry point for the entire experience. Without an intuitive input method, users cannot begin their vehicle search.
 
-**Independent Test**: Can be fully tested by completing a guided discovery session and receiving personalized recommendations with explanations. Delivers immediate value by helping users narrow down choices from Toyota's full lineup to a manageable set of relevant options.
+**Independent Test**: Can be fully tested by entering text descriptions or using voice recording, with transcription appearing in the chatbox. Delivers immediate value by capturing user needs in natural language.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user arrives at the home page, **When** they start the guided journey and provide their monthly budget ($500), body style (SUV), and fuel preference (hybrid), **Then** they see up to 3 Top Picks with explanations like "Recommended because it's a hybrid SUV that fits your $500/month budget" plus Strong Contenders and Explore Alternatives sections
-2. **Given** a user completes the discovery journey, **When** they view recommendations, **Then** each vehicle shows why it was recommended with transparent reasoning tied to their input
-3. **Given** a user is interacting via voice, **When** the AI asks questions, **Then** they hear spoken prompts with on-screen captions and can respond via voice or text, and receive a brief spoken summary of their top picks
-4. **Given** a user wants to skip voice, **When** they mute or decline voice interaction, **Then** they continue the journey using text-only input without any loss of functionality
+1. **Given** a user arrives at the home page, **When** they see the interface, **Then** they see "FindMyYota" branding, a search bar, and a large chatbox with voice/plus/send buttons
+2. **Given** a user wants to use voice, **When** they click the microphone button, **Then** recording starts with visual feedback (animated pulse) and stops when clicked again, with transcribed text appearing in the chatbox
+3. **Given** a user enters text like "hybrid SUV with AWD for family trips", **When** they click send/arrow-up, **Then** they are navigated to the results page with filtered recommendations
+4. **Given** a user wants to skip voice, **When** they type in the chatbox, **Then** they can describe their needs in text without any voice interaction required
 
 ---
 
-### User Story 2 - Vehicle Comparison (Priority: P1)
+### User Story 2 - Search/Results Page with Filtering (Priority: P1)
 
-After receiving recommendations, a user wants to compare vehicles side-by-side. They add up to 4 vehicles to a compare tray, then view a detailed comparison table showing pricing/MSRP, efficiency (MPG/MPGe, range), performance (hp/torque/0-60), safety ratings and driver-assist features, comfort/infotainment, cargo volume, towing capacity, dimensions, and warranty coverage. The comparison highlights category winners and shows differences clearly.
+After entering their needs on the landing page, users see a results page with a filter sidebar (left), chatbox with search bar (top center), and vehicle cards grid (below). Filters are automatically detected from the user's text prompt (e.g., "hybrid", "suv", "awd") and displayed as active chips. Users can toggle additional filters manually. Each vehicle card shows an image, name, price, description, matching tags, and "Buy" + "Compare" buttons. A fixed compare popup (bottom-right) tracks selected vehicles (up to 3) with an "Open Compare" button.
 
-**Why this priority**: Comparison is essential for making an informed purchase decision. Users need to see differences and trade-offs between options to choose confidently.
+**Why this priority**: Filtering and browsing is core to vehicle discovery. Users need to see relevant results and refine their search.
 
-**Independent Test**: Can be fully tested by adding vehicles to compare tray and viewing the side-by-side comparison with category winners highlighted. Delivers value by making vehicle differences transparent and helping users choose between finalists.
+**Independent Test**: Can be fully tested by viewing filtered results, toggling filters, adding vehicles to compare, and seeing the compare popup update. Delivers value by helping users discover vehicles matching their needs.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user is viewing recommendations, **When** they add a vehicle to the compare tray, **Then** the vehicle is added to a persistent tray that shows across the experience
-2. **Given** a user has added 2-4 vehicles to compare, **When** they navigate to the compare view, **Then** they see a side-by-side table with pricing, efficiency, performance, safety, comfort, cargo, towing, dimensions, and warranty details with category winners highlighted
-3. **Given** a user is viewing the comparison, **When** they toggle difference view, **Then** they see only rows where vehicles differ, making trade-offs more visible
-4. **Given** a user wants to adjust the comparison, **When** they remove a vehicle or add another (up to 4 total), **Then** the compare table updates immediately
+1. **Given** a user enters "hybrid SUV with AWD" on the landing page, **When** they arrive at results, **Then** they see filters for "hybrid", "suv", and "awd" automatically detected and applied, with matching vehicle cards displayed
+2. **Given** a user sees active filters, **When** they click a filter chip to toggle it, **Then** the vehicle grid updates immediately to reflect the new filter set
+3. **Given** a user sees vehicle cards, **When** they click "Compare" on a card, **Then** the vehicle is added to the compare popup (max 3), showing vehicle name and a remove button
+4. **Given** a user has added 2-3 vehicles to compare, **When** they click "Open Compare" in the popup, **Then** they navigate to the compare page with those vehicles pre-selected
 
 ---
 
-### User Story 3 - Cost Estimation (Priority: P1)
+### User Story 3 - Compare Page for Side-by-Side Vehicle Comparison (Priority: P1)
 
-After comparing vehicles, a user wants to estimate the cost of ownership. They proceed to the Estimate screen with tabs for Cash (out-the-door), Finance, and Lease. They provide their ZIP code for tax/fee estimation, adjust discounts/rebates, enter down payment and trade-in details, select term lengths and APR (for finance) or residual value, money factor, and mileage caps (for lease), and optionally estimate monthly fuel/energy costs. They see estimated monthly payments, due-at-signing amounts, out-the-door totals, and a simple total-cost-over-time view with plain-language explanations and non-binding disclaimers.
+Users arriving from the results page with 1-3 vehicles selected see a side-by-side comparison table. The header row shows vehicle images and names. Rows display specs: Price, Drivetrain, Powertrain, Body Type, Efficiency/Range, and Tags. A final "Actions" row has "Buy" and "Back to card" buttons for each vehicle. The table is responsive and shows up to 3 vehicles (first 3 if more than 3 were selected). An error banner appears if more than 3 vehicles were selected.
 
-**Why this priority**: Cost estimation is critical to helping users understand affordability and make a purchase decision. Without clear, transparent cost breakdowns, users cannot confidently proceed to dealers.
+**Why this priority**: Comparison is essential for users to see differences and make informed choices between vehicles.
 
-**Independent Test**: Can be fully tested by entering ZIP code, financial details, and optional fuel costs to generate cash, finance, and lease estimates. Delivers value by providing realistic cost expectations and helping users choose the right payment method.
+**Independent Test**: Can be fully tested by navigating with multiple vehicle IDs in the URL query parameter and seeing the comparison table. Delivers value by making vehicle differences clear.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user has selected a vehicle to estimate, **When** they enter their ZIP code, **Then** the system estimates applicable taxes and fees based on that location
-2. **Given** a user is on the Finance tab, **When** they enter down payment, trade-in value/payoff, target monthly payment, term length, and APR, **Then** they see estimated monthly payment, due-at-signing, and out-the-door total with explanations
-3. **Given** a user is on the Lease tab, **When** they enter down payment, trade-in details, residual value, money factor, mileage cap, and term, **Then** they see estimated monthly lease payment, due-at-signing, and total cost over lease term with explanations
-4. **Given** a user has entered fuel/electricity prices and annual miles, **When** they view estimates, **Then** they see estimated monthly fuel/energy cost included in the total cost-over-time view
-5. **Given** a user is reviewing estimates, **When** they view any financial projection, **Then** they see clear disclaimers indicating estimates are informational, non-binding, and subject to dealer confirmation
+1. **Given** a user has 2 vehicles in the compare popup, **When** they click "Open Compare", **Then** they see a comparison table with those 2 vehicles showing price, drivetrain, powertrain, body type, efficiency, and tags
+2. **Given** a user is viewing the comparison table, **When** they see the specs, **Then** differences between vehicles are visually clear (e.g., "AWD" vs "FWD", "39 mpg" vs "52 mpg")
+3. **Given** a user compares vehicles, **When** they click "Back to card", **Then** they navigate to the finance page for that specific vehicle
+4. **Given** a user tries to compare more than 3 vehicles, **When** the page loads, **Then** only the first 3 are shown with a warning banner indicating the limit
 
 ---
 
-### User Story 4 - Saving and Sharing Selections (Priority: P2)
+### User Story 4 - Finance Page with Cost Estimation (Priority: P1)
 
-A user wants to save their favorite vehicles, saved searches, compare sets, and estimates for later review. Users can save items locally in their browser. Users can also share a read-only link or export/print a summary of their selections.
+Users navigate to the finance page with a specific vehicle pre-selected (via URL parameter). The page shows the vehicle summary card (left sidebar with image, name, description, and MSRP) and a calculator section (right) with "Finance" and "Buy" toggle buttons. Users input Sales Tax %, Fees, and if using Finance mode: Down Payment %, APR %, and Term (months). A summary panel shows MSRP, sales tax, fees, subtotal, down payment, amount financed, and estimated monthly payment (for Finance) or total due (for Buy/Cash). The page includes "Back" and "Continue" buttons.
 
-**Why this priority**: Saving and sharing enables users to take time with their decision, return later within the same browser, and involve family/friends. This increases engagement and conversion by reducing decision fatigue.
+**Why this priority**: Cost estimation is the final step before dealer contact. Users need clear, transparent cost breakdowns to make purchase decisions.
 
-**Independent Test**: Can be fully tested by favoriting vehicles in browser storage, saving a compare set or estimate, and sharing a read-only link. Delivers value by preserving user work and enabling collaboration.
+**Independent Test**: Can be fully tested by navigating with a vehicle ID, entering financial inputs, and seeing calculated estimates update. Delivers value by providing realistic cost expectations.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user favorites a vehicle, **When** they return to the site later in the same browser, **Then** the vehicle remains in their favorites
-2. **Given** a user saves items, **When** they return later in the same browser, **Then** the items persist in browser local storage
-3. **Given** a user wants to share, **When** they click share on a compare set or estimate, **Then** they receive a read-only link they can send to others
-4. **Given** a user wants to export, **When** they click export/print, **Then** they receive a formatted summary document suitable for printing or saving as PDF
+1. **Given** a user arrives at the finance page with a vehicle ID, **When** the page loads, **Then** they see the vehicle summary with image and MSRP, and calculator inputs with default values
+2. **Given** a user is in Finance mode, **When** they adjust down payment %, APR, or term, **Then** the estimated monthly payment recalculates immediately
+3. **Given** a user is in Buy mode, **When** they adjust sales tax or fees, **Then** the total due (cash) recalculates immediately
+4. **Given** a user enters sales tax and fees, **When** they view the summary, **Then** they see a clear breakdown: MSRP + Tax + Fees = Subtotal, then Down Payment subtracted to show Amount Financed
 
 ---
 
-### User Story 5 - Dealer Connection (Priority: P2)
+### User Story 5 - Keyboard and Filter System (Priority: P2)
 
-After exploring vehicles and estimates, a user is ready to take the next step with a dealer. They use the "Find a Dealer / Contact Me" feature to locate nearby dealers or request contact, tied to their saved vehicle selections. An explicit consent step is included before sharing any personal information.
+### User Story 5 - Keyword Filtering and Detection (Priority: P2)
 
-**Why this priority**: Connecting users to dealers is the conversion point for Toyota, turning exploratory interest into actionable leads. Consent ensures compliance and trust.
+The system uses a keyword dictionary to detect filter terms from natural language input. Keywords include drivetrain types ("awd", "4wd", "fwd", "rwd"), powertrain types ("hybrid", "ev", "gas"), body styles ("suv", "sedan", "truck"), and features ("luxury", "sport", "economy", "offroad", "family"). Users see detected keywords as active filter chips on the results page and can manually toggle additional filters.
 
-**Independent Test**: Can be fully tested by clicking "Find a Dealer" or "Contact Me" from a saved selection, providing ZIP code, and confirming consent to share information. Delivers value by facilitating the next step in the purchase journey.
+**Why this priority**: Intelligent keyword detection improves user experience by automatically applying relevant filters from natural language, but is not essential for basic filtering functionality.
+
+**Independent Test**: Can be fully tested by entering phrases like "affordable hybrid SUV for families" and seeing filters for "hybrid", "suv", "economy", and "family" automatically applied.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user has a saved vehicle or estimate, **When** they click "Find a Dealer," **Then** they enter their ZIP code and see a list of nearby Toyota dealers with contact information
-2. **Given** a user wants to be contacted, **When** they click "Contact Me," **Then** they are asked to provide name, email/phone, and explicitly consent to sharing information before submission
-3. **Given** a user submits a contact request, **When** the form is processed, **Then** their selected vehicles and estimates are attached to the lead and they receive confirmation
+1. **Given** a user enters "4x4 truck for towing", **When** results load, **Then** filters for "4wd", "truck", and "towing" are automatically detected and active
+2. **Given** a user sees detected filters, **When** they manually toggle additional filters like "luxury", **Then** the filter set updates and results refresh immediately
+3. **Given** a user enters synonyms like "all-wheel drive", **When** results load, **Then** the canonical filter "awd" is detected and applied
 
 ---
 
-### User Story 6 - Preference Adjustment and Filtering (Priority: P3)
+### User Story 6 - Theme Toggle and Responsive Design (Priority: P3)
 
-After receiving initial recommendations, a user wants to refine their results. They use filter chips to adjust preferences (e.g., change budget, fuel type, seating) and see updated recommendations immediately without restarting the discovery journey.
+Users can toggle between light and dark themes using a theme toggle button. All pages use a sticky Toyota logo header and responsive layouts that adapt to mobile, tablet, and desktop screens. Components use Tailwind CSS with shadcn/ui and tweakcn styling.
 
-**Why this priority**: Allowing quick adjustments improves user experience by letting them explore "what if" scenarios without friction, but is not essential for initial discovery.
+**Why this priority**: Theme support and responsive design improve accessibility and user experience, but are not core to vehicle discovery functionality.
 
-**Independent Test**: Can be fully tested by using filter chips to modify preferences and seeing updated recommendations. Delivers value by enabling exploration and refinement.
-
-**Acceptance Scenarios**:
-
-1. **Given** a user is viewing recommendations, **When** they click a filter chip for budget and adjust the range, **Then** recommendations update immediately to reflect the new budget constraint
-2. **Given** a user has applied multiple filters, **When** they clear all filters, **Then** recommendations return to the original results based on the initial guided journey inputs
-
----
-
-### User Story 7 - Vehicle Detail View (Priority: P3)
-
-A user wants to learn more about a specific recommended vehicle. They click on the vehicle to see detailed information including available trims, key specifications, image galleries, and highlighted features.
-
-**Why this priority**: Detail pages provide depth and build confidence, but users can make decisions from comparison and recommendations alone if needed.
-
-**Independent Test**: Can be fully tested by clicking on a vehicle card and viewing the detail page with trim selector, specs, gallery, and features. Delivers value by educating users about specific vehicles.
+**Independent Test**: Can be fully tested by toggling theme and resizing browser window to see responsive layouts.
 
 **Acceptance Scenarios**:
 
-1. **Given** a user clicks on a vehicle card, **When** the detail page loads, **Then** they see available trims, key specs (engine, MPG, seating, cargo), image gallery, and highlighted features
-2. **Given** a user is viewing vehicle details, **When** they select a different trim, **Then** the page updates to show specs and features for that trim
+1. **Given** a user clicks the theme toggle, **When** the theme changes, **Then** all pages update to light or dark mode with appropriate colors
+2. **Given** a user views the site on mobile, **When** pages load, **Then** layouts adapt with mobile-friendly navigation and stacked components
 
 ---
 
 ### Edge Cases
 
-- What happens when a user enters a ZIP code that cannot be matched to tax/fee data? System falls back to state-level averages and displays a message: "Using state-level estimates; actual costs may vary."
-- What happens when voice recognition fails or the user speaks unclearly? System displays a message asking the user to repeat or offers to switch to text input.
-- What happens when a user tries to add a 5th vehicle to the compare tray? System displays a message: "Compare tray is full (max 4 vehicles). Remove one to add another."
-- What happens when no vehicles match the user's criteria (e.g., extremely low budget or conflicting requirements)? System shows the closest matches with a message: "No exact matches found. Here are vehicles that meet most of your needs."
-- What happens when a user's saved items (favorites, compare sets) become unavailable (e.g., model discontinued or data unavailable)? System displays a message indicating the item is no longer available and suggests similar alternatives.
-- What happens when a user attempts to share or export without any saved selections? System prompts: "Please add vehicles to favorites or create a compare set before sharing."
-- What happens when a user declines consent for dealer contact? The "Contact Me" form is not submitted, and the user is returned to their previous view with no data shared.
-- What happens when voice is not supported on the user's device or browser? System defaults to text-only mode and hides voice controls.
+- What happens when voice recording fails or the browser doesn't support getUserMedia? System displays an error message and automatically falls back to text-only input mode.
+- What happens when a user tries to add a 4th vehicle to the compare popup? System displays an error message in the popup: "You can compare up to 3 cars." and prevents adding more vehicles.
+- What happens when no vehicles match the user's active filters? System shows an empty state with a message: "No cars match the current filters. Try removing a few keywords." with an icon.
+- What happens when a user navigates to the compare page without any vehicles selected (no IDs in URL)? System shows a message: "No cars selected for comparison." and a link back to results.
+- What happens when more than 3 vehicle IDs are passed to the compare page? System shows only the first 3 vehicles with a warning banner: "Showing first 3 cars only. Remove extras in the Results page."
+- What happens when a user navigates to the finance page without a vehicle ID or with an invalid ID? System shows an error: "Car not found. Please go back and select a car."
+- What happens when a user enters invalid financial inputs (negative values, very high APR)? System clamps values to reasonable ranges or displays validation errors.
+- What happens when keyword detection produces too many filters from a long text prompt? System shows all detected keywords but allows users to manually toggle them off.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-#### Discovery and Recommendations
+#### User Interface Structure
 
-- **FR-001**: System MUST present a guided discovery journey that collects user needs via text or voice, including target monthly budget or cash budget, body style, seating capacity, fuel type (gas/hybrid/EV), range or MPG priorities, cargo and towing needs, AWD or 4x4 requirements, safety and driver-assist needs, must-have features, and driving patterns (urban/highway/commute length)
-- **FR-002**: System MUST generate vehicle recommendations based on collected user needs and organize them into three tiers: Top Picks (up to 3 vehicles), Strong Contenders, and Explore Alternatives
-- **FR-003**: System MUST provide transparent explanations for each recommendation, clearly stating why the vehicle matches the user's stated needs
-- **FR-004**: Users MUST be able to complete the discovery journey using text input only, with voice being an optional enhancement
-- **FR-005**: When voice is enabled, system MUST provide spoken prompts, accept voice responses, provide on-screen captions and transcripts, and offer a brief spoken summary of top picks
-- **FR-006**: Users MUST be able to mute or disable voice at any time without losing functionality
-- **FR-007**: System MUST use Gemini/Gemma AI models for recommendation reasoning, natural language processing, and generating recommendation explanations
-- **FR-008**: System MUST use ElevenLabs API for high-quality text-to-speech voice output when voice mode is enabled
+- **FR-001**: System MUST provide exactly four pages: (1) Landing/Discovery page (`/`), (2) Search/Results page (`/result`), (3) Compare page (`/compare_result`), and (4) Finance page (`/finance`)
+- **FR-002**: System MUST include a sticky header component with Toyota logo on all pages
+- **FR-003**: System MUST provide a theme toggle for light/dark mode accessible on all pages
+- **FR-004**: System MUST use responsive design adapting to mobile, tablet, and desktop screen sizes
 
-#### Filtering and Preference Adjustment
+#### Landing/Discovery Page
 
-- **FR-009**: System MUST provide filter chips on the recommendations page to allow users to adjust their preferences (budget, body style, fuel type, seating, etc.) without restarting the discovery journey
-- **FR-010**: System MUST update recommendations immediately when filters are applied or preferences are changed
+- **FR-005**: Landing page MUST display "FindMyYota" branding with large heading
+- **FR-006**: Landing page MUST provide a search bar (rounded, with search icon) and a large chatbox (rounded, multi-line textarea)
+- **FR-007**: Chatbox MUST include three buttons at bottom-right: voice recording (microphone icon), plus icon, and send/arrow-up icon
+- **FR-008**: Voice recording button MUST start/stop audio recording with visual feedback (animated pulse during recording)
+- **FR-009**: System MUST use ElevenLabs speech-to-text API (`/api/elevenlabs/speech-to-text` or `/api/stt`) to transcribe voice recordings
+- **FR-010**: Transcribed text MUST appear in the chatbox, appending to existing text
+- **FR-011**: Send button MUST navigate to results page (`/result`) with user's text input
+- **FR-012**: System MUST function fully with text-only input (voice is optional enhancement)
 
-#### Comparison
+#### Search/Results Page and Filtering
 
-- **FR-011**: System MUST provide a persistent compare tray that users can access from any page
-- **FR-012**: Users MUST be able to add up to 4 vehicles to the compare tray
-- **FR-013**: System MUST display a side-by-side comparison table for vehicles in the compare tray, showing pricing/MSRP, efficiency (MPG/MPGe, range), performance (horsepower, torque, 0-60 time), safety ratings and notable driver-assist features, comfort and infotainment details, cargo volume, towing capacity, dimensions, and warranty coverage
-- **FR-014**: System MUST highlight category winners in the comparison table (e.g., highest MPG, lowest price, most cargo space)
-- **FR-015**: System MUST provide a difference view option that shows only rows where vehicles differ
-- **FR-016**: System MUST allow users to remove vehicles from the compare tray and add new ones dynamically
+- **FR-013**: Results page MUST display filter sidebar (left, 3-4 columns on desktop), chatbox with search bar (top center), and vehicle cards grid (below chatbox)
+- **FR-014**: System MUST extract keywords from user's text input using a keyword dictionary with aliases (e.g., "all-wheel drive" → "awd", "4x4" → "4wd")
+- **FR-015**: Keyword dictionary MUST include: drivetrain types (awd, 4wd, fwd, rwd), powertrain types (hybrid, ev, gas, phev), body styles (suv, sedan, truck, crossover, coupe, hatchback, minivan), and features (luxury, economy, sport, offroad, towing, family)
+- **FR-016**: Filter sidebar MUST show two sections: "Detected from your prompt" (auto-detected keywords as read-only chips) and "Quick add/remove" (all available keywords as toggleable buttons)
+- **FR-017**: System MUST display active filters as chips below the chatbox showing all currently applied filters
+- **FR-018**: Clicking a filter button MUST toggle it on/off and immediately update the vehicle grid
+- **FR-019**: Vehicle filtering MUST match vehicles whose tags include ANY active filter (OR logic); if no filters active, show all vehicles
+- **FR-020**: System MUST show empty state with AlertTriangle icon and message when no vehicles match active filters
 
-#### Vehicle Details
+#### Vehicle Cards and Comparison
 
-- **FR-017**: System MUST provide a detail view for each vehicle showing available trims, key specifications, image galleries, and highlighted features
-- **FR-018**: Users MUST be able to select different trims and see updated specifications and features for the selected trim
+- **FR-021**: Each vehicle card MUST display: image, name, price (as chip), description, matching filter tags (as small chips), and two buttons ("Buy" and "Compare")
+- **FR-022**: Compare button MUST add vehicle to compare popup (bottom-right, fixed position)
+- **FR-023**: Compare popup MUST show vehicle count ("X / 3"), list of added vehicles with remove buttons, and "Open Compare" button
+- **FR-024**: System MUST limit compare selection to maximum 3 vehicles
+- **FR-025**: When user attempts to add a 4th vehicle, system MUST display error message in compare popup and prevent addition
+- **FR-026**: "Open Compare" button MUST navigate to `/compare_result?ids=<comma-separated-vehicle-ids>`
+- **FR-027**: Compare button on vehicle card MUST show checkmark icon and green background when vehicle is in compare set
 
-#### Cost Estimation
+#### Compare Page
 
-- **FR-019**: System MUST provide an Estimate screen with three tabs: Cash (out-the-door), Finance, and Lease
-- **FR-020**: System MUST accept ZIP code input to estimate applicable state and local taxes and fees
-- **FR-021**: When ZIP code tax/fee data is unavailable, system MUST fall back to state-level averages and display a message indicating this fallback
-- **FR-022**: For Cash estimates, system MUST calculate out-the-door total including MSRP, taxes, fees, and user-applied discounts/rebates
-- **FR-023**: For Finance estimates, system MUST accept down payment, trade-in value, trade-in payoff, target monthly payment or price, term length (in months), and APR, then calculate estimated monthly payment, due-at-signing, and out-the-door total
-- **FR-024**: For Lease estimates, system MUST accept down payment, trade-in value and payoff, residual value, money factor, mileage cap, and term length, then calculate estimated monthly lease payment, due-at-signing, and total cost over lease term
-- **FR-025**: System MUST provide optional inputs for fuel/electricity price and estimated annual miles to calculate and display estimated monthly fuel or energy cost
-- **FR-026**: System MUST present a total-cost-over-time view showing cumulative costs (payments, fuel/energy, maintenance estimate) with plain-language explanations
-- **FR-027**: System MUST display clear, prominent non-binding disclaimers on all estimates stating that figures are informational, subject to change, and must be confirmed by a dealer
+- **FR-028**: Compare page MUST parse vehicle IDs from URL query parameter `ids` (comma-separated)
+- **FR-029**: Compare page MUST display side-by-side comparison table with vehicles as columns
+- **FR-030**: Table header row MUST show vehicle images (rounded rectangles) and names
+- **FR-031**: Table MUST include rows for: Model (header), Price, Drivetrain, Powertrain, Body, Efficiency/Range, Tags, and Actions
+- **FR-032**: Efficiency/Range row MUST show MPG for hybrid/gas vehicles or range for EV vehicles
+- **FR-033**: Tags row MUST display comma-separated list of vehicle tags
+- **FR-034**: Actions row MUST include "Buy" button and "Back to card" button for each vehicle
+- **FR-035**: "Back to card" button MUST navigate to `/finance?carId=<vehicle-id>`
+- **FR-036**: When more than 3 vehicle IDs are provided, system MUST show only first 3 with warning banner
+- **FR-037**: When no vehicle IDs are provided, system MUST show message "No cars selected for comparison" with link back to results
+- **FR-038**: Compare page MUST include "Back to Results" link in header
 
-#### Saving and Persistence
+#### Finance Page
 
-- **FR-028**: Users MUST be able to favorite vehicles, and favorites MUST persist in browser local storage
-- **FR-029**: Users MUST be able to save searches, compare sets, and estimates in browser local storage
-- **FR-030**: Saved items MUST be available only in the browser where they were saved
+- **FR-039**: Finance page MUST parse vehicle ID from URL query parameter `carId`
+- **FR-040**: Finance page MUST display vehicle summary card (left sidebar) showing image, name, description, and MSRP as chip
+- **FR-041**: Finance page MUST provide mode toggle buttons: "Finance" and "Buy" (mutually exclusive)
+- **FR-042**: Finance page MUST display two-column layout: inputs (left) and summary (right)
+- **FR-043**: Inputs panel MUST include: Sales Tax (%), Fees ($), and mode-specific inputs
+- **FR-044**: In Finance mode, inputs MUST include: Down Payment (%), APR (%), Term (months)
+- **FR-045**: Summary panel MUST display: MSRP, Sales Tax (calculated), Fees, Subtotal
+- **FR-046**: In Finance mode, summary MUST additionally show: Down Payment (calculated), Amount Financed, and Estimated Monthly Payment (large, highlighted)
+- **FR-047**: In Buy mode, summary MUST show: Total Due (Cash) (large, highlighted)
+- **FR-048**: System MUST use monthly payment formula: `P = principal * (r * (1+r)^n) / ((1+r)^n - 1)` where r = APR/12 and n = term in months
+- **FR-049**: System MUST recalculate all outputs immediately when any input changes
+- **FR-050**: Summary panel MUST include "Back" link to results and "Continue" button
+- **FR-051**: When vehicle ID is missing or invalid, system MUST show error message and loading state
 
-#### Sharing and Export
+#### Data Sources and Vehicle Data
 
-- **FR-031**: Users MUST be able to generate a read-only shareable link for any compare set or estimate
-- **FR-032**: Users MUST be able to export or print a formatted summary of their selections, comparisons, and estimates
-- **FR-033**: Shared links MUST display the compare set or estimate exactly as the user configured it, without requiring sign-in
+- **FR-052**: System MUST store vehicle data in `src/lib/cars.ts` as a TypeScript array
+- **FR-053**: Each vehicle entity MUST include: id (string), name (string), img (path string), price (display string with $), tags (array of lowercase keywords), description (string), specs object
+- **FR-054**: Vehicle specs object MUST include: drivetrain ("awd"|"4wd"|"fwd"|"rwd"), powertrain ("hybrid"|"ev"|"gas"|"phev"), body ("suv"|"sedan"|"truck"|"crossover"|etc), mpg (optional string), range (optional string)
+- **FR-055**: System MUST provide `CAR_INDEX` lookup object mapping vehicle IDs to vehicle objects
+- **FR-056**: System MUST provide `findCar(id)` utility function returning vehicle or undefined
+- **FR-057**: Vehicle images MUST be stored in `/public/cars/` directory
+- **FR-058**: Price strings MUST be formatted as USD with commas (e.g., "$36,990")
 
-#### Dealer Connection
+#### UI Components
 
-- **FR-034**: System MUST provide a "Find a Dealer" feature that accepts ZIP code input and displays nearby Toyota dealers with contact information
-- **FR-035**: System MUST provide a "Contact Me" feature that allows users to request dealer contact tied to their saved vehicle selections
-- **FR-036**: Before submitting any contact request, system MUST present an explicit consent step requiring user confirmation to share personal information
-- **FR-037**: System MUST attach selected vehicles and estimates to any dealer lead or contact request
-
-#### Localization
-
-- **FR-038**: When voice is used, system MUST provide captions and transcripts for all spoken content
-- **FR-039**: System MUST be mobile-friendly and responsive across device sizes (mobile, tablet, desktop)
-- **FR-040**: System MUST use USD currency and serve the United States market at launch
-- **FR-041**: System MUST be designed for future localization with English as the initial language and copy structured to support translation
-
-#### Data Sources and Disclaimers
-
-- **FR-042**: System MUST use official Toyota model and trim information as the source for vehicle data
-- **FR-043**: System MUST use published EPA fuel economy and range data for efficiency information
-- **FR-044**: System MUST use publicly advertised MSRP as the base pricing data
-- **FR-045**: System MUST label all incentives, rebates, and finance/lease figures as example estimates for exploration purposes, clearly marked as informational and subject to change
-- **FR-046**: System MUST display disclaimers indicating that actual dealer pricing, incentives, and terms may vary and must be confirmed with a dealer
-- **FR-047**: System MUST use Firestore for storing vehicle data, user profiles, saved favorites, searches, compare sets, estimates, and dealer leads with indexed collections for efficient querying
-- **FR-048**: System MUST use Firebase Storage for storing vehicle image galleries and media assets
+- **FR-059**: System MUST use shadcn/ui and tweakcn for UI component library
+- **FR-060**: System MUST use Tailwind CSS 4.0 for styling with utility classes
+- **FR-061**: System MUST use Lucide icons for all iconography
+- **FR-062**: System MUST implement `InputGroup` components (InputGroupInput, InputGroupTextarea, InputGroupAddon, InputGroupButton) for search/chat inputs
+- **FR-063**: System MUST implement `StickyHeader` component with configurable logo size
+- **FR-064**: System MUST implement `ThemeToggle` component for light/dark mode switching
 
 #### Deployment and Infrastructure
 
-- **FR-049**: System MUST be deployed using Firebase App Hosting for integrated Next.js deployment with server-side rendering, tRPC API routes, and seamless Firebase service integration
-- **FR-050**: System MUST support automatic scaling to handle variable traffic loads without manual intervention
-- **FR-051**: System MUST provide CDN distribution for static assets and optimized content delivery
+- **FR-065**: System MUST be deployed using Firebase App Hosting for Next.js with server-side rendering
+- **FR-066**: System MUST support automatic scaling to handle variable traffic loads
+- **FR-067**: System MUST use Next.js 15.2 App Router with Server Components
+- **FR-068**: System MUST use TypeScript 5.8 with strict type checking
 
 #### Out of Scope
 
-- **FR-052**: Dealer inventory checking is explicitly out of scope; users cannot see real-time vehicle availability
-- **FR-053**: Online purchasing or reservation is out of scope; the experience ends with dealer connection
-- **FR-054**: User authentication and cross-device synchronization is out of scope; all data is stored locally in the browser
+- **FR-069**: User authentication and cross-device synchronization is out of scope; no sign-in required
+- **FR-070**: Saving favorites, searches, and estimates to server/database is out of scope (browser local storage only if implemented)
+- **FR-071**: Dealer inventory checking and real-time availability is out of scope
+- **FR-072**: Online purchasing, reservation, or payment processing is out of scope
+- **FR-073**: Dealer connection, "Find a Dealer", and "Contact Me" features are out of scope
+- **FR-074**: Lease calculations are out of scope (Finance and Buy modes only)
+- **FR-075**: ZIP code-based tax estimation is simplified (single tax % input)
 
 ### Key Entities
 
-- **User**: Represents a person using the vehicle shopping experience; may be signed in (cross-device persistence) or unsigned (local persistence only); has saved favorites, searches, compare sets, and estimates
-- **Vehicle**: Represents a Toyota model with attributes including model name, body style, seating capacity, fuel type, MPG/MPGe, range, cargo volume, towing capacity, dimensions, MSRP, available trims, performance specs (horsepower, torque, 0-60), safety ratings, driver-assist features, comfort/infotainment details, warranty coverage, and image galleries
-- **User Needs Profile**: Represents the collection of preferences and requirements gathered during the guided discovery journey, including budget (monthly or cash), body style, seating, fuel type, range/MPG priorities, cargo/towing needs, AWD/4x4 preference, safety/driver-assist needs, must-have features, and driving patterns
-- **Recommendation**: Represents a suggested vehicle matched to a User Needs Profile, with a tier (Top Pick, Strong Contender, Explore Alternative) and explanation text describing why it was recommended
-- **Compare Set**: Represents a collection of up to 4 vehicles selected for side-by-side comparison, with associated comparison data (category winners, difference highlights)
-- **Estimate**: Represents a cost projection for a specific vehicle, including type (Cash, Finance, Lease), ZIP code for taxes/fees, user-provided financial inputs (down payment, trade-in, APR, term, residual, money factor, mileage cap), calculated outputs (monthly payment, due-at-signing, out-the-door total, total cost over time), and optional fuel/energy cost estimate
-- **Dealer Lead**: Represents a user's request for dealer contact, including user contact information, explicit consent status, selected vehicles, and attached estimates
+- **Vehicle**: Represents a Toyota model with attributes including id (unique string), name (display name), img (path to image file), price (formatted string like "$36,990"), tags (array of lowercase keywords for filtering like ["toyota", "suv", "hybrid", "awd"]), description (user-facing summary), and specs object containing drivetrain (awd/4wd/fwd/rwd), powertrain (hybrid/ev/gas/phev), body (suv/sedan/truck/crossover/etc), mpg (optional string for hybrid/gas), range (optional string for EV)
+- **Keyword**: Represents a filterable attribute with a canonical form (e.g., "awd") and aliases (e.g., ["awd", "all-wheel drive", "all wheel drive"]). Used for natural language filter detection
+- **Compare Set**: Represents a collection of up to 3 vehicle IDs selected for comparison, passed via URL query parameter `ids` (comma-separated)
+- **Finance Estimate**: Represents cost calculations for a specific vehicle including inputs (sales tax %, fees, down payment %, APR, term in months, mode: finance or buy) and outputs (MSRP, tax amount, subtotal, down payment amount, amount financed, monthly payment for finance or total due for buy)
 
 ## Success Criteria *(mandatory)*
 

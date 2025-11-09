@@ -1,6 +1,5 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { env } from '~/env';
 
 /**
  * ElevenLabs Text-to-Speech API Route
@@ -12,7 +11,13 @@ import { env } from '~/env';
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as {
+      text?: string;
+      voice_id?: string;
+      model_id?: string;
+      stability?: number;
+      similarity_boost?: number;
+    };
     const { 
       text, 
       voice_id = '21m00Tcm4TlvDq8ikWAM', // Rachel - Professional Female (default)
@@ -28,9 +33,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get ElevenLabs API key from environment
-    const apiKey = env.ELEVENLABS_API_KEY;
-    if (!apiKey) {
+    // Get ElevenLabs API key from environment (fallback to process.env if validation has issues)
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+    if (!apiKey || typeof apiKey !== 'string') {
       return NextResponse.json(
         { error: 'ELEVENLABS_API_KEY not configured' },
         { status: 500 }

@@ -108,11 +108,11 @@
 
 ### Search Router Implementation (US1)
 
-- [ ] T039 [P] [US1] Create search router in src/server/api/routers/search.ts
-- [ ] T040 [US1] Implement search.recommend procedure calling ranking-engine library from src/lib/ranking-engine
-- [ ] T041 [P] [US1] Implement search.filter procedure for deterministic filtering with Firestore queries
-- [ ] T042 [P] [US1] Implement search.semanticSearch procedure using Gemini for natural language queries
-- [ ] T043 [US1] Add rate limiting middleware for recommendation endpoint (10 req/min/IP)
+- [X] T039 [P] [US1] Create search router in src/server/api/routers/search.ts
+- [X] T040 [US1] Implement search.recommend procedure calling ranking-engine library from src/lib/ranking-engine
+- [X] T041 [P] [US1] Implement search.filter procedure for deterministic filtering with Firestore queries
+- [X] T042 [P] [US1] Implement search.semanticSearch procedure using Gemini for natural language queries
+- [X] T043 [US1] Add rate limiting middleware for recommendation endpoint (10 req/min/IP)
 
 ### Discovery Journey UI (US1)
 
