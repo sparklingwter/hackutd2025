@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { IconPlus } from "@tabler/icons-react";
 import { ArrowUpIcon, Search, Mic, MicOff } from "lucide-react";
@@ -112,16 +112,16 @@ export default function Home() {
                   {recording ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
                 </InputGroupButton>
 
-                {/* Optional attach/add */}
                 <InputGroupButton variant="outline" className="rounded-full p-3">
                   <IconPlus className="h-6 w-6" />
                 </InputGroupButton>
 
-                {/* Send */}
-                <InputGroupButton variant="default" className="rounded-full p-3">
-                  <ArrowUpIcon className="h-6 w-6" />
-                  <span className="sr-only">Send</span>
-                </InputGroupButton>
+                <Link href="/result">
+                  <InputGroupButton variant="default" className="rounded-full p-3 hover:scale-105 transition-transform">
+                    <ArrowUpIcon className="h-6 w-6" />
+                    <span className="sr-only">Send</span>
+                  </InputGroupButton>
+                </Link>
               </InputGroupAddon>
             </InputGroup>
           </div>
