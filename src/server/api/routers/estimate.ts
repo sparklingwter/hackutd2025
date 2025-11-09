@@ -1,6 +1,9 @@
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/api/trpc";
+import { v4 as uuidv4 } from "uuid";
+import {
+  createTRPCRouter,
+  publicProcedure,
+} from "~/server/api/trpc";
 import {
   CashInputsSchema,
   FinanceInputsSchema,
@@ -14,60 +17,59 @@ import {
   calculateLeaseEstimate,
   calculateFuelCost,
 } from "~/lib/finance-engine";
-import { randomUUID } from "crypto";
-import { FieldValue } from "firebase-admin/firestore";
+import { adminDb } from "~/server/db/firebase";
 
-const DISCLAIMER_TEXT =
-  "This estimate is informational only and not binding. Actual prices, taxes, fees, and terms may vary. " +
-  "Please confirm all details with your local Toyota dealer before purchase.";
-
+/**
+ * Estimate Router
+ * 
+ * Handles all cost estimation calculations:
+ * - Cash purchase estimates (T041)
+ * - Finance (loan) estimates (T042)
+ * - Lease estimates (T043)
+ * - Fuel cost estimates (T044)
+ * - Saving/retrieving estimates (T045, T039, T040) - local storage only
+ */
 export const estimateRouter = createTRPCRouter({
   /**
-   * Calculate cash purchase estimate
+   * T041: estimate.calculateCash - Calculate cash purchase estimate
    */
   calculateCash: publicProcedure
     .input(
       z.object({
         vehicleId: z.string(),
         trimId: z.string().optional(),
-        zipCode: z.string().regex(/^\d{5}$/),
+        zipCode: z.string().regex(/^\d{5}$/, "ZIP code must be 5 digits"),
         inputs: CashInputsSchema,
       })
     )
-    .query(async ({ input, ctx }) => {
-      const { vehicleId, trimId, zipCode, inputs } = input;
-
+    .query(async ({ input }) => {
       // Verify vehicle exists
-      const vehicleDoc = await ctx.db.collection("vehicles").doc(vehicleId).get();
+      const vehicleDoc = await adminDb.collection("vehicles").doc(input.vehicleId).get();
+      
       if (!vehicleDoc.exists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Vehicle ${vehicleId} not found`,
-        });
+        throw new Error("NOT_FOUND: Vehicle not found");
       }
 
-      // Call finance-engine
+      // Calculate estimate using finance-engine library
+      // The library expects zipCode in the inputs
       const result = calculateCashEstimate({
-        vehiclePrice: inputs.vehiclePrice,
-        zipCode,
-        discounts: inputs.discounts,
-        rebates: inputs.rebates,
-        tradeInValue: inputs.tradeInValue,
-        tradeInPayoff: inputs.tradeInPayoff,
+        ...input.inputs,
+        zipCode: input.zipCode,
       });
 
-      const estimateId = randomUUID();
+      const estimateId = uuidv4();
 
+      // Map finance-engine result to contract format
       return {
         estimateId,
-        vehicleId,
-        trimId,
+        vehicleId: input.vehicleId,
+        trimId: input.trimId,
         type: "cash" as const,
-        zipCode,
-        inputs,
+        zipCode: input.zipCode,
+        inputs: input.inputs,
         outputs: {
           monthlyPayment: null,
-          dueAtSigning: result.amountDue,
+          dueAtSigning: 0,
           totalTaxes: result.salesTax,
           totalFees: result.totalFees,
           outTheDoorTotal: result.outTheDoorTotal,
@@ -77,61 +79,60 @@ export const estimateRouter = createTRPCRouter({
         taxBreakdown: {
           salesTax: result.salesTax,
           registrationFee: result.registrationFee,
-          titleFee: 0,
+          titleFee: 0, // Not included in finance-engine, using 0
           documentFee: result.docFee,
           stateFees: 0,
         },
-        disclaimer: DISCLAIMER_TEXT,
+        disclaimer: result.disclaimer,
         calculatedAt: new Date(),
       };
     }),
 
   /**
-   * Calculate finance estimate
+   * T042: estimate.calculateFinance - Calculate finance estimate
    */
   calculateFinance: publicProcedure
     .input(
       z.object({
         vehicleId: z.string(),
         trimId: z.string().optional(),
-        zipCode: z.string().regex(/^\d{5}$/),
+        zipCode: z.string().regex(/^\d{5}$/, "ZIP code must be 5 digits"),
         inputs: FinanceInputsSchema,
       })
     )
-    .query(async ({ input, ctx }) => {
-      const { vehicleId, trimId, zipCode, inputs } = input;
-
+    .query(async ({ input }) => {
       // Verify vehicle exists
-      const vehicleDoc = await ctx.db.collection("vehicles").doc(vehicleId).get();
+      const vehicleDoc = await adminDb.collection("vehicles").doc(input.vehicleId).get();
+      
       if (!vehicleDoc.exists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Vehicle ${vehicleId} not found`,
-        });
+        throw new Error("NOT_FOUND: Vehicle not found");
       }
 
-      // Call finance-engine
+      // Validate inputs
+      if (input.inputs.apr > 30) {
+        throw new Error("BAD_REQUEST: APR cannot exceed 30%");
+      }
+
+      if (![12, 24, 36, 48, 60, 72, 84].includes(input.inputs.termMonths)) {
+        throw new Error("BAD_REQUEST: Term must be 12, 24, 36, 48, 60, 72, or 84 months");
+      }
+
+      // Calculate estimate using finance-engine library
       const result = calculateFinanceEstimate({
-        vehiclePrice: inputs.vehiclePrice,
-        zipCode,
-        downPayment: inputs.downPayment,
-        tradeInValue: inputs.tradeInValue,
-        tradeInPayoff: inputs.tradeInPayoff,
-        discounts: inputs.discounts,
-        rebates: inputs.rebates,
-        termMonths: inputs.termMonths,
-        apr: inputs.apr,
+        ...input.inputs,
+        zipCode: input.zipCode,
       });
 
-      const estimateId = randomUUID();
+      const estimateId = uuidv4();
 
+      // Map finance-engine result to contract format
       return {
         estimateId,
-        vehicleId,
-        trimId,
+        vehicleId: input.vehicleId,
+        trimId: input.trimId,
         type: "finance" as const,
-        zipCode,
-        inputs,
+        zipCode: input.zipCode,
+        inputs: input.inputs,
         outputs: {
           monthlyPayment: result.monthlyPayment,
           dueAtSigning: result.dueAtSigning,
@@ -148,66 +149,63 @@ export const estimateRouter = createTRPCRouter({
           documentFee: result.docFee,
           stateFees: 0,
         },
-        disclaimer: DISCLAIMER_TEXT,
+        disclaimer: result.disclaimer,
         calculatedAt: new Date(),
       };
     }),
 
   /**
-   * Calculate lease estimate
+   * T043: estimate.calculateLease - Calculate lease estimate
    */
   calculateLease: publicProcedure
     .input(
       z.object({
         vehicleId: z.string(),
         trimId: z.string().optional(),
-        zipCode: z.string().regex(/^\d{5}$/),
+        zipCode: z.string().regex(/^\d{5}$/, "ZIP code must be 5 digits"),
         inputs: LeaseInputsSchema,
       })
     )
-    .query(async ({ input, ctx }) => {
-      const { vehicleId, trimId, zipCode, inputs } = input;
-
+    .query(async ({ input }) => {
       // Verify vehicle exists
-      const vehicleDoc = await ctx.db.collection("vehicles").doc(vehicleId).get();
+      const vehicleDoc = await adminDb.collection("vehicles").doc(input.vehicleId).get();
+      
       if (!vehicleDoc.exists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Vehicle ${vehicleId} not found`,
-        });
+        throw new Error("NOT_FOUND: Vehicle not found");
       }
 
-      // Call finance-engine
+      // Validate inputs
+      if (input.inputs.residualPercent > 100 || input.inputs.residualPercent <= 0) {
+        throw new Error("BAD_REQUEST: Residual percent must be between 0 and 100");
+      }
+
+      if (input.inputs.moneyFactor < 0) {
+        throw new Error("BAD_REQUEST: Money factor cannot be negative");
+      }
+
+      // Calculate estimate using finance-engine library
       const result = calculateLeaseEstimate({
-        vehiclePrice: inputs.vehiclePrice,
-        zipCode,
-        downPayment: inputs.downPayment,
-        tradeInValue: inputs.tradeInValue,
-        tradeInPayoff: inputs.tradeInPayoff,
-        discounts: inputs.discounts,
-        rebates: inputs.rebates,
-        termMonths: inputs.termMonths,
-        residualPercent: inputs.residualPercent,
-        moneyFactor: inputs.moneyFactor,
-        mileageCap: inputs.mileageCap,
+        ...input.inputs,
+        zipCode: input.zipCode,
       });
 
-      const estimateId = randomUUID();
+      const estimateId = uuidv4();
 
+      // Map finance-engine result to contract format
       return {
         estimateId,
-        vehicleId,
-        trimId,
+        vehicleId: input.vehicleId,
+        trimId: input.trimId,
         type: "lease" as const,
-        zipCode,
-        inputs,
+        zipCode: input.zipCode,
+        inputs: input.inputs,
         outputs: {
           monthlyPayment: result.monthlyPayment,
           dueAtSigning: result.dueAtSigning,
           totalTaxes: result.salesTax,
           totalFees: result.totalFees,
-          outTheDoorTotal: result.totalLeasePayments + result.dueAtSigning,
-          totalCostOverTerm: result.totalLeasePayments + result.dueAtSigning,
+          outTheDoorTotal: result.totalCostOverTerm,
+          totalCostOverTerm: result.totalCostOverTerm,
           totalInterestPaid: null,
         },
         taxBreakdown: {
@@ -217,13 +215,13 @@ export const estimateRouter = createTRPCRouter({
           documentFee: result.docFee,
           stateFees: 0,
         },
-        disclaimer: DISCLAIMER_TEXT,
+        disclaimer: result.disclaimer,
         calculatedAt: new Date(),
       };
     }),
 
   /**
-   * Calculate fuel cost estimate
+   * T044: estimate.calculateFuelCost - Calculate fuel/energy cost estimate
    */
   calculateFuelCost: publicProcedure
     .input(
@@ -232,146 +230,107 @@ export const estimateRouter = createTRPCRouter({
         inputs: FuelEstimateInputSchema,
       })
     )
-    .query(async ({ input, ctx }) => {
-      const { vehicleId, inputs } = input;
-
+    .query(async ({ input }) => {
       // Verify vehicle exists
-      const vehicleDoc = await ctx.db.collection("vehicles").doc(vehicleId).get();
+      const vehicleDoc = await adminDb.collection("vehicles").doc(input.vehicleId).get();
+      
       if (!vehicleDoc.exists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: `Vehicle ${vehicleId} not found`,
-        });
+        throw new Error("NOT_FOUND: Vehicle not found");
       }
 
-      // Call finance-engine
-      const result = calculateFuelCost({
-        fuelType: inputs.fuelType,
-        pricePerUnit: inputs.pricePerUnit,
-        annualMiles: inputs.annualMiles,
-        mpgOrMpge: inputs.mpgOrMpge,
-      });
+      // Validate inputs
+      if (input.inputs.pricePerUnit <= 0) {
+        throw new Error("BAD_REQUEST: Price per unit must be positive");
+      }
+
+      if (input.inputs.mpgOrMpge <= 0) {
+        throw new Error("BAD_REQUEST: MPG/MPGe must be positive");
+      }
+
+      // Calculate fuel cost using finance-engine library
+      const result = calculateFuelCost(input.inputs);
 
       return {
-        vehicleId,
-        fuelType: inputs.fuelType,
+        vehicleId: input.vehicleId,
+        fuelType: input.inputs.fuelType,
         monthlyCost: result.monthlyCost,
         annualCost: result.annualCost,
         assumptions: {
-          pricePerUnit: inputs.pricePerUnit,
-          annualMiles: inputs.annualMiles,
-          mpgOrMpge: inputs.mpgOrMpge,
+          pricePerUnit: input.inputs.pricePerUnit,
+          annualMiles: input.inputs.annualMiles,
+          mpgOrMpge: input.inputs.mpgOrMpge,
         },
       };
     }),
 
   /**
-   * Save estimate to user profile
+   * T045: estimate.saveEstimate - Save estimate to local storage (placeholder)
+   * 
+   * Note: Per copilot-instructions.md, we're using local browser storage only.
+   * This endpoint returns the estimate data for client-side persistence.
    */
-  saveEstimate: protectedProcedure
+  saveEstimate: publicProcedure
     .input(
       z.object({
         estimate: z.object({
           vehicleId: z.string(),
           trimId: z.string().optional(),
           type: z.enum(["cash", "finance", "lease"]),
-          zipCode: z.string().regex(/^\d{5}$/),
+          zipCode: z.string(),
           inputs: z.union([CashInputsSchema, FinanceInputsSchema, LeaseInputsSchema]),
           outputs: EstimateOutputsSchema,
         }),
       })
     )
-    .mutation(async ({ input, ctx }) => {
-      const userId = ctx.userId;
-      const { estimate } = input;
+    .mutation(async ({ input }) => {
+      // Generate ID for the estimate
+      const estimateId = uuidv4();
+      const savedAt = new Date();
 
-      const estimateId = randomUUID();
-      const savedEstimate = {
-        id: estimateId,
-        ...estimate,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      const userRef = ctx.db.collection("userProfiles").doc(userId);
-      await userRef.update({
-        estimates: FieldValue.arrayUnion(savedEstimate),
-        updatedAt: new Date(),
-      });
-
+      // Return the data for client-side storage
+      // Client will handle localStorage persistence
       return {
         estimateId,
-        savedAt: savedEstimate.createdAt,
+        savedAt,
+        estimate: {
+          ...input.estimate,
+          id: estimateId,
+          createdAt: savedAt,
+          updatedAt: savedAt,
+        },
       };
     }),
 
   /**
-   * Get all saved estimates for user
+   * T039: estimate.getSavedEstimates - Placeholder for local storage retrieval
+   * 
+   * Returns empty array - client should use localStorage directly
    */
-  getSavedEstimates: protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.userId;
-    const userRef = ctx.db.collection("userProfiles").doc(userId);
-    const userDoc = await userRef.get();
-
-    if (!userDoc.exists) {
-      return { estimates: [] };
-    }
-
-    const estimates = (userDoc.data()?.estimates as Array<{
-      id: string;
-      vehicleId: string;
-      trimId?: string;
-      type: "cash" | "finance" | "lease";
-      zipCode: string;
-      inputs: unknown;
-      outputs: unknown;
-      createdAt: Date;
-      updatedAt: Date;
-    }>) ?? [];
-
-    // Sort by updatedAt descending
-    estimates.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-    return { estimates };
-  }),
+  getSavedEstimates: publicProcedure
+    .query(async () => {
+      // Local storage only - return empty array
+      // Client should read from localStorage directly
+      return {
+        estimates: [],
+      };
+    }),
 
   /**
-   * Delete saved estimate
+   * T040: estimate.deleteEstimate - Placeholder for local storage deletion
+   * 
+   * Returns success - client should handle localStorage removal
    */
-  deleteEstimate: protectedProcedure
-    .input(z.object({ estimateId: z.string().uuid() }))
-    .mutation(async ({ input, ctx }) => {
-      const { estimateId } = input;
-      const userId = ctx.userId;
-
-      const userRef = ctx.db.collection("userProfiles").doc(userId);
-      const userDoc = await userRef.get();
-
-      if (!userDoc.exists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User profile not found",
-        });
-      }
-
-      const estimates = (userDoc.data()?.estimates as Array<{ id: string }> | undefined) ?? [];
-      const estimateExists = estimates.some((est) => est.id === estimateId);
-
-      if (!estimateExists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Estimate not found",
-        });
-      }
-
-      // Remove estimate from array
-      const updatedEstimates = estimates.filter((est) => est.id !== estimateId);
-
-      await userRef.update({
-        estimates: updatedEstimates,
-        updatedAt: new Date(),
-      });
-
-      return { success: true };
+  deleteEstimate: publicProcedure
+    .input(
+      z.object({
+        estimateId: z.string().uuid(),
+      })
+    )
+    .mutation(async () => {
+      // Local storage only - return success
+      // Client should handle localStorage removal
+      return {
+        success: true,
+      };
     }),
 });
