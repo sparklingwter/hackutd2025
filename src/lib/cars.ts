@@ -75,3 +75,6 @@ export const CARS: Car[] = [
 export const CAR_INDEX: Record<string, Car> = Object.fromEntries(
   CARS.map((c) => [c.id, c])
 );
+export function findCar(id: string): Car | undefined {
+  return CAR_INDEX[id];
+}

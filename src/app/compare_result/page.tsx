@@ -97,7 +97,7 @@ export default function CompareResultPage() {
                             Buy
                           </Link>
                           <Link
-                            href={`/result?focus=${encodeURIComponent(car.id)}`}
+                            href={`/finance?focus=${encodeURIComponent(car.id)}`}
                             className="inline-flex items-center justify-center rounded-full border px-4 py-2 text-sm hover:bg-muted"
                           >
                             Back to card
