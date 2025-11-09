@@ -1,16 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import StickyHeader from "~/components/ui/sticky-header";
-import { CAR_INDEX, CARS, Car } from "~/lib/cars";
+import CarImage from "~/components/ui/car-image";
+import { CAR_INDEX } from "~/lib/cars";
+import type { Car } from "~/lib/cars";
 import { AlertTriangle } from "lucide-react";
 
 export default function CompareResultPage() {
   const params = useSearchParams();
-  const idsParam = params.get("ids") || "";
+  const idsParam = params.get("ids") ?? "";
   const ids = useMemo(() => idsParam.split(",").map((s) => s.trim()).filter(Boolean), [idsParam]);
 
   const selected: Car[] = useMemo(() => {
@@ -51,12 +52,11 @@ export default function CompareResultPage() {
                       <th key={car.id} className="p-4">
                         <div className="mx-auto flex max-w-xs flex-col items-center gap-2">
                           <div className="relative h-28 w-full overflow-hidden rounded-xl">
-                            <Image
-                              src={car.img}
+                            <CarImage
+                              imagePath={car.img}
                               alt={car.name}
                               fill
                               className="object-cover"
-                              sizes="(max-width: 768px) 200px, 320px"
                             />
                           </div>
                           <div className="text-center text-base font-semibold leading-tight">{car.name}</div>
