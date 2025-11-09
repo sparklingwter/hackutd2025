@@ -34,6 +34,11 @@ export const userProfilesCollection = () => adminDb.collection('userProfiles');
  */
 export const dealerLeadsCollection = () => adminDb.collection('dealerLeads');
 
+/**
+ * Dealers collection - Toyota dealership locations
+ */
+export const dealersCollection = () => adminDb.collection('dealers');
+
 // ============================================================================
 // Helper Functions
 // ============================================================================
@@ -165,6 +170,25 @@ export const getUserDealerLeads = async (userId: string) => {
     .orderBy('createdAt', 'desc')
     .get();
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+/**
+ * Get dealer by ID
+ */
+export const getDealerById = async (dealerId: string) => {
+  const doc = await dealersCollection().doc(dealerId).get();
+  if (!doc.exists) {
+    return null;
+  }
+  return { id: doc.id, ...doc.data() } as DealerDoc;
+};
+
+/**
+ * Get all dealers (for proximity search)
+ */
+export const getAllDealers = async () => {
+  const snapshot = await dealersCollection().get();
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as DealerDoc));
 };
 
 // ============================================================================
@@ -326,4 +350,28 @@ export interface DealerLeadDoc {
   consent: true;
   status: 'new' | 'contacted' | 'closed';
   createdAt: Date;
+}
+
+export interface DealerDoc {
+  id: string;
+  name: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  phone: string;
+  website?: string;
+  hours?: Record<string, string>;
+  services: string[];
+  reviews?: {
+    rating: number;
+    count: number;
+    source: string;
+  };
 }

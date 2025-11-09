@@ -276,28 +276,28 @@
 
 ### Dealer Router Implementation (US5)
 
-- [ ] T043 [P] [US5] Create dealer router in apps/web/src/server/api/routers/dealer.ts
-- [ ] T044 [P] [US5] Implement dealer.findNearby query with geocoding and distance calculation
-- [ ] T045 [P] [US5] Implement dealer.submitLead mutation with consent validation (literal true)
-- [ ] T039 [P] [US5] Implement dealer.getMyLeads query fetching user submissions
-- [ ] T040 [P] [US5] Implement dealer.getById query for dealer details
-- [ ] T041 [US5] Add rate limiting for dealer lead submissions (5 per day per user)
+- [X] T043 [P] [US5] Create dealer router in apps/web/src/server/api/routers/dealer.ts
+- [X] T044 [P] [US5] Implement dealer.findNearby query with geocoding and distance calculation
+- [X] T045 [P] [US5] Implement dealer.submitLead mutation with consent validation (literal true)
+- [X] T039 [P] [US5] Implement dealer.getMyLeads query fetching user submissions
+- [X] T040 [P] [US5] Implement dealer.getById query for dealer details
+- [X] T041 [US5] Add rate limiting for dealer lead submissions (5 per day per user)
 
 ### Dealer Data Setup (US5)
 
-- [ ] T042 [P] [US5] Create dealer seed data script in apps/web/scripts/seed-dealers.ts with Texas Toyota dealers
-- [ ] T043 [US5] Implement ZIP-to-lat/long geocoding using Google Maps API in apps/web/src/lib/geocoding.ts
+- [X] T042 [P] [US5] Create dealer seed data script in apps/web/scripts/seed-dealers.ts with Texas Toyota dealers
+- [X] T043 [US5] Implement ZIP-to-lat/long geocoding using Google Maps API in apps/web/src/lib/geocoding.ts
 
 ### Dealer UI (US5)
 
-- [ ] T044 [US5] Create dealer finder page in apps/web/src/app/dealer/page.tsx
-- [ ] T045 [P] [US5] Create ZIP code search form in apps/web/src/components/dealer/ZipSearch.tsx
-- [ ] T039 [P] [US5] Create dealer list component in apps/web/src/components/dealer/DealerList.tsx
-- [ ] T040 [P] [US5] Create dealer card with directions link in apps/web/src/components/dealer/DealerCard.tsx
-- [ ] T041 [US5] Create contact me form in apps/web/src/components/dealer/ContactForm.tsx
-- [ ] T042 [US5] Create explicit consent checkbox in apps/web/src/components/dealer/ConsentCheckbox.tsx with legal text
-- [ ] T043 [P] [US5] Create contact confirmation page in apps/web/src/app/dealer/confirmation/page.tsx
-- [ ] T044 [P] [US5] Create my leads page in apps/web/src/app/profile/leads/page.tsx
+- [X] T044 [US5] Create dealer finder page in apps/web/src/app/dealer/page.tsx
+- [X] T045 [P] [US5] Create ZIP code search form in apps/web/src/components/dealer/ZipSearch.tsx
+- [X] T039 [P] [US5] Create dealer list component in apps/web/src/components/dealer/DealerList.tsx
+- [X] T040 [P] [US5] Create dealer card with directions link in apps/web/src/components/dealer/DealerCard.tsx
+- [X] T041 [US5] Create contact me form in apps/web/src/components/dealer/ContactForm.tsx
+- [X] T042 [US5] Create explicit consent checkbox in apps/web/src/components/dealer/ConsentCheckbox.tsx with legal text
+- [X] T043 [P] [US5] Create contact confirmation page in apps/web/src/app/dealer/confirmation/page.tsx
+- [X] T044 [P] [US5] Create my leads page in apps/web/src/app/profile/leads/page.tsx
 
 **Checkpoint**: User Story 5 complete - Users can connect with dealers
 
