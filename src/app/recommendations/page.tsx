@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
@@ -9,6 +9,7 @@ import { TopPicks } from "~/components/recommendations/TopPicks";
 import { StrongContenders } from "~/components/recommendations/StrongContenders";
 import { ExploreAlternatives } from "~/components/recommendations/ExploreAlternatives";
 import { FilterChips } from "~/components/recommendations/FilterChips";
+import { FilterPanel, type FilterPanelFilters } from "~/components/recommendations/FilterPanel";
 import { AudioPlayer } from "~/components/voice/AudioPlayer";
 import { api } from "~/trpc/react";
 
@@ -20,9 +21,12 @@ type RecommendationWithVehicle = Recommendation & {
 
 export default function RecommendationsPage() {
   const router = useRouter();
-  const { profile } = useDiscovery();
+  const { profile, updateProfile } = useDiscovery();
   const [filterChips, setFilterChips] = useState<Array<{ id: string; label: string; value: string }>>([]);
   const [audioSummary, setAudioSummary] = useState<string>("");
+  
+  // Local filter state for instant updates (overrides profile)
+  const [localFilters, setLocalFilters] = useState<Partial<FilterPanelFilters>>({});
 
   // Check if profile is complete
   useEffect(() => {
@@ -32,56 +36,65 @@ export default function RecommendationsPage() {
     }
   }, [profile, router]);
 
-  // Generate filter chips from profile
+  // Merge local filters with profile for active filters
+  const activeFilters = useMemo(() => ({
+    budgetType: (localFilters.budgetType ?? profile.budgetType)!,
+    budgetAmount: localFilters.budgetAmount ?? profile.budgetAmount ?? 0,
+    bodyStyle: (localFilters.bodyStyle ?? profile.bodyStyle)!,
+    fuelType: (localFilters.fuelType ?? profile.fuelType)!,
+    seating: localFilters.seating ?? profile.seating ?? 5,
+  }), [localFilters, profile]);
+
+  // Generate filter chips from active filters
   useEffect(() => {
     const chips: Array<{ id: string; label: string; value: string }> = [];
     
-    if (profile.budgetType && profile.budgetAmount) {
+    if (activeFilters.budgetType && activeFilters.budgetAmount) {
       chips.push({
         id: "budget",
         label: "Budget",
-        value: profile.budgetType === "monthly" 
-          ? `$${profile.budgetAmount}/mo` 
-          : `$${profile.budgetAmount.toLocaleString()}`,
+        value: activeFilters.budgetType === "monthly" 
+          ? `$${activeFilters.budgetAmount}/mo` 
+          : `$${activeFilters.budgetAmount.toLocaleString()}`,
       });
     }
     
-    if (profile.bodyStyle) {
+    if (activeFilters.bodyStyle) {
       chips.push({
         id: "bodyStyle",
         label: "Body Style",
-        value: profile.bodyStyle.charAt(0).toUpperCase() + profile.bodyStyle.slice(1),
+        value: activeFilters.bodyStyle.charAt(0).toUpperCase() + activeFilters.bodyStyle.slice(1),
       });
     }
     
-    if (profile.fuelType) {
+    if (activeFilters.fuelType) {
       chips.push({
         id: "fuelType",
         label: "Fuel Type",
-        value: profile.fuelType === "plugin-hybrid" ? "Plug-in Hybrid" : profile.fuelType.charAt(0).toUpperCase() + profile.fuelType.slice(1),
+        value: activeFilters.fuelType === "plugin-hybrid" ? "Plug-in Hybrid" : activeFilters.fuelType.charAt(0).toUpperCase() + activeFilters.fuelType.slice(1),
       });
     }
     
-    if (profile.seating) {
+    if (activeFilters.seating) {
       chips.push({
         id: "seating",
         label: "Seating",
-        value: `${profile.seating}+ seats`,
+        value: `${activeFilters.seating}+ seats`,
       });
     }
 
     setFilterChips(chips);
-  }, [profile]);
+  }, [activeFilters]);
 
-  // Fetch recommendations using tRPC
+  // Fetch recommendations using tRPC with active filters
   const { data, isLoading, error, refetch } = api.search.recommend.useQuery(
     {
       needs: {
-        budgetType: profile.budgetType!,
-        budgetAmount: profile.budgetAmount!,
-        bodyStyle: profile.bodyStyle!,
-        seating: profile.seating!,
-        fuelType: profile.fuelType!,
+        budgetType: activeFilters.budgetType,
+        budgetAmount: activeFilters.budgetAmount,
+        bodyStyle: activeFilters.bodyStyle,
+        seating: activeFilters.seating,
+        fuelType: activeFilters.fuelType,
         priorityMpg: profile.priorityMpg ?? false,
         priorityRange: profile.priorityRange ?? false,
         cargoNeeds: profile.cargoNeeds ?? "none",
@@ -96,7 +109,7 @@ export default function RecommendationsPage() {
       voiceEnabled: false,
     },
     {
-      enabled: !!(profile.budgetType && profile.budgetAmount && profile.bodyStyle && profile.fuelType && profile.seating),
+      enabled: !!(activeFilters.budgetType && activeFilters.budgetAmount && activeFilters.bodyStyle && activeFilters.fuelType && activeFilters.seating),
       retry: 2,
     }
   );
@@ -113,14 +126,22 @@ export default function RecommendationsPage() {
     }
   }, [data]);
 
+  // Handle filter changes with instant updates
+  const handleFilterChange = (filters: Partial<FilterPanelFilters>) => {
+    setLocalFilters((prev) => ({ ...prev, ...filters }));
+    // Update the global profile state as well for persistence
+    updateProfile(filters);
+  };
+
   const handleRemoveFilter = (filterId: string) => {
-    // In a full implementation, this would update the profile and refetch
+    // Individual filter removal - redirect to discovery to change that specific filter
     console.log("Remove filter:", filterId);
-    // For now, just redirect back to start a new discovery
     router.push("/discovery/budget");
   };
 
   const handleClearAllFilters = () => {
+    // Clear all local overrides and redirect to start over
+    setLocalFilters({});
     router.push("/discovery/budget");
   };
 
@@ -237,7 +258,20 @@ export default function RecommendationsPage() {
           </div>
         )}
 
-        {/* Filter Chips */}
+        {/* Filter Panel - NEW: Advanced filtering UI */}
+        <FilterPanel
+          filters={{
+            budgetType: activeFilters.budgetType,
+            budgetAmount: activeFilters.budgetAmount,
+            bodyStyle: activeFilters.bodyStyle,
+            fuelType: activeFilters.fuelType,
+            seating: activeFilters.seating,
+          }}
+          onFilterChange={handleFilterChange}
+          onClearAll={handleClearAllFilters}
+        />
+
+        {/* Filter Chips - Legacy: Simple chip display */}
         <FilterChips
           filters={filterChips}
           onRemove={handleRemoveFilter}
