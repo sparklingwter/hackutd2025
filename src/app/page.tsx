@@ -1,53 +1,93 @@
-import Link from "next/link";
+import { IconPlus } from "@tabler/icons-react";
+import { ArrowUpIcon, Search } from "lucide-react";
+import StickyHeader from "~/components/ui/sticky-header";
+import { ThemeToggle } from "~/components/theme-toggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupTextarea,
+} from "~/components/ui/input-group";
+import { Separator } from "~/components/ui/separator";
+import { TooltipProvider } from "~/components/ui/tooltip";
 
-import { LatestPost } from "~/app/_components/post";
-import { api, HydrateClient } from "~/trpc/server";
-
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
-
-  void api.post.getLatest.prefetch();
-
+export default function Home() {
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
+    <TooltipProvider>
+      <ThemeToggle />
+      <StickyHeader name="FindMyYota" />
+      <main className="flex min-h-screen flex-col items-center justify-center bg-background">
+        <div className="container flex flex-col items-center justify-center gap-14 px-6 py-20">
+          {/* Title */}
+          <h1 className="text-6xl font-extrabold tracking-tight text-foreground sm:text-[6rem]">
+            FindMy<span className="text-primary">Yota</span>
           </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
-            </p>
+
+          {/* Search Bar */}
+          <div className="w-full max-w-4xl">
+            <InputGroup>
+              <InputGroupAddon>
+                <Search className="h-6 w-6" />
+              </InputGroupAddon>
+              <InputGroupInput
+                placeholder="Search..."
+                className="h-20 text-xl px-6 rounded-xl"
+              />
+            </InputGroup>
           </div>
 
-          <LatestPost />
+          {/* Chatbox */}
+          <div className="w-full max-w-4xl">
+            <InputGroup>
+              <InputGroupTextarea
+                placeholder="Ask, Search or Chat..."
+                className="min-h-[28rem] text-lg leading-relaxed p-6 rounded-2xl"
+              />
+              <InputGroupAddon align="block-end">
+                <InputGroupButton
+                  variant="outline"
+                  className="rounded-full text-xl p-4"
+               
+                >
+                  <IconPlus className="h-6 w-6" />
+                </InputGroupButton>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <InputGroupButton variant="ghost" className="text-lg">
+                      Auto
+                    </InputGroupButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="top"
+                    align="start"
+                    className="[--radius:0.95rem]"
+                  >
+                    <DropdownMenuItem>Auto</DropdownMenuItem>
+                    <DropdownMenuItem>Agent</DropdownMenuItem>
+                    <DropdownMenuItem>Manual</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Separator orientation="vertical" className="!h-5" />
+                <InputGroupButton
+                  variant="default"
+                  className="rounded-full p-4"
+       
+                >
+                  <ArrowUpIcon className="h-6 w-6" />
+                  <span className="sr-only">Send</span>
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
         </div>
       </main>
-    </HydrateClient>
+    </TooltipProvider>
   );
 }
