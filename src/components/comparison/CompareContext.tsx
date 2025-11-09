@@ -25,21 +25,23 @@ export function CompareProvider({ children }: { children: ReactNode }) {
 
   // Load from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as string[];
-        setVehicleIds(parsed);
-      } catch {
-        // Ignore parse errors
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored) as string[];
+          setVehicleIds(parsed);
+        } catch {
+          // Ignore parse errors
+        }
       }
+      setIsHydrated(true);
     }
-    setIsHydrated(true);
   }, []);
 
   // Save to localStorage whenever vehicleIds change
   useEffect(() => {
-    if (isHydrated) {
+    if (isHydrated && typeof window !== "undefined") {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(vehicleIds));
     }
   }, [vehicleIds, isHydrated]);

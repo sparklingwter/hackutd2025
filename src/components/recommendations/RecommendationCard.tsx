@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Star, Fuel, Users, Package, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Star, Fuel, Users, Package, ArrowRight, Scale, Calculator } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { useCompare } from "~/components/comparison/CompareContext";
 import type { Recommendation, Vehicle } from "~/server/api/schemas";
 
 interface RecommendationCardProps {
@@ -33,6 +35,17 @@ const TIER_STYLES = {
 export function RecommendationCard({ recommendation, tier }: RecommendationCardProps) {
   const { vehicle, score, explanation, matchedCriteria, tradeoffs } = recommendation;
   const styles = TIER_STYLES[tier];
+  const { addVehicle, removeVehicle, isInCompareTray, canAddMore } = useCompare();
+  
+  const isComparing = isInCompareTray(vehicle.id);
+  
+  const handleCompareToggle = () => {
+    if (isComparing) {
+      removeVehicle(vehicle.id);
+    } else {
+      addVehicle(vehicle.id);
+    }
+  };
 
   return (
     <div
@@ -143,11 +156,46 @@ export function RecommendationCard({ recommendation, tier }: RecommendationCardP
           </div>
         )}
 
-        {/* View Details Button */}
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
-          View Details
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        {/* Action Buttons */}
+        <div className="space-y-2">
+          {/* View Details Button */}
+          <Link
+            href={`/vehicles/${vehicle.id}`}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+          >
+            View Details
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+
+          {/* Compare and Estimate Buttons */}
+          <div className="grid grid-cols-2 gap-2">
+            {/* Compare Toggle Button */}
+            <button
+              onClick={handleCompareToggle}
+              disabled={!isComparing && !canAddMore}
+              className={cn(
+                "flex items-center justify-center gap-2 px-3 py-2 font-medium rounded-lg transition-colors text-sm",
+                isComparing
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600",
+                !isComparing && !canAddMore && "opacity-50 cursor-not-allowed"
+              )}
+              title={isComparing ? "Remove from compare" : "Add to compare"}
+            >
+              <Scale className="w-4 h-4" />
+              {isComparing ? "Comparing" : "Compare"}
+            </button>
+
+            {/* Get Estimate Button */}
+            <Link
+              href={`/estimate?carId=${vehicle.id}`}
+              className="flex items-center justify-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors text-sm"
+            >
+              <Calculator className="w-4 h-4" />
+              Estimate
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
