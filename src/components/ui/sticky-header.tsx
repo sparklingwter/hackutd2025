@@ -1,94 +1,71 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ArrowUpIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { ThemeToggle } from "~/components/theme-toggle";
 
 type StickyHeaderProps = {
-  /** Control the base logo size (px). Make it bigger → header gets taller */
+  /** Base logo size (px). Default = 200 */
   logoSize?: number;
-  /** Optional path if not using /public/logo */
+  /** Logo path (default /toyota-logo.png) */
   src?: string;
+  /** Alt text for the logo */
   alt?: string;
-  /** Scroll threshold percentage (0-100) to switch to white logo */
-  scrollThreshold?: number;
 };
 
 export default function StickyHeader({
-  logoSize = 96,
-  src = "/Toyota-logo.png",
+  logoSize = 200,
+  src = "/toyota-logo.png",
   alt = "Logo",
-  scrollThreshold = 10,
 }: StickyHeaderProps) {
-  const [useWhiteLogo, setUseWhiteLogo] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
-    // Check if dark mode is active
+    // Detect dark mode via 'dark' class on <html>
     const checkDarkMode = () => {
-      setIsDarkMode(document.documentElement.classList.contains("dark"));
+      if (typeof document !== "undefined") {
+        setIsDarkMode(document.documentElement.classList.contains("dark"));
+      }
     };
 
     checkDarkMode();
 
-    // Create a MutationObserver to watch for dark mode changes
+    // Watch for dark mode changes
     const observer = new MutationObserver(checkDarkMode);
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
 
-    const handleScroll = () => {
-      const scrollPercentage = (window.scrollY / document.documentElement.scrollHeight) * 100;
-      setUseWhiteLogo(scrollPercentage > scrollThreshold);
-    };
+    return () => observer.disconnect();
+  }, []);
 
-    window.addEventListener("scroll", handleScroll);
-    
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      observer.disconnect();
-    };
-  }, [scrollThreshold]);
-
-  // Only use white logo in dark mode when scrolled
-  const logoSrc = isDarkMode && useWhiteLogo ? "/toyota-logo-white.png" : src;
+  // Instantly switch to white logo when dark mode is active
+  const logoSrc = useMemo(
+    () => (isDarkMode ? "/toyota-logo-white.png" : src),
+    [isDarkMode, src]
+  );
 
   return (
     <header
-      className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50 text-foreground shadow-sm"
+      className="sticky top-0 z-50 bg-secondary text-primary-foreground shadow-md"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
       role="banner"
     >
-      {/* Header height is dictated by the logo + padding */}
-      <div className="flex w-full items-center justify-between px-6 py-3">
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-        </div>
-        
+      <div className="relative mx-auto flex w-full items-center justify-center py-4">
+        {/* Centered, large logo */}
         <Image
           src={logoSrc}
           alt={alt}
           width={logoSize}
           height={logoSize}
-          className="object-contain transition-opacity duration-300"
+          className="object-contain"
           priority
         />
-        
-        <div className="flex items-center gap-4">
-          <Link href="/result">
-            <button className="group relative px-6 py-2.5 bg-primary text-primary-foreground font-medium text-sm rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-primary/50 active:scale-95 overflow-hidden">
-              {/* Animated gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
-              
-              <span className="relative z-10 flex items-center gap-2">
-                View Results
-                <ArrowUpIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </span>
-            </button>
-          </Link>
+
+        {/* Theme toggle pinned to the right */}
+        <div className="absolute right-6 top-1/2 -translate-y-1/2">
+          <ThemeToggle />
         </div>
       </div>
     </header>
