@@ -205,7 +205,7 @@ export const FuelEstimateOutputSchema = z.object({
 export type FuelEstimateOutput = z.infer<typeof FuelEstimateOutputSchema>;
 
 // ============================================================================
-// User Profile & Saved Items
+// Compare Sets & Saved Estimates (Local Storage Only)
 // ============================================================================
 
 export const CompareSetSchema = z.object({
@@ -231,18 +231,3 @@ export const EstimateSchema = z.object({
 
 export type Estimate = z.infer<typeof EstimateSchema>;
 
-export const UserProfileSchema = z.object({
-  userId: z.string(),
-  email: z.string().email().optional(),
-  displayName: z.string().optional(),
-  preferences: UserNeedsProfileSchema.optional(),
-  favorites: z.array(z.string()).default([]),
-  savedSearches: z.array(UserNeedsProfileSchema).default([]),
-  compareSets: z.array(CompareSetSchema).default([]),
-  estimates: z.array(EstimateSchema).default([]),
-  voiceEnabled: z.boolean().default(true),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
-
-export type UserProfile = z.infer<typeof UserProfileSchema>;

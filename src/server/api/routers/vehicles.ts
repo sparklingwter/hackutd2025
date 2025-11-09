@@ -16,12 +16,55 @@ import {
 
 /**
  * Vehicles Router - Vehicle catalog, details, and trim information
- * All procedures are public (read-only)
- * Responses cached at CDN level (1-hour TTL)
+ * 
+ * Provides read-only access to vehicle database with filtering, sorting,
+ * and pagination. All procedures are public (no authentication required).
+ * Responses are CDN-cached with 1-hour TTL for optimal performance.
+ * 
+ * @module server/api/routers/vehicles
+ * @cache CDN TTL: 1 hour
  */
 export const vehiclesRouter = createTRPCRouter({
   /**
-   * T039: vehicles.list - List vehicles with optional filters and pagination
+   * List vehicles with optional filters and pagination
+   * 
+   * Fetch paginated vehicle catalog with support for filtering by body style,
+   * fuel type, price range, and seating capacity. Uses cursor-based pagination
+   * for efficient large dataset traversal.
+   * 
+   * @param {object} input - Input parameters
+   * @param {VehicleFilters} [input.filters] - Optional filtering criteria
+   * @param {BodyStyle} [input.filters.bodyStyle] - Filter by body type
+   * @param {FuelType} [input.filters.fuelType] - Filter by powertrain
+   * @param {number} [input.filters.minPrice] - Minimum MSRP
+   * @param {number} [input.filters.maxPrice] - Maximum MSRP
+   * @param {number} [input.filters.minSeating] - Minimum passenger capacity
+   * @param {number} [input.filters.maxSeating] - Maximum passenger capacity
+   * @param {SortOption} [input.sort="name-asc"] - Sort order
+   * @param {PaginationInput} input.pagination - Pagination parameters
+   * @param {number} [input.pagination.limit] - Results per page
+   * @param {string} [input.pagination.cursor] - Resume from vehicle ID
+   * 
+   * @returns {Promise<VehicleListResult>} Paginated vehicle list
+   * @returns {Vehicle[]} returns.items - Array of vehicles for current page
+   * @returns {string|null} returns.nextCursor - Cursor for next page (null if last)
+   * @returns {number|undefined} returns.total - Total count (omitted for performance)
+   * 
+   * @throws {TRPCError} INTERNAL_SERVER_ERROR - Database query failed
+   * 
+   * @example
+   * ```typescript
+   * const result = await trpc.vehicles.list.query({
+   *   filters: {
+   *     bodyStyle: "suv",
+   *     maxPrice: 50000
+   *   },
+   *   sort: "price-asc",
+   *   pagination: { limit: 20 }
+   * });
+   * ```
+   * 
+   * @see Requires Firestore composite indexes for multi-field filtering
    */
   list: publicProcedure
     .input(
@@ -144,7 +187,42 @@ export const vehiclesRouter = createTRPCRouter({
     }),
 
   /**
-   * T040: vehicles.getById - Get detailed information for a specific vehicle
+   * Get detailed information for a specific vehicle
+   * 
+   * Fetches complete vehicle data including specs, features, images, and
+   * available trim levels. Returns 404 if vehicle doesn't exist.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string} input.vehicleId - Vehicle identifier
+   * 
+   * @returns {Promise<Vehicle>} Complete vehicle details
+   * @returns {string} returns.id - Vehicle identifier
+   * @returns {"Toyota"} returns.make - Always "Toyota"
+   * @returns {string} returns.model - Model name (Camry, RAV4, etc.)
+   * @returns {number} returns.year - Model year
+   * @returns {BodyStyle} returns.bodyStyle - Body type
+   * @returns {FuelType} returns.fuelType - Powertrain type
+   * @returns {number} returns.seating - Passenger capacity
+   * @returns {number|null} returns.mpgCombined - Combined fuel economy
+   * @returns {number|null} returns.range - Electric range (EVs only)
+   * @returns {number} returns.cargoVolume - Cargo capacity (cu ft)
+   * @returns {number} returns.towingCapacity - Max towing (lbs)
+   * @returns {number} returns.msrp - Base price
+   * @returns {string[]} returns.features - All standard features
+   * @returns {number|null} returns.safetyRating - NHTSA rating (1-5)
+   * @returns {string[]} returns.trims - Available trim levels
+   * @returns {string[]} returns.imageUrls - Vehicle photos
+   * @returns {string} returns.description - Marketing description
+   * 
+   * @throws {TRPCError} NOT_FOUND - Vehicle doesn't exist
+   * @throws {TRPCError} INTERNAL_SERVER_ERROR - Database error
+   * 
+   * @example
+   * ```typescript
+   * const vehicle = await trpc.vehicles.getById.query({
+   *   vehicleId: "camry-2024"
+   * });
+   * ```
    */
   getById: publicProcedure
     .input(

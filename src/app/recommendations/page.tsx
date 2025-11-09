@@ -197,7 +197,7 @@ export default function RecommendationsPage() {
     );
   }
 
-  // No results
+  // No results - show closest matches if explore alternatives exist
   if (!data || (data.topPicks.length === 0 && data.strongContenders.length === 0 && data.exploreAlternatives.length === 0)) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -205,23 +205,35 @@ export default function RecommendationsPage() {
           <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center">
             <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              No Vehicles Found
+              No Exact Matches Found
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              We couldn&apos;t find any vehicles matching all your criteria. Try adjusting your preferences or budget.
+              We couldn&apos;t find any vehicles matching all your criteria. Try adjusting your preferences, budget, or consider alternative options.
             </p>
-            <Link
-              href="/discovery/budget"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Adjust Preferences
-            </Link>
+            <div className="space-y-3">
+              <Link
+                href="/discovery/budget"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors w-full justify-center"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Adjust Preferences
+              </Link>
+              <Link
+                href="/recommendations?relaxed=true"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full justify-center"
+              >
+                Show Closest Matches
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     );
   }
+
+  // Partial results - show what we found with suggestion to relax filters
+  const hasNoTopPicks = data.topPicks.length === 0;
+  const hasOnlyAlternatives = data.strongContenders.length === 0 && data.exploreAlternatives.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -277,6 +289,26 @@ export default function RecommendationsPage() {
           onRemove={handleRemoveFilter}
           onClearAll={handleClearAllFilters}
         />
+
+        {/* Limited Results Warning */}
+        {hasNoTopPicks && (
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mb-6">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-500 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
+                  Limited matches found
+                </p>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  {hasOnlyAlternatives 
+                    ? "No vehicles perfectly match all your criteria. We're showing alternative options that come close."
+                    : "We found some matches but they may not perfectly align with all your preferences. Consider adjusting your filters for better results."
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Results Summary */}
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-8">

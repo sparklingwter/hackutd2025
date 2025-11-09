@@ -29,7 +29,41 @@ function checkRateLimit(ip: string, limit: number, windowMs: number): boolean {
 
 export const searchRouter = createTRPCRouter({
   /**
-   * T040: search.recommend - Generate AI-powered vehicle recommendations
+   * Generate AI-powered vehicle recommendations based on user needs
+   * 
+   * Uses Google Gemini API to analyze user preferences and rank vehicles
+   * by match score. Implements rate limiting to prevent API abuse.
+   * 
+   * @param {object} input - Input parameters
+   * @param {UserNeedsProfile} input.needs - User's vehicle preferences and requirements
+   * @param {boolean} [input.voiceEnabled=false] - Whether to generate audio summary (future feature)
+   * 
+   * @returns {Promise<RecommendationResult>} Categorized vehicle recommendations
+   * @returns {Vehicle[]} returns.topPicks - Best 3 matches with highest scores (>85)
+   * @returns {Vehicle[]} returns.strongContenders - Good alternatives (70-84 score)
+   * @returns {Vehicle[]} returns.exploreAlternatives - Broader options (<70 score)
+   * @returns {string|undefined} returns.audioSummaryUrl - URL to audio summary if voice enabled
+   * @returns {Date} returns.generatedAt - Timestamp of recommendation generation
+   * 
+   * @throws {Error} TOO_MANY_REQUESTS - Rate limit exceeded (10 requests/minute/IP)
+   * @throws {Error} INTERNAL_SERVER_ERROR - AI service failure or database error
+   * 
+   * @example
+   * ```typescript
+   * const recommendations = await trpc.search.recommend.query({
+   *   needs: {
+   *     budget: 35000,
+   *     primaryUse: "commuting",
+   *     bodyStyle: "sedan",
+   *     seating: 5,
+   *     priorities: ["fuel-efficiency", "reliability"]
+   *   },
+   *   voiceEnabled: false
+   * });
+   * ```
+   * 
+   * @see {@link ~/lib/ranking-engine} for AI ranking implementation
+   * @see {@link ~/server/api/schemas} for UserNeedsProfileSchema
    */
   recommend: publicProcedure
     .input(
@@ -98,7 +132,46 @@ export const searchRouter = createTRPCRouter({
     }),
 
   /**
-   * T041: search.filter - Filter vehicles by criteria (deterministic)
+   * Filter vehicles using deterministic criteria (no AI)
+   * 
+   * Provides fast, predictable filtering without AI costs. Supports
+   * multiple filter types and sorting options with cursor-based pagination.
+   * 
+   * @param {object} input - Input parameters
+   * @param {object} input.filters - Filter criteria
+   * @param {BodyStyle} [input.filters.bodyStyle] - Vehicle body type (sedan, suv, truck, etc.)
+   * @param {FuelType} [input.filters.fuelType] - Powertrain type (gas, hybrid, electric, etc.)
+   * @param {number} [input.filters.minSeating] - Minimum passenger capacity (2-8)
+   * @param {number} [input.filters.maxPrice] - Maximum MSRP in USD
+   * @param {number} [input.filters.minMpg] - Minimum combined fuel economy (mpg)
+   * @param {boolean} [input.filters.requireAwd] - Only show AWD vehicles
+   * @param {SortOption} [input.sort="price-asc"] - Sort order (price-asc, price-desc, mpg-desc, name-asc)
+   * @param {object} input.pagination - Pagination parameters
+   * @param {number} [input.pagination.limit=20] - Max results per page (1-50)
+   * @param {string} [input.pagination.cursor] - Cursor for next page (vehicle ID)
+   * 
+   * @returns {Promise<FilterResult>} Filtered and sorted vehicles
+   * @returns {Vehicle[]} returns.items - Vehicles matching filters
+   * @returns {string|undefined} returns.nextCursor - Cursor for next page (null if last page)
+   * @returns {number} returns.total - Total result count
+   * 
+   * @throws {Error} No error thrown - returns empty array if no matches
+   * 
+   * @example
+   * ```typescript
+   * const results = await trpc.search.filter.query({
+   *   filters: {
+   *     bodyStyle: "suv",
+   *     maxPrice: 40000,
+   *     minSeating: 7,
+   *     requireAwd: true
+   *   },
+   *   sort: "price-asc",
+   *   pagination: { limit: 20 }
+   * });
+   * ```
+   * 
+   * @see Firestore composite indexes required for multi-field filtering
    */
   filter: publicProcedure
     .input(
@@ -185,7 +258,37 @@ export const searchRouter = createTRPCRouter({
     }),
 
   /**
-   * T042: search.semanticSearch - Natural language search using Gemini
+   * Natural language vehicle search using AI
+   * 
+   * Allows users to search with conversational queries like "family SUV under $40k"
+   * or "electric car with long range". Uses Gemini API to parse intent and extract
+   * search parameters. Falls back to keyword matching if AI unavailable.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string} input.query - Natural language search query (1-200 characters)
+   * @param {number} [input.limit=10] - Maximum results to return (1-20)
+   * 
+   * @returns {Promise<SemanticSearchResult>} Ranked search results
+   * @returns {SearchResult[]} returns.results - Vehicles matching query intent
+   * @returns {string} returns.results[].vehicleId - Matching vehicle ID
+   * @returns {number} returns.results[].relevanceScore - Match confidence (0-1)
+   * @returns {string} returns.results[].snippet - Relevant excerpt from vehicle description
+   * @returns {string} returns.queryIntent - Interpreted search intent from AI
+   * 
+   * @throws {Error} TOO_MANY_REQUESTS - Rate limit exceeded (10 requests/minute/IP)
+   * @throws {Error} INTERNAL_SERVER_ERROR - AI service failure or database error
+   * 
+   * @example
+   * ```typescript
+   * const results = await trpc.search.semanticSearch.query({
+   *   query: "reliable hybrid sedan for daily commute",
+   *   limit: 10
+   * });
+   * // results.queryIntent: "Looking for: fuel-efficient sedan, primary use: commuting"
+   * ```
+   * 
+   * @todo Implement full Gemini API integration for intent parsing
+   * @see {@link ~/lib/ranking-engine/gemini} for AI integration
    */
   semanticSearch: publicProcedure
     .input(

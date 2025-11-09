@@ -30,6 +30,8 @@ export function AudioPlayer({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -57,6 +59,8 @@ export function AudioPlayer({
 
   const generateAudio = async () => {
     setIsLoading(true);
+    setHasError(false);
+    setErrorMessage(null);
     try {
       const response = await fetch("/api/elevenlabs/text-to-speech", {
         method: "POST",
@@ -91,13 +95,20 @@ export function AudioPlayer({
         setCurrentTime(0);
         onEnd?.();
       });
+
+      audio.addEventListener("error", () => {
+        setHasError(true);
+        setErrorMessage("Audio playback error occurred");
+        onError?.("Audio playback error occurred");
+      });
     } catch (error) {
       console.error("Error generating audio:", error);
-      onError?.(
-        error instanceof Error
-          ? error.message
-          : "Failed to generate audio. Please try again."
-      );
+      const message = error instanceof Error
+        ? error.message
+        : "Failed to generate audio. Voice synthesis is temporarily unavailable.";
+      setHasError(true);
+      setErrorMessage(message);
+      onError?.(message);
     } finally {
       setIsLoading(false);
     }
@@ -147,6 +158,18 @@ export function AudioPlayer({
 
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md ${className}`}>
+      {/* Error Message */}
+      {hasError && errorMessage && (
+        <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+            {errorMessage}
+          </p>
+          <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+            The text content is displayed below as a fallback.
+          </p>
+        </div>
+      )}
+
       {/* Captions */}
       {showCaptions && (
         <div className="mb-4 text-sm text-gray-700 dark:text-gray-300 italic">

@@ -34,7 +34,7 @@ export default function VehicleDetailPage() {
   });
 
   // Fetch selected trim details if a trim is selected
-  const { data: selectedTrim } = api.vehicles.getTrimById.useQuery(
+  const { data: selectedTrim, error: trimError } = api.vehicles.getTrimById.useQuery(
     {
       vehicleId,
       trimId: selectedTrimId!,
@@ -64,12 +64,17 @@ export default function VehicleDetailPage() {
           <AlertCircle className="h-12 w-12 text-destructive" />
           <h2 className="text-2xl font-bold">Vehicle Not Found</h2>
           <p className="text-muted-foreground">
-            {vehicleError?.message ?? "The vehicle you're looking for doesn't exist."}
+            {vehicleError?.message ?? "The vehicle you're looking for doesn't exist or is no longer available."}
           </p>
-          <Button onClick={() => router.push("/recommendations")} className="mt-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Recommendations
-          </Button>
+          <div className="mt-4 flex gap-3">
+            <Button onClick={() => router.push("/recommendations")}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Browse Vehicles
+            </Button>
+            <Button variant="outline" onClick={() => router.push("/")}>
+              Go to Home
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -77,6 +82,9 @@ export default function VehicleDetailPage() {
 
   const trims = trimsData?.trims ?? [];
   const currentTrim = selectedTrim ?? null;
+
+  // Handle trim not found but vehicle exists
+  const showTrimError = selectedTrimId && trimError && !selectedTrim;
 
   return (
     <div className="min-h-screen bg-background">
@@ -89,6 +97,29 @@ export default function VehicleDetailPage() {
             { label: `${vehicle.year} ${vehicle.model}`, href: `/vehicles/${vehicle.id}` },
           ]}
         />
+
+        {/* Trim Error Warning */}
+        {showTrimError && (
+          <div className="mb-6 mt-6 rounded-lg border border-yellow-300 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="mt-0.5 h-5 w-5 text-yellow-600 dark:text-yellow-500" />
+              <div>
+                <p className="font-semibold text-yellow-800 dark:text-yellow-200">
+                  Selected Trim Not Available
+                </p>
+                <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-300">
+                  The trim you selected is no longer available. Showing base vehicle information instead.
+                </p>
+                <button
+                  onClick={() => setSelectedTrimId(null)}
+                  className="mt-2 text-sm font-medium text-yellow-800 underline hover:text-yellow-900 dark:text-yellow-200 dark:hover:text-yellow-100"
+                >
+                  Clear selection
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Header */}
         <div className="mb-8 mt-6">

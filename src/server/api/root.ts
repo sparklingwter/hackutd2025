@@ -2,7 +2,6 @@ import { postRouter } from "~/server/api/routers/post";
 import { searchRouter } from "~/server/api/routers/search";
 import { compareRouter } from "~/server/api/routers/compare";
 import { estimateRouter } from "~/server/api/routers/estimate";
-import { profileRouter } from "~/server/api/routers/profile";
 import { vehiclesRouter } from "~/server/api/routers/vehicles";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
@@ -16,7 +15,6 @@ export const appRouter = createTRPCRouter({
   search: searchRouter,
   compare: compareRouter,
   estimate: estimateRouter,
-  profile: profileRouter,
   vehicles: vehiclesRouter,
 });
 

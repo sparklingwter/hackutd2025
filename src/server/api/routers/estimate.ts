@@ -22,16 +22,65 @@ import { adminDb } from "~/server/db/firebase";
 /**
  * Estimate Router
  * 
- * Handles all cost estimation calculations:
- * - Cash purchase estimates (T041)
- * - Finance (loan) estimates (T042)
- * - Lease estimates (T043)
- * - Fuel cost estimates (T044)
- * - Saving/retrieving estimates (T045, T039, T040) - local storage only
+ * Handles all vehicle cost estimation calculations including cash purchase,
+ * financing, leasing, and fuel costs. Uses finance-engine library for
+ * accurate tax, fee, and payment calculations based on ZIP code.
+ * 
+ * All estimates include state-specific tax rates, registration fees, and
+ * dealer documentation charges. Results are for estimation only and include
+ * appropriate disclaimers.
+ * 
+ * @module server/api/routers/estimate
+ * @see {@link ~/lib/finance-engine} for calculation logic
  */
 export const estimateRouter = createTRPCRouter({
   /**
-   * T041: estimate.calculateCash - Calculate cash purchase estimate
+   * Calculate cash purchase estimate with all fees
+   * 
+   * Computes out-the-door total for buying a vehicle outright. Includes
+   * sales tax (state-specific), registration, title, and doc fees based
+   * on buyer's ZIP code.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string} input.vehicleId - Target vehicle ID
+   * @param {string} [input.trimId] - Optional specific trim
+   * @param {string} input.zipCode - 5-digit ZIP code for tax calculation
+   * @param {CashInputs} input.inputs - Cash purchase parameters
+   * @param {number} input.inputs.msrp - Manufacturer suggested retail price
+   * @param {number} [input.inputs.addons=0] - Optional accessories/features
+   * @param {number} [input.inputs.tradeInValue=0] - Trade-in credit
+   * @param {number} [input.inputs.rebates=0] - Manufacturer rebates/incentives
+   * 
+   * @returns {Promise<EstimateResult>} Complete cash estimate
+   * @returns {string} returns.estimateId - Unique estimate identifier (UUID)
+   * @returns {string} returns.vehicleId - Vehicle being estimated
+   * @returns {"cash"} returns.type - Estimate type
+   * @returns {EstimateOutputs} returns.outputs - Calculated totals
+   * @returns {number} returns.outputs.outTheDoorTotal - Final amount to pay
+   * @returns {number} returns.outputs.totalTaxes - All applicable taxes
+   * @returns {number} returns.outputs.totalFees - Registration, title, doc fees
+   * @returns {TaxBreakdown} returns.taxBreakdown - Itemized tax/fee details
+   * @returns {string} returns.disclaimer - Legal disclaimer text
+   * @returns {Date} returns.calculatedAt - Timestamp
+   * 
+   * @throws {Error} NOT_FOUND - Vehicle doesn't exist
+   * 
+   * @example
+   * ```typescript
+   * const estimate = await trpc.estimate.calculateCash.query({
+   *   vehicleId: "camry-2024",
+   *   zipCode: "75080",
+   *   inputs: {
+   *     msrp: 28000,
+   *     addons: 2500,
+   *     tradeInValue: 5000,
+   *     rebates: 1000
+   *   }
+   * });
+   * // estimate.outputs.outTheDoorTotal: $26,837.50
+   * ```
+   * 
+   * @see {@link ~/lib/finance-engine/cash} for calculation details
    */
   calculateCash: publicProcedure
     .input(
@@ -89,7 +138,52 @@ export const estimateRouter = createTRPCRouter({
     }),
 
   /**
-   * T042: estimate.calculateFinance - Calculate finance estimate
+   * Calculate auto loan financing estimate with amortization
+   * 
+   * Computes monthly payment, total interest, and full loan cost for
+   * financing a vehicle. Supports terms from 12-84 months with customizable
+   * down payment and APR. Includes all taxes and fees in amount financed.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string} input.vehicleId - Target vehicle ID
+   * @param {string} [input.trimId] - Optional specific trim
+   * @param {string} input.zipCode - 5-digit ZIP code for tax calculation
+   * @param {FinanceInputs} input.inputs - Financing parameters
+   * @param {number} input.inputs.msrp - Vehicle base price
+   * @param {number} [input.inputs.addons=0] - Optional accessories
+   * @param {number} [input.inputs.tradeInValue=0] - Trade-in credit
+   * @param {number} [input.inputs.rebates=0] - Manufacturer incentives
+   * @param {number} input.inputs.downPayment - Cash down (reduces amount financed)
+   * @param {number} input.inputs.apr - Annual percentage rate (0-30%)
+   * @param {number} input.inputs.termMonths - Loan duration (12,24,36,48,60,72,84)
+   * 
+   * @returns {Promise<EstimateResult>} Complete finance estimate
+   * @returns {EstimateOutputs} returns.outputs - Calculated totals
+   * @returns {number} returns.outputs.monthlyPayment - Fixed monthly payment
+   * @returns {number} returns.outputs.dueAtSigning - Down payment + fees
+   * @returns {number} returns.outputs.totalCostOverTerm - Total paid over loan life
+   * @returns {number} returns.outputs.totalInterestPaid - Interest portion only
+   * @returns {string} returns.disclaimer - Finance disclaimer text
+   * 
+   * @throws {Error} NOT_FOUND - Vehicle doesn't exist
+   * @throws {Error} BAD_REQUEST - APR > 30% or invalid term
+   * 
+   * @example
+   * ```typescript
+   * const estimate = await trpc.estimate.calculateFinance.query({
+   *   vehicleId: "camry-2024",
+   *   zipCode: "75080",
+   *   inputs: {
+   *     msrp: 28000,
+   *     downPayment: 5000,
+   *     apr: 6.5,
+   *     termMonths: 60
+   *   }
+   * });
+   * // estimate.outputs.monthlyPayment: $458.32
+   * ```
+   * 
+   * @see {@link ~/lib/finance-engine/finance} for amortization calculation
    */
   calculateFinance: publicProcedure
     .input(
@@ -155,7 +249,53 @@ export const estimateRouter = createTRPCRouter({
     }),
 
   /**
-   * T043: estimate.calculateLease - Calculate lease estimate
+   * Calculate vehicle lease estimate with monthly payment
+   * 
+   * Computes lease payment based on MSRP, residual value percentage, money
+   * factor (similar to APR), and lease term. Includes acquisition fee and
+   * first month's payment in due at signing.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string} input.vehicleId - Target vehicle ID
+   * @param {string} [input.trimId] - Optional specific trim
+   * @param {string} input.zipCode - 5-digit ZIP code for tax calculation
+   * @param {LeaseInputs} input.inputs - Lease parameters
+   * @param {number} input.inputs.msrp - Vehicle base price
+   * @param {number} [input.inputs.addons=0] - Optional accessories
+   * @param {number} input.inputs.capCostReduction - Down payment equivalent
+   * @param {number} input.inputs.residualPercent - Expected value at lease end (0-100%)
+   * @param {number} input.inputs.moneyFactor - Lease rate (divide APR by 2400)
+   * @param {number} input.inputs.termMonths - Lease duration (24,36,39,48)
+   * @param {number} input.inputs.annualMileage - Yearly mileage limit
+   * 
+   * @returns {Promise<EstimateResult>} Complete lease estimate
+   * @returns {EstimateOutputs} returns.outputs - Calculated totals
+   * @returns {number} returns.outputs.monthlyPayment - Monthly lease payment
+   * @returns {number} returns.outputs.dueAtSigning - Initial payment + fees
+   * @returns {number} returns.outputs.totalCostOverTerm - Total lease cost
+   * @returns {string} returns.disclaimer - Lease disclaimer with mileage terms
+   * 
+   * @throws {Error} NOT_FOUND - Vehicle doesn't exist
+   * @throws {Error} BAD_REQUEST - Invalid residual percent or money factor
+   * 
+   * @example
+   * ```typescript
+   * const estimate = await trpc.estimate.calculateLease.query({
+   *   vehicleId: "camry-2024",
+   *   zipCode: "75080",
+   *   inputs: {
+   *     msrp: 28000,
+   *     capCostReduction: 2000,
+   *     residualPercent: 60,
+   *     moneyFactor: 0.00125, // Equivalent to ~3% APR
+   *     termMonths: 36,
+   *     annualMileage: 12000
+   *   }
+   * });
+   * // estimate.outputs.monthlyPayment: $275.45
+   * ```
+   * 
+   * @see {@link ~/lib/finance-engine/lease} for residual calculation
    */
   calculateLease: publicProcedure
     .input(

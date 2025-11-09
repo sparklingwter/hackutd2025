@@ -9,6 +9,8 @@ interface CompareContextType {
   clearAll: () => void;
   isInCompareTray: (vehicleId: string) => boolean;
   canAddMore: boolean;
+  errorMessage: string | null;
+  clearError: () => void;
 }
 
 const CompareContext = createContext<CompareContextType | undefined>(undefined);
@@ -19,6 +21,7 @@ const STORAGE_KEY = "compare-tray-vehicles";
 export function CompareProvider({ children }: { children: ReactNode }) {
   const [vehicleIds, setVehicleIds] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -41,23 +44,38 @@ export function CompareProvider({ children }: { children: ReactNode }) {
     }
   }, [vehicleIds, isHydrated]);
 
+  // Auto-clear error after 5 seconds
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => setErrorMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
   const addVehicle = (vehicleId: string) => {
     if (vehicleIds.length >= MAX_COMPARE_VEHICLES) {
-      alert(`Compare tray is full (max ${MAX_COMPARE_VEHICLES} vehicles)`);
+      setErrorMessage(`Compare tray is full. You can compare up to ${MAX_COMPARE_VEHICLES} vehicles at once. Remove a vehicle to add another.`);
       return;
     }
     if (vehicleIds.includes(vehicleId)) {
       return; // Already in tray
     }
     setVehicleIds((prev) => [...prev, vehicleId]);
+    setErrorMessage(null); // Clear any existing errors
   };
 
   const removeVehicle = (vehicleId: string) => {
     setVehicleIds((prev) => prev.filter((id) => id !== vehicleId));
+    setErrorMessage(null); // Clear errors when removing
   };
 
   const clearAll = () => {
     setVehicleIds([]);
+    setErrorMessage(null);
+  };
+
+  const clearError = () => {
+    setErrorMessage(null);
   };
 
   const isInCompareTray = (vehicleId: string) => {
@@ -75,6 +93,8 @@ export function CompareProvider({ children }: { children: ReactNode }) {
         clearAll,
         isInCompareTray,
         canAddMore,
+        errorMessage,
+        clearError,
       }}
     >
       {children}

@@ -359,30 +359,30 @@
 
 ### Error Handling & Edge Cases
 
-- [ ] T045 [P] Create global error boundary in apps/web/src/app/error.tsx
-- [ ] T039 [P] Create 404 not found page in apps/web/src/app/not-found.tsx
-- [ ] T040 [P] Implement graceful fallback for voice synthesis failures
-- [ ] T041 [P] Add ZIP code validation with state-level fallback messaging
-- [ ] T042 [P] Handle "no vehicles match criteria" edge case with closest matches
-- [ ] T043 Add compare tray full (4 vehicles) error message
-- [ ] T044 [P] Handle unavailable vehicle/trim gracefully in detail pages
+- [X] T045 [P] Create global error boundary in apps/web/src/app/error.tsx
+- [X] T039 [P] Create 404 not found page in apps/web/src/app/not-found.tsx
+- [X] T040 [P] Implement graceful fallback for voice synthesis failures
+- [X] T041 [P] Add ZIP code validation with state-level fallback messaging
+- [X] T042 [P] Handle "no vehicles match criteria" edge case with closest matches
+- [X] T043 Add compare tray full (4 vehicles) error message
+- [X] T044 [P] Handle unavailable vehicle/trim gracefully in detail pages
 
 ### Logging & Observability
 
-- [ ] T179 [P] Create structured JSON logger in apps/web/src/lib/logger.ts with PII redaction
+- [X] T179 [P] Create structured JSON logger in apps/web/src/lib/logger.ts with PII redaction
 - [ ] T180 Add logging for search and recommendation flows
 - [ ] T181 [P] Add logging for API errors with request IDs
 - [ ] T182 Add logging for dealer lead submissions
-- [ ] T183 Create error tracking integration (Sentry or similar) in apps/web/src/lib/errorTracking.ts
+- [X] T183 Create error tracking integration (Sentry or similar) in apps/web/src/lib/errorTracking.ts
 
 ### Legal & Disclaimers
 
-- [ ] T184 [P] Create disclaimer text config in apps/web/src/config/disclaimers.ts
-- [ ] T185 [P] Create legal footer component in apps/web/src/components/shared/Footer.tsx
-- [ ] T186 Add AI disclosure badge "Powered by Gemini" in apps/web/src/components/shared/AiBadge.tsx
-- [ ] T187 [P] Add voice synthesis disclosure in voice controls
-- [ ] T188 Create privacy policy placeholder page in apps/web/src/app/privacy/page.tsx
-- [ ] T189 [P] Create terms of service placeholder page in apps/web/src/app/terms/page.tsx
+- [X] T184 [P] Create disclaimer text config in apps/web/src/config/disclaimers.ts
+- [X] T185 [P] Create legal footer component in apps/web/src/components/shared/Footer.tsx
+- [X] T186 Add AI disclosure badge "Powered by Gemini" in apps/web/src/components/shared/AiBadge.tsx
+- [X] T187 [P] Add voice synthesis disclosure in voice controls
+- [X] T188 Create privacy policy placeholder page in apps/web/src/app/privacy/page.tsx
+- [X] T189 [P] Create terms of service placeholder page in apps/web/src/app/terms/page.tsx
 
 
 

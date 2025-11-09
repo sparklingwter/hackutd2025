@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "~/server/api/trpc";
-import { FieldValue } from "firebase-admin/firestore";
-import { randomUUID } from "crypto";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { sign, verify } from "jsonwebtoken";
 
 // JWT secret for share tokens (use environment variable in production)
@@ -77,7 +75,39 @@ function buildComparisonMatrix(vehicles: Array<{ id: string; [key: string]: unkn
 
 export const compareRouter = createTRPCRouter({
   /**
-   * Get side-by-side comparison data for up to 4 vehicles
+   * Get side-by-side comparison data for multiple vehicles
+   * 
+   * Fetches detailed information for 2-4 vehicles and calculates category
+   * winners (best price, MPG, cargo, etc.) for easy comparison. Supports
+   * optional trim-specific comparisons.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string[]} input.vehicleIds - Vehicle IDs to compare (1-4 vehicles)
+   * @param {string[]} [input.trimIds] - Optional trim IDs (must match vehicleIds length)
+   * 
+   * @returns {Promise<ComparisonResult>} Comparison data with winners
+   * @returns {Vehicle[]} returns.vehicles - Full vehicle details for comparison
+   * @returns {CategoryWinners} returns.categoryWinners - IDs of winners per category
+   * @returns {string} returns.categoryWinners.lowestPrice - Vehicle with best MSRP
+   * @returns {string} returns.categoryWinners.highestMpg - Vehicle with best fuel economy
+   * @returns {string} returns.categoryWinners.mostCargo - Vehicle with largest cargo volume
+   * @returns {string} returns.categoryWinners.highestTowing - Vehicle with best towing capacity
+   * @returns {string} returns.categoryWinners.highestSafetyRating - Vehicle with best NHTSA rating
+   * @returns {string} returns.categoryWinners.mostHorsepower - Vehicle with most powerful engine
+   * @returns {ComparisonMatrix} returns.comparisonMatrix - Structured data for table rendering
+   * 
+   * @throws {TRPCError} BAD_REQUEST - trimIds length doesn't match vehicleIds
+   * @throws {TRPCError} NOT_FOUND - One or more vehicles don't exist
+   * 
+   * @example
+   * ```typescript
+   * const comparison = await trpc.compare.getComparison.query({
+   *   vehicleIds: ["camry-2024", "accord-2024", "altima-2024"]
+   * });
+   * // Returns winner badges, full specs, and comparison matrix
+   * ```
+   * 
+   * @see {@link ComparisonTable} component for rendering logic
    */
   getComparison: publicProcedure
     .input(
@@ -161,129 +191,31 @@ export const compareRouter = createTRPCRouter({
     }),
 
   /**
-   * Save a compare set to user profile
-   */
-  saveCompareSet: protectedProcedure
-    .input(
-      z.object({
-        name: z.string().max(100).optional(),
-        vehicleIds: z.array(z.string()).min(1).max(4),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const { name, vehicleIds } = input;
-      const userId = ctx.userId;
-
-      // Validate vehicle IDs exist
-      const vehiclePromises = vehicleIds.map((id) => ctx.db.collection("vehicles").doc(id).get());
-      const vehicleDocs = await Promise.all(vehiclePromises);
-      const missingVehicles = vehicleIds.filter((id, index) => !vehicleDocs[index]?.exists);
-
-      if (missingVehicles.length > 0) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: `Invalid vehicle IDs: ${missingVehicles.join(", ")}`,
-        });
-      }
-
-      // Get user profile
-      const userRef = ctx.db.collection("userProfiles").doc(userId);
-      const userDoc = await userRef.get();
-
-      // Auto-generate name if not provided
-      const existingCompareSets = (userDoc.data()?.compareSets as Array<{ name?: string }> | undefined) ?? [];
-      const compareSetName = name ?? `Comparison ${existingCompareSets.length + 1}`;
-
-      // Create compare set
-      const compareSetId = randomUUID();
-      const compareSet = {
-        id: compareSetId,
-        name: compareSetName,
-        vehicleIds,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      // Add to user profile
-      await userRef.update({
-        compareSets: FieldValue.arrayUnion(compareSet),
-        updatedAt: new Date(),
-      });
-
-      return {
-        compareSetId,
-        createdAt: compareSet.createdAt,
-      };
-    }),
-
-  /**
-   * Get all saved compare sets for authenticated user
-   */
-  getCompareSets: protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.userId;
-    const userRef = ctx.db.collection("userProfiles").doc(userId);
-    const userDoc = await userRef.get();
-
-    if (!userDoc.exists) {
-      return { compareSets: [] };
-    }
-
-    const compareSets = (userDoc.data()?.compareSets as Array<{
-      id: string;
-      name?: string;
-      vehicleIds: string[];
-      createdAt: Date;
-      updatedAt: Date;
-    }>) ?? [];
-
-    // Sort by updatedAt descending
-    compareSets.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-
-    return { compareSets };
-  }),
-
-  /**
-   * Delete a saved compare set
-   */
-  deleteCompareSet: protectedProcedure
-    .input(z.object({ compareSetId: z.string().uuid() }))
-    .mutation(async ({ input, ctx }) => {
-      const { compareSetId } = input;
-      const userId = ctx.userId;
-
-      const userRef = ctx.db.collection("userProfiles").doc(userId);
-      const userDoc = await userRef.get();
-
-      if (!userDoc.exists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User profile not found",
-        });
-      }
-
-      const compareSets = (userDoc.data()?.compareSets as Array<{ id: string }> | undefined) ?? [];
-      const compareSetExists = compareSets.some((set) => set.id === compareSetId);
-
-      if (!compareSetExists) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Compare set not found",
-        });
-      }
-
-      // Remove compare set from array
-      const updatedCompareSets = compareSets.filter((set) => set.id !== compareSetId);
-
-      await userRef.update({
-        compareSets: updatedCompareSets,
-        updatedAt: new Date(),
-      });
-
-      return { success: true };
-    }),
-
-  /**
-   * Get a compare set by shareable link (read-only)
+   * Get shared comparison data from shareable link (read-only)
+   * 
+   * Decodes JWT share token and returns comparison data for public viewing.
+   * No authentication required. Token expires after 30 days.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string} input.shareToken - JWT token from share link
+   * 
+   * @returns {Promise<SharedComparisonResult>} Public comparison data
+   * @returns {string[]} returns.vehicleIds - Vehicles in comparison
+   * @returns {Vehicle[]} returns.vehicles - Full vehicle details
+   * @returns {CategoryWinners} returns.categoryWinners - Category winners
+   * @returns {ComparisonMatrix} returns.comparisonMatrix - Comparison table data
+   * 
+   * @throws {TRPCError} BAD_REQUEST - Invalid or expired token
+   * @throws {TRPCError} NOT_FOUND - Vehicles in token no longer exist
+   * 
+   * @example
+   * ```typescript
+   * const shared = await trpc.compare.getSharedCompareSet.query({
+   *   shareToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   * });
+   * ```
+   * 
+   * @see Token generated by {@link generateShareLink}
    */
   getSharedCompareSet: publicProcedure
     .input(z.object({ shareToken: z.string() }))
@@ -362,7 +294,30 @@ export const compareRouter = createTRPCRouter({
     }),
 
   /**
-   * Generate a shareable link for a compare set
+   * Generate shareable link for vehicle comparison
+   * 
+   * Creates JWT-signed token that can be shared via URL. Token contains
+   * vehicle IDs and expires after 30 days. No authentication required.
+   * 
+   * @param {object} input - Input parameters
+   * @param {string[]} input.vehicleIds - Vehicles to include in share link (1-4)
+   * 
+   * @returns {Promise<ShareLinkResult>} Generated share link details
+   * @returns {string} returns.shareToken - JWT token for URL parameter
+   * @returns {string} returns.shareUrl - Full shareable URL
+   * @returns {Date} returns.expiresAt - Token expiration timestamp (30 days)
+   * 
+   * @throws {TRPCError} BAD_REQUEST - Invalid vehicle IDs
+   * 
+   * @example
+   * ```typescript
+   * const { shareUrl } = await trpc.compare.generateShareLink.mutate({
+   *   vehicleIds: ["camry-2024", "accord-2024"]
+   * });
+   * // shareUrl: "https://app.com/compare?share=eyJhbGc..."
+   * ```
+   * 
+   * @security Token signed with SHARE_TOKEN_SECRET environment variable
    */
   generateShareLink: publicProcedure
     .input(z.object({ vehicleIds: z.array(z.string()).min(1).max(4) }))
