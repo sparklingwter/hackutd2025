@@ -30,7 +30,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={toggleTheme}
-      className="fixed right-4 top-4"
+      className="rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
       aria-label="Toggle theme"
     >
       {theme === "light" ? (

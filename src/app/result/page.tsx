@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import StickyHeader from "~/components/ui/sticky-header";
-import { ThemeToggle } from "~/components/theme-toggle";
 import {
   InputGroup,
   InputGroupAddon,
@@ -156,7 +155,6 @@ export default function ResultPage() {
 
   return (
     <>
-      <ThemeToggle />
       <StickyHeader />
 
       <main className="relative mx-auto w-full max-w-7xl px-4 py-8 text-foreground">
